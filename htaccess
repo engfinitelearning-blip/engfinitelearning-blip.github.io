@@ -1,0 +1,53 @@
+# ============================================================
+# EngFinite Learning — SPA routing support
+# ============================================================
+# This site is a single-page application: one index.html file handles
+# every URL (e.g. /exam/cam13/1/exam, /bandCalculator, /vocab) using
+# JavaScript. Without this rule, the server would try to find a real
+# file/folder at those paths and return a 404 "Not Found" error.
+#
+# What this does: if the requested path is NOT a real file or folder
+# that actually exists on the server, silently serve index.html instead
+# — the page's own JavaScript then reads the URL and shows the right
+# content. Real files (data-cam13.js, images, etc.) are still served
+# normally and are NOT affected by this rule.
+#
+# IMPORTANT: If you already have an .htaccess file in your site's root
+# folder, do NOT replace it with this one — instead, ADD just the
+# "RewriteEngine On" through "RewriteRule ^ index.html [L]" block below
+# into your existing file (skip RewriteEngine On if it's already there).
+# ============================================================
+
+RewriteEngine On
+RewriteBase /
+
+# If the request matches a real file or folder on the server, serve it
+# directly and stop here (this protects data-cam*.js, images, etc.)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Otherwise, this is a "virtual" app route (e.g. /exam/cam13/1/exam) —
+# serve index.html and let the page's JavaScript handle it.
+RewriteRule ^ index.html [L]
+
+# ============================================================
+# Cache control — prevent stale content for visitors
+# ============================================================
+<IfModule mod_headers.c>
+  # Never let index.html be cached anywhere (browser, proxy, or ISP)
+  # so every visit checks the server for the latest version.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+
+  # data-*.js files are safe to cache long-term because their URLs now
+  # include a ?v= version number (see index.html) that changes on every
+  # content update, so browsers/proxies always fetch fresh content when
+  # the version changes, and can cache aggressively otherwise.
+  <FilesMatch "\.js$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
