@@ -2147,6 +2147,7 @@ body.dark-mode .lst-map-img{
     <span class="lst-time-sep">/</span>
     <span class="lst-time" id="lstDurTime">00:00</span>
     <button class="lst-pbtn small" onclick="lsVol(-0.1)" title="Volume down">🔉</button>
+    <span class="lst-time" id="lstVolPct">100%</span>
     <button class="lst-pbtn small" onclick="lsVol(0.1)" title="Volume up">🔊</button>
     <audio id="lstAudio" preload="auto"></audio>
   </div>
@@ -2839,6 +2840,7 @@ function startListeningTest(book,test){
   audio.src=t.audio;
   audio.currentTime=0;
   audio.volume=1;
+  document.getElementById("lstVolPct").textContent="100%";
   audio.load();
 
   // Load the first available section's content (audio keeps playing/loading independently)
@@ -2902,6 +2904,7 @@ function lsScrub(ev){
 function lsVol(delta){
   const audio=document.getElementById("lstAudio");
   audio.volume=Math.min(1,Math.max(0,audio.volume+delta));
+  document.getElementById("lstVolPct").textContent=Math.round(audio.volume*100)+"%";
 }
 
 // ── EXIT ──────────────────────────────────────────
@@ -6159,39 +6162,39 @@ function _hmStillUsed(bankId, val, excludeQn){
   </div>
 </div>
 
-<script src="/data-cam6.js?v=20260731c"></script>
-<script src="/data-cam7.js?v=20260731c"></script>
-<script src="/data-cam8.js?v=20260731c"></script>
-<script src="/data-cam9.js?v=20260731c"></script>
-<script src="/data-cam10.js?v=20260731c"></script>
-<script src="/data-cam11.js?v=20260731c"></script>
-<script src="/data-cam12.js?v=20260731c"></script>
-<script src="/data-cam13.js?v=20260731c"></script>
-<script src="/data-cam14.js?v=20260731c"></script>
-<script src="/data-cam15.js?v=20260731c"></script>
-<script src="/data-cam16.js?v=20260731c"></script>
-<script src="/data-cam17.js?v=20260731c"></script>
-<script src="/data-cam18.js?v=20260731c"></script>
-<script src="/data-cam19.js?v=20260731c"></script>
-<script src="/data-cam20.js?v=20260731c"></script>
-<script src="/data-cam21.js?v=20260731c"></script>
+<script src="/data-cam6.js?v=20260731d"></script>
+<script src="/data-cam7.js?v=20260731d"></script>
+<script src="/data-cam8.js?v=20260731d"></script>
+<script src="/data-cam9.js?v=20260731d"></script>
+<script src="/data-cam10.js?v=20260731d"></script>
+<script src="/data-cam11.js?v=20260731d"></script>
+<script src="/data-cam12.js?v=20260731d"></script>
+<script src="/data-cam13.js?v=20260731d"></script>
+<script src="/data-cam14.js?v=20260731d"></script>
+<script src="/data-cam15.js?v=20260731d"></script>
+<script src="/data-cam16.js?v=20260731d"></script>
+<script src="/data-cam17.js?v=20260731d"></script>
+<script src="/data-cam18.js?v=20260731d"></script>
+<script src="/data-cam19.js?v=20260731d"></script>
+<script src="/data-cam20.js?v=20260731d"></script>
+<script src="/data-cam21.js?v=20260731d"></script>
 
-<script src="/data-listening-cam6.js?v=20260731c"></script>
-<script src="/data-listening-cam7.js?v=20260731c"></script>
-<script src="/data-listening-cam8.js?v=20260731c"></script>
-<script src="/data-listening-cam9.js?v=20260731c"></script>
-<script src="/data-listening-cam10.js?v=20260731c"></script>
-<script src="/data-listening-cam11.js?v=20260731c"></script>
-<script src="/data-listening-cam12.js?v=20260731c"></script>
-<script src="/data-listening-cam13.js?v=20260731c"></script>
-<script src="/data-listening-cam14.js?v=20260731c"></script>
-<script src="/data-listening-cam15.js?v=20260731c"></script>
-<script src="/data-listening-cam16.js?v=20260731c"></script>
-<script src="/data-listening-cam17.js?v=20260731c"></script>
-<script src="/data-listening-cam18.js?v=20260731c"></script>
-<script src="/data-listening-cam19.js?v=20260731c"></script>
-<script src="/data-listening-cam20.js?v=20260731c"></script>
-<script src="/data-listening-cam21.js?v=20260731c"></script>
+<script src="/data-listening-cam6.js?v=20260731d"></script>
+<script src="/data-listening-cam7.js?v=20260731d"></script>
+<script src="/data-listening-cam8.js?v=20260731d"></script>
+<script src="/data-listening-cam9.js?v=20260731d"></script>
+<script src="/data-listening-cam10.js?v=20260731d"></script>
+<script src="/data-listening-cam11.js?v=20260731d"></script>
+<script src="/data-listening-cam12.js?v=20260731d"></script>
+<script src="/data-listening-cam13.js?v=20260731d"></script>
+<script src="/data-listening-cam14.js?v=20260731d"></script>
+<script src="/data-listening-cam15.js?v=20260731d"></script>
+<script src="/data-listening-cam16.js?v=20260731d"></script>
+<script src="/data-listening-cam17.js?v=20260731d"></script>
+<script src="/data-listening-cam18.js?v=20260731d"></script>
+<script src="/data-listening-cam19.js?v=20260731d"></script>
+<script src="/data-listening-cam20.js?v=20260731d"></script>
+<script src="/data-listening-cam21.js?v=20260731d"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -6456,7 +6459,7 @@ function filterActivity(type, btn){
   </div>
 </div>
 
-<script src="/typing-practice.js?v=20260731c"></script>
+<script src="/typing-practice.js?v=20260731d"></script>
 <!-- BAND SCORE CALCULATOR -->
 <div class="selpage" id="bandCalculatorPage" style="max-width:760px;width:100%">
   <button class="bk" onclick="goHome()">← Back to Home</button>
