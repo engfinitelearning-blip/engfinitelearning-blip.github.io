@@ -3142,21 +3142,6 @@ function lsToggleScript(){
   }
 }
 
-// ── HIGHLIGHT ────────────────────────────────────────
-document.addEventListener("mouseup",function(e){
-  if(e.target.closest && e.target.closest("#hlPopup")) return;
-  const sel=window.getSelection();
-  if(!sel||sel.isCollapsed||!sel.rangeCount)return;
-  const range=sel.getRangeAt(0);
-  const qc=document.getElementById("lstQuestions");
-  const sc=document.getElementById("lstScriptBody");
-  const inQuestions=qc&&qc.contains(range.commonAncestorContainer);
-  const inScript=sc&&sc.contains(range.commonAncestorContainer);
-  if(!inQuestions&&!inScript)return;
-  pendingHLRange=range.cloneRange();
-  showHLPopup(range.getBoundingClientRect());
-});
-
 // ── SUBMIT / GRADING ─────────────────────────────────
 // Grades the currently-displayed section's DOM inputs against stored answers
 // Pure score calculation (no DOM updates) — used for sections not
@@ -4224,9 +4209,13 @@ document.addEventListener("mouseup",function(e){
   const range=sel.getRangeAt(0);
   const pc=document.getElementById("pcon");
   const qc=document.getElementById("qcon");
+  const lq=document.getElementById("lstQuestions");
+  const ls=document.getElementById("lstScriptBody");
   const inPassage=pc&&pc.contains(range.commonAncestorContainer);
   const inQuestions=qc&&qc.contains(range.commonAncestorContainer);
-  if(!inPassage&&!inQuestions){ hideHLPopup(); return; }
+  const inLstQuestions=lq&&lq.contains(range.commonAncestorContainer);
+  const inLstScript=ls&&ls.contains(range.commonAncestorContainer);
+  if(!inPassage&&!inQuestions&&!inLstQuestions&&!inLstScript){ hideHLPopup(); return; }
   pendingHLRange=range.cloneRange();
   showHLPopup(range.getBoundingClientRect());
 });
@@ -6162,39 +6151,39 @@ function _hmStillUsed(bankId, val, excludeQn){
   </div>
 </div>
 
-<script src="/data-cam6.js?v=20260731d"></script>
-<script src="/data-cam7.js?v=20260731d"></script>
-<script src="/data-cam8.js?v=20260731d"></script>
-<script src="/data-cam9.js?v=20260731d"></script>
-<script src="/data-cam10.js?v=20260731d"></script>
-<script src="/data-cam11.js?v=20260731d"></script>
-<script src="/data-cam12.js?v=20260731d"></script>
-<script src="/data-cam13.js?v=20260731d"></script>
-<script src="/data-cam14.js?v=20260731d"></script>
-<script src="/data-cam15.js?v=20260731d"></script>
-<script src="/data-cam16.js?v=20260731d"></script>
-<script src="/data-cam17.js?v=20260731d"></script>
-<script src="/data-cam18.js?v=20260731d"></script>
-<script src="/data-cam19.js?v=20260731d"></script>
-<script src="/data-cam20.js?v=20260731d"></script>
-<script src="/data-cam21.js?v=20260731d"></script>
+<script src="/data-cam6.js?v=20260731e"></script>
+<script src="/data-cam7.js?v=20260731e"></script>
+<script src="/data-cam8.js?v=20260731e"></script>
+<script src="/data-cam9.js?v=20260731e"></script>
+<script src="/data-cam10.js?v=20260731e"></script>
+<script src="/data-cam11.js?v=20260731e"></script>
+<script src="/data-cam12.js?v=20260731e"></script>
+<script src="/data-cam13.js?v=20260731e"></script>
+<script src="/data-cam14.js?v=20260731e"></script>
+<script src="/data-cam15.js?v=20260731e"></script>
+<script src="/data-cam16.js?v=20260731e"></script>
+<script src="/data-cam17.js?v=20260731e"></script>
+<script src="/data-cam18.js?v=20260731e"></script>
+<script src="/data-cam19.js?v=20260731e"></script>
+<script src="/data-cam20.js?v=20260731e"></script>
+<script src="/data-cam21.js?v=20260731e"></script>
 
-<script src="/data-listening-cam6.js?v=20260731d"></script>
-<script src="/data-listening-cam7.js?v=20260731d"></script>
-<script src="/data-listening-cam8.js?v=20260731d"></script>
-<script src="/data-listening-cam9.js?v=20260731d"></script>
-<script src="/data-listening-cam10.js?v=20260731d"></script>
-<script src="/data-listening-cam11.js?v=20260731d"></script>
-<script src="/data-listening-cam12.js?v=20260731d"></script>
-<script src="/data-listening-cam13.js?v=20260731d"></script>
-<script src="/data-listening-cam14.js?v=20260731d"></script>
-<script src="/data-listening-cam15.js?v=20260731d"></script>
-<script src="/data-listening-cam16.js?v=20260731d"></script>
-<script src="/data-listening-cam17.js?v=20260731d"></script>
-<script src="/data-listening-cam18.js?v=20260731d"></script>
-<script src="/data-listening-cam19.js?v=20260731d"></script>
-<script src="/data-listening-cam20.js?v=20260731d"></script>
-<script src="/data-listening-cam21.js?v=20260731d"></script>
+<script src="/data-listening-cam6.js?v=20260731e"></script>
+<script src="/data-listening-cam7.js?v=20260731e"></script>
+<script src="/data-listening-cam8.js?v=20260731e"></script>
+<script src="/data-listening-cam9.js?v=20260731e"></script>
+<script src="/data-listening-cam10.js?v=20260731e"></script>
+<script src="/data-listening-cam11.js?v=20260731e"></script>
+<script src="/data-listening-cam12.js?v=20260731e"></script>
+<script src="/data-listening-cam13.js?v=20260731e"></script>
+<script src="/data-listening-cam14.js?v=20260731e"></script>
+<script src="/data-listening-cam15.js?v=20260731e"></script>
+<script src="/data-listening-cam16.js?v=20260731e"></script>
+<script src="/data-listening-cam17.js?v=20260731e"></script>
+<script src="/data-listening-cam18.js?v=20260731e"></script>
+<script src="/data-listening-cam19.js?v=20260731e"></script>
+<script src="/data-listening-cam20.js?v=20260731e"></script>
+<script src="/data-listening-cam21.js?v=20260731e"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -6459,7 +6448,7 @@ function filterActivity(type, btn){
   </div>
 </div>
 
-<script src="/typing-practice.js?v=20260731d"></script>
+<script src="/typing-practice.js?v=20260731e"></script>
 <!-- BAND SCORE CALCULATOR -->
 <div class="selpage" id="bandCalculatorPage" style="max-width:760px;width:100%">
   <button class="bk" onclick="goHome()">← Back to Home</button>
