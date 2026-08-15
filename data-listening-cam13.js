@@ -463,6 +463,494 @@ Object.assign(LISTENING_DATA, {
             ]
           }
         }
+      },
+      3: {
+        title: "Cambridge IELTS 13 — Test 3 — Listening",
+        audio: "https://fhioawgwdmqybjvadrpf.supabase.co/storage/v1/object/public/Listening%20Audio%20bucket/cam%2013%20test%203%20.mp3",
+        sections: {
+          1: {
+            n: 1,
+            label: "Section 1",
+            qlabel: "Questions 1\u201310",
+            blocks: [
+              {
+                type: "notes",
+                qlabel: "Questions 1\u201310",
+                inst: "Complete the notes below.<br>Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
+                notesTitle: "MOVING TO BANFORD CITY",
+                example: {label: "Linda recommends living in suburb of:", value: "Dalton"},
+                groups: [
+                  {
+                    heading: "Accommodation",
+                    items: [
+                      {n:1, before:"Average rent: £", input:1, after:"a month"}
+                    ]
+                  },
+                  {
+                    heading: "Transport",
+                    items: [
+                      {n:2, before:"Linda travels to work by", input:2, after:""},
+                      {n:3, before:"Limited", input:3, after:"in city centre"},
+                      {n:4, before:"Trains to London every", input:4, after:"minutes"},
+                      {n:5, before:"Poor train service at", input:5, after:""}
+                    ]
+                  },
+                  {
+                    heading: "Advantages of living in Banford",
+                    items: [
+                      {n:6, before:"New", input:6, after:"opened recently"},
+                      {n:7, before:"", input:7, after:"has excellent reputation"},
+                      {n:8, before:"Good", input:8, after:"on Bridge Street"}
+                    ]
+                  },
+                  {
+                    heading: "Meet Linda",
+                    items: [
+                      {n:9, before:"Meet Linda on", input:9, after:"after 5.30 pm"},
+                      {n:10, before:"In the", input:10, after:"opposite the station"}
+                    ]
+                  }
+                ]
+              }
+            ],
+            answers: {1:"850",2:"bike",3:"parking",4:"30",5:"weekends",6:"cinema",7:"hospital",8:"dentist",9:"Thursday",10:"cafe"},
+            script: [
+              {sp:"ANNOUNCER", t:"Introduces a man, Matt, phoning Linda, a resident of Banford, for advice about moving there; the example (the suburb Dalton) has already been filled in before the recording proper begins."},
+              {sp:"MATT", t:"Introduces himself, explains a mutual contact gave him Linda's number, and asks which area to live in."},
+              {sp:"LINDA", t:"Recommends her own suburb, Dalton \u2014 nice, not too expensive, with a park; when asked about renting a two-bedroom flat there, says around £850 a month is typical, and no more than £900 excluding bills."},
+              {sp:"MATT", t:"Asks about transport links."},
+              {sp:"LINDA", t:"Explains she cycles to work in the city centre since it's safe and keeps her fit, whereas driving would mean dealing with barely any parking and heavy rush-hour traffic; mentions a fast train to London every 30 minutes taking 45 minutes, with a decent weekday and late-night service, but weekend engineering works mean a slow bus-and-train replacement via Hadham."},
+              {sp:"ANNOUNCER", t:"Prompts the listener to look at questions 6 to 10 before the conversation continues."},
+              {sp:"LINDA", t:"Describes local advantages: good restaurants, a new cinema that opened only a couple of months ago, a good arts centre, good schools, and a hospital with an excellent reputation, one of the best in the country; offers to share her dentist's details on Bridge Street, whom she's used for years without issue."},
+              {sp:"MATT", t:"Thanks her and mentions he and his wife are visiting Banford next week to see estate agents."},
+              {sp:"LINDA", t:"Offers to meet and show them around, suggesting Tuesday or Thursday after 5:30pm."},
+              {sp:"MATT", t:"Prefers Thursday, since Tuesday he needs to be home before 6pm."},
+              {sp:"LINDA", t:"Agrees to meet in the cafe opposite the station, next to the museum, once Matt confirms his train."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 1. You now have half a minute to check your answers."}
+            ]
+          },
+          2: {
+            n: 2,
+            label: "Section 2",
+            qlabel: "Questions 11\u201320",
+            blocks: [
+              {
+                type: "map_label",
+                qlabel: "Questions 11\u201316",
+                inst: "What advantage does the speaker mention for each of the following physical activities?<br>Choose the correct letter, <b>A\u2013G</b>, next to Questions 11\u201316.",
+                mapTitle: "Advantages of physical activities",
+                mapNote: "A. not dependent on season<br>B. enjoyable<br>C. low risk of injury<br>D. fitness level unimportant<br>E. sociable<br>F. fast results<br>G. motivating",
+                options: ["A","B","C","D","E","F","G"],
+                items: [
+                  {n:11, label:"using a gym"},
+                  {n:12, label:"running"},
+                  {n:13, label:"swimming"},
+                  {n:14, label:"cycling"},
+                  {n:15, label:"doing yoga"},
+                  {n:16, label:"training with a personal trainer"}
+                ]
+              },
+              {
+                type: "multi_select",
+                qlabel: "Questions 17 and 18",
+                inst: "Choose <b>TWO</b> letters, <b>A\u2013E</b>.<br>For which TWO reasons does the speaker say people give up going to the gym?",
+                qns: [17,18],
+                options: [
+                  {letter:"A", text:"lack of time"},
+                  {letter:"B", text:"loss of confidence"},
+                  {letter:"C", text:"too much effort required"},
+                  {letter:"D", text:"high costs"},
+                  {letter:"E", text:"feeling less successful than others"}
+                ]
+              },
+              {
+                type: "multi_select",
+                qlabel: "Questions 19 and 20",
+                inst: "Choose <b>TWO</b> letters, <b>A\u2013E</b>.<br>Which TWO pieces of advice does the speaker give for setting goals?",
+                qns: [19,20],
+                options: [
+                  {letter:"A", text:"write goals down"},
+                  {letter:"B", text:"have achievable aims"},
+                  {letter:"C", text:"set a time limit"},
+                  {letter:"D", text:"give yourself rewards"},
+                  {letter:"E", text:"challenge yourself"}
+                ]
+              }
+            ],
+            multiGroups: [[17,18],[19,20]],
+            answers: {11:"F",12:"D",13:"A",14:"B",15:"C",16:"G",17:"B",18:"C",19:"B",20:"D"},
+            script: [
+              {sp:"ANNOUNCER", t:"Introduces a fitness instructor on the radio discussing different ways to keep fit."},
+              {sp:"SPEAKER", t:"Describes gym training as producing a noticeable difference in a relatively short time, though scheduling around crowds can be inconvenient; describes running as accessible to almost anyone regardless of current fitness, doable any time except in snow or ice, though good shoes are a worthwhile investment; describes swimming as usable indoors year-round regardless of season, though it can feel solitary; describes cycling as enjoyable, especially outdoors in a park or countryside, weather permitting; describes yoga as building strength with a lower risk of injury than more active sports, though still challenging, especially for the inflexible; describes a personal trainer as helpful for motivation despite the cost, provided they're properly qualified to avoid injury."},
+              {sp:"ANNOUNCER", t:"Prompts the listener to look at questions 17 to 20 before the talk continues."},
+              {sp:"SPEAKER", t:"Advises against gym membership unless you'll actually use it, since many waste money on unused memberships; argues people don't lose interest in fitness itself, but rather lose confidence and give up hope when progress feels too slow, compounded by underestimating the ongoing effort and commitment required; recommends setting realistic, achievable goals rather than rigid written ones, rewarding yourself when goals are met, and not being discouraged by inevitable setbacks along the way."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 2. You now have half a minute to check your answers."}
+            ]
+          },
+          3: {
+            n: 3,
+            label: "Section 3",
+            qlabel: "Questions 21\u201330",
+            blocks: [
+              {
+                type: "mcq",
+                qlabel: "Questions 21\u201324",
+                inst: "Choose the correct letter, <b>A, B or C</b>.",
+                notesTitle: "Project on using natural dyes to colour fabrics",
+                items: [
+                  {n:21, q:"What first inspired Jim to choose this project?", opts:["textiles displayed in an exhibition","a book about a botanic garden","carpets he saw on holiday"]},
+                  {n:22, q:"Jim eventually decided to do a practical investigation which involved", opts:["using a range of dyes with different fibres.","applying different dyes to one type of fibre.","testing one dye and a range of fibres."]},
+                  {n:23, q:"When doing his experiments, Jim was surprised by", opts:["how much natural material was needed to make the dye.","the fact that dyes were widely available on the internet.","the time that he had to leave the fabric in the dye."]},
+                  {n:24, q:"What problem did Jim have with using tartrazine as a fabric dye?", opts:["It caused a slight allergic reaction.","It was not a permanent dye on cotton.","It was ineffective when used on nylon."]}
+                ]
+              },
+              {
+                type: "map_label",
+                qlabel: "Questions 25\u201330",
+                inst: "What problem is identified with each of the following natural dyes?<br>Choose the correct letter, <b>A\u2013H</b>, next to Questions 25\u201330.",
+                mapTitle: "Problems with natural dyes",
+                mapNote: "A. It is expensive.<br>B. The colour is too strong.<br>C. The colour is not long-lasting.<br>D. It is very poisonous.<br>E. It can damage the fabric.<br>F. The colour may be unexpected.<br>G. It is unsuitable for some fabrics.<br>H. It is not generally available.",
+                options: ["A","B","C","D","E","F","G","H"],
+                items: [
+                  {n:25, label:"turmeric"},
+                  {n:26, label:"beetroot"},
+                  {n:27, label:"Tyrian purple"},
+                  {n:28, label:"logwood"},
+                  {n:29, label:"cochineal"},
+                  {n:30, label:"metal oxide"}
+                ]
+              }
+            ],
+            answers: {21:"A",22:"A",23:"A",24:"B",25:"C",26:"F",27:"H",28:"D",29:"A",30:"E"},
+            script: [
+              {sp:"ANNOUNCER", t:"Introduces textile design student Jim discussing his project on natural dyes with his tutor."},
+              {sp:"TUTOR", t:"Asks why Jim chose the topic."},
+              {sp:"JIM", t:"Explains he got useful ideas from a textile exhibition at a museum, alongside a longstanding interest in colour dating back to seeing vivid dyed carpets on a family holiday in Turkey; found a book about a Californian botanic garden specialising in dye plants."},
+              {sp:"TUTOR", t:"Points out the carpets might not have used natural dyes, and asks about his practical investigation."},
+              {sp:"JIM", t:"Explains he initially considered testing only one fibre type against different dyes, but expanded to include cotton, wool and nylon, testing various dyes including some artificial ones for comparison."},
+              {sp:"TUTOR", t:"Asks about the experiments."},
+              {sp:"JIM", t:"Describes buying some ready-made natural dyes online, which arrived within days, but also making his own \u2014 expecting this to be quick, he was surprised how much raw material was actually needed, such as chopping a large quantity of beetroot for a red dye."},
+              {sp:"TUTOR", t:"Suggests food colourings as an alternative."},
+              {sp:"JIM", t:"Mentions trying tartrazine, an artificial yellow food dye, on cotton \u2014 it coloured well at first but washed out when rinsed; he abandoned plans to try it on nylon."},
+              {sp:"TUTOR", t:"Asks if he was concerned about health and safety, noting tartrazine can occasionally cause allergic reactions."},
+              {sp:"ANNOUNCER", t:"Prompts the listener to look at questions 25 to 30 before the discussion continues."},
+              {sp:"JIM", t:"Describes turmeric as a strong yellow dye, though the tutor notes it fades after a few washes; beetroot, despite staining hands bright red, produced only a disappointing pale cream shade on wool."},
+              {sp:"TUTOR", t:"Asks about Tyrian purple."},
+              {sp:"JIM", t:"Explains it came from a shellfish and was historically worn only by the powerful due to its rarity; he didn't use it himself, and the tutor notes it's largely been replaced by chemical dyes today."},
+              {sp:"TUTOR", t:"Asks about black dyes."},
+              {sp:"JIM", t:"Mentions logwood, which required careful fabric preparation and safe handling, since the tutor warns it's extremely dangerous if ingested."},
+              {sp:"TUTOR", t:"Asks about an insect-based dye like cochineal."},
+              {sp:"JIM", t:"Explains he didn't make it himself due to time constraints and unavailability of the insects locally, but bought the dye online at considerable expense, noting why it's mainly used in small quantities in cooking rather than as a fabric dye; also mentions using metal oxide, letting iron rust in contact with fabric to colour it."},
+              {sp:"TUTOR", t:"Notes metal oxide works well on cotton but can weaken the fabric over time, and produces subtle colours that aren't to everyone's taste; praises the amount of work Jim has done."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 3. You now have half a minute to check your answers."}
+            ]
+          },
+          4: {
+            n: 4,
+            label: "Section 4",
+            qlabel: "Questions 31\u201340",
+            blocks: [
+              {
+                type: "notes",
+                qlabel: "Questions 31\u201340",
+                inst: "Complete the notes below.<br>Write <b>ONE WORD ONLY</b> for each answer.",
+                notesTitle: "The sleepy lizard (Tiliqua rugosa)",
+                groups: [
+                  {
+                    heading: "Description",
+                    items: [
+                      {n:null, before:"They are common in Western and South Australia", input:null, after:""},
+                      {n:31, before:"They are brown, but recognisable by their blue", input:31, after:""},
+                      {n:null, before:"They are relatively large", input:null, after:""},
+                      {n:32, before:"Their diet consists mainly of", input:32, after:""},
+                      {n:33, before:"Their main predators are large birds and", input:33, after:""}
+                    ]
+                  },
+                  {
+                    heading: "Navigation study",
+                    items: [
+                      {n:34, before:"One study found that lizards can use the", input:34, after:"to help them navigate"}
+                    ]
+                  },
+                  {
+                    heading: "Observations in the wild",
+                    items: [
+                      {n:35, before:"Observations show that these lizards keep the same", input:35, after:"for several years"}
+                    ]
+                  },
+                  {
+                    heading: "What people want",
+                    items: [
+                      {n:null, before:"Possible reasons:", input:null, after:""},
+                      {n:36, before:"to improve the survival of their young (but little", input:36, after:"has been noted between parents and children)"},
+                      {n:37, before:"to provide", input:37, after:"for female lizards"}
+                    ]
+                  },
+                  {
+                    heading: "Tracking study",
+                    items: [
+                      {n:38, before:"A study was carried out using GPS systems attached to the", input:38, after:"of the lizards"},
+                      {n:39, before:"This provided information on the lizards' location and even the number of", input:39, after:"taken"},
+                      {n:null, before:"It appeared that the lizards were trying to avoid one another", input:null, after:""},
+                      {n:40, before:"This may be in order to reduce chances of", input:40, after:""}
+                    ]
+                  }
+                ]
+              }
+            ],
+            answers: {31:"tongue",32:"plants",33:"snakes",34:"sky",35:"partner",36:"contact",37:"protection",38:"tail",39:"steps",40:"injury"},
+            script: [
+              {sp:"SPEAKER", t:"Continues a series on reptiles, turning today to the sleepy lizard (Tiliqua rugosa), so named for its slow movements and habit of dozing under rocks or in the sun; describes it as common in Western and South Australia, brown in colour unlike smaller, faster European lizards, distinctive for its dark blue tongue against a bright pink mouth lining, and notably larger than most European lizards."},
+              {sp:"SPEAKER", t:"Describes its varied diet of insects and small animals, though mostly plants; despite strong jaws capable of crushing beetles and snail shells, it has predators \u2014 historically large birds, now more commonly snakes \u2014 as well as the man-made threat of being killed crossing highways."},
+              {sp:"SPEAKER", t:"Describes Michael Freake's navigation study at Flinders University, finding that lizards moved some distance from home could usually find their way back using only the sky, without needing ground landmarks."},
+              {sp:"SPEAKER", t:"Describes unusual mating habits observed in the wild: lizards tend to be monogamous, returning to the same partner year after year, staying together before and after their young hatch; considers possible reasons \u2014 protecting the young is one theory, though little contact has actually been observed between parents and hatchlings, weakening that idea; another theory is that larger, stronger males in these pairings may be providing protection for females from other males, though this remains uncertain."},
+              {sp:"SPEAKER", t:"Describes a GPS tracking study the speaker was personally involved in, attaching tiny GPS devices to lizards' tails and tracking them for 12 days, gathering data on location and even step counts; unexpectedly found far fewer meetings between lizards than predicted, suggesting active avoidance, possibly because male lizards can seriously injure one another, making avoidance a form of self-preservation \u2014 though more data is needed to confirm this."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 4. You now have half a minute to check your answers."}
+            ]
+          }
+        }
+      },
+      4: {
+        title: "Cambridge IELTS 13 — Test 4 — Listening",
+        audio: "https://fhioawgwdmqybjvadrpf.supabase.co/storage/v1/object/public/Listening%20Audio%20bucket/cam%2013%20test%204%20.mp3",
+        sections: {
+          1: {
+            n: 1,
+            label: "Section 1",
+            qlabel: "Questions 1\u201310",
+            blocks: [
+              {
+                type: "notes",
+                qlabel: "Questions 1\u201310",
+                inst: "Complete the notes below.<br>Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
+                notesTitle: "ALEX'S TRAINING",
+                example: {label: "Alex completed his training in", value: "2014"},
+                groups: [
+                  {
+                    heading: "About the applicant",
+                    items: [
+                      {n:1, before:"At first, Alex did his training in the", input:1, after:"department."},
+                      {n:2, before:"Alex didn't have a qualification from school in", input:2, after:"."},
+                      {n:3, before:"Alex thinks he should have done the diploma in", input:3, after:"skills."},
+                      {n:4, before:"Age of other trainees: the youngest was", input:4, after:"."}
+                    ]
+                  },
+                  {
+                    heading: "Benefits of doing training at JPNW",
+                    items: [
+                      {n:null, before:"Lots of opportunities because of the size of the organisation.", input:null, after:""},
+                      {n:5, before:"Trainees receive the same amount of", input:5, after:"as permanent staff."},
+                      {n:null, before:"The training experience increases people's confidence a lot.", input:null, after:""},
+                      {n:6, before:"Trainees go to", input:6, after:"one day per month."},
+                      {n:7, before:"The company is in a convenient", input:7, after:"."}
+                    ]
+                  },
+                  {
+                    heading: "Advice for interview",
+                    items: [
+                      {n:8, before:"Don't wear", input:8, after:"."},
+                      {n:9, before:"Don't be", input:9, after:"."},
+                      {n:10, before:"Make sure you", input:10, after:"."}
+                    ]
+                  }
+                ]
+              }
+            ],
+            answers: {1:"Finance",2:"maths",3:"business",4:"17",5:"holiday",6:"college",7:"location",8:"jeans",9:"late",10:"smile"},
+            script: [
+              {sp:"ANNOUNCER", t:"Introduces a phone call between Martha, applying for a JPNW traineeship, and Alex, who did the same training some years earlier; the example (Alex's training year, 2014) has already been filled in before the recording proper begins."},
+              {sp:"MARTHA", t:"Explains she's calling for advice, as she's applying for the same JPNW training Alex did."},
+              {sp:"ALEX", t:"Confirms he trained in 2014 and still works there; explains his initial training was in Finance before moving to customer services after two years."},
+              {sp:"MARTHA", t:"Notes that's the same department she's applying for, and asks if he enjoyed it."},
+              {sp:"ALEX", t:"Admits he was nervous at first, partly due to having failed maths at school, though it didn't matter since he learned through on-the-job courses; mentions taking the IT skills diploma but wishing he'd taken the business skills diploma Martha's considering instead."},
+              {sp:"MARTHA", t:"Asks about the other trainees."},
+              {sp:"ALEX", t:"Describes about 20 trainees starting together, mostly aged 18\u201320, with only one younger at 17; made good friends, and notes the size of the organisation meant many different areas to work in."},
+              {sp:"MARTHA", t:"Asks about pay, aware trainees earn a lower minimum wage."},
+              {sp:"ALEX", t:"Confirms the lower wage, but notes trainees get the same holiday entitlement as regular staff, with pay rising significantly if offered a permanent job afterward; agrees the real value is the confidence and variety gained, plus one day a month at college with support from both tutor and manager, and praises the location, close to the train station."},
+              {sp:"ANNOUNCER", t:"Prompts the listener to look at questions 8 to 10 before the conversation continues."},
+              {sp:"ALEX", t:"Asks if Martha has an interview date."},
+              {sp:"MARTHA", t:"Confirms the 23rd of the month, and asks what to wear."},
+              {sp:"ALEX", t:"Advises against anything too casual like jeans, suggesting a jacket with a skirt or trousers instead; also advises arriving in plenty of time since lateness isn't tolerated, and to smile even if nervous, since it helps people respond better."},
+              {sp:"MARTHA", t:"Jokes she'll practice smiling in the mirror, and thanks Alex."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 1. You now have half a minute to check your answers."}
+            ]
+          },
+          2: {
+            n: 2,
+            label: "Section 2",
+            qlabel: "Questions 11\u201320",
+            blocks: [
+              {
+                type: "mcq",
+                qlabel: "Questions 11\u201316",
+                inst: "Choose the correct letter, <b>A, B or C</b>.",
+                notesTitle: "The Snow Centre",
+                items: [
+                  {n:11, q:"Annie recommends that when cross-country skiing, the visitors should", opts:["get away from the regular trails.","stop to enjoy views of the scenery.","go at a slow speed at the beginning."]},
+                  {n:12, q:"What does Annie tell the group about this afternoon's dog-sled trip?", opts:["Those who want to can take part in a race.","Anyone has the chance to drive a team of dogs.","One group member will be chosen to lead the trail."]},
+                  {n:13, q:"What does Annie say about the team relay event?", opts:["All participants receive a medal.","The course is 4 km long.","Each team is led by a teacher."]},
+                  {n:14, q:"On the snow-shoe trip, the visitors will", opts:["visit an old gold mine.","learn about unusual flowers.","climb to the top of a mountain."]},
+                  {n:15, q:"The cost of accommodation in the mountain hut includes", opts:["a supply of drinking water.","transport of visitors' luggage.","cooked meals."]},
+                  {n:16, q:"If there is a storm while the visitors are in the hut, they should", opts:["contact the bus driver.","wait until the weather improves.","use the emergency locator beacon."]}
+                ]
+              },
+              {
+                type: "map_label",
+                qlabel: "Questions 17\u201320",
+                inst: "What information does Annie give about skiing on each of the following mountain trails?<br>Choose the correct letter, <b>A\u2013F</b>, next to Questions 17\u201320.",
+                mapTitle: "Information about mountain trails",
+                mapNote: "A. It has a good place to stop and rest.<br>B. It is suitable for all abilities.<br>C. It involves crossing a river.<br>D. It demands a lot of skill.<br>E. It may be closed in bad weather.<br>F. It has some very narrow sections.",
+                options: ["A","B","C","D","E","F"],
+                items: [
+                  {n:17, label:"Highland Trail"},
+                  {n:18, label:"Pine Trail"},
+                  {n:19, label:"Stony Trail"},
+                  {n:20, label:"Loser's Trail"}
+                ]
+              }
+            ],
+            answers: {11:"A",12:"B",13:"A",14:"A",15:"A",16:"B",17:"B",18:"D",19:"A",20:"E"},
+            script: [
+              {sp:"ANNOUNCER", t:"Introduces Annie, a staff member at a Snow Centre in New Zealand, welcoming a group of visitors."},
+              {sp:"ANNIE", t:"Welcomes the group, mentions plenty of activities during the week; describes cross-country skiing as the most popular activity, mostly on flat ground, encouraging visitors to leave the marked trails and explore independently as an experience not to be missed, going at whatever pace suits them."},
+              {sp:"ANNIE", t:"Describes the afternoon dog-sled trip, where anyone who wants to can have their own team and learn to drive them behind the lead guide, or simply ride as a passenger; mentions the weekend team relay event, open to all including a visiting school and its teachers, with a medal for every participant regardless of placing, in teams of two to four completing four laps."},
+              {sp:"ANNIE", t:"Describes the final snow-shoe expedition to Mount Frenner, an old gold-mining area with few remaining traces, and a long but gentle ascent usually taking a couple of days round trip, with an overnight stay in a mountain hut included in the package, equipped with cooking facilities, firewood, and drinking water (though melted snow is recommended for washing to conserve supplies); luggage can be taken up by snowmobile for a $10 per-person fee, and visitors must bring their own food; in case of storms, visitors should simply stay in the hut rather than worry about the return bus, using the emergency locator beacon only for genuine emergencies like illness or injury."},
+              {sp:"ANNOUNCER", t:"Prompts the listener to look at questions 17 to 20 before the talk continues."},
+              {sp:"ANNIE", t:"Describes the ski trails: Highland Trail, directly accessible and suitable for complete beginners as well as experts practicing technique; Pine Trail, a steep valley overlooking a river, recommended only for those who've mastered hill techniques; Stony Trail, suitable once basics are learned, with a few tricky sections and a halfway shelter to rest and enjoy the sunshine; and Loser's Trail, starting gently along a river valley but with an exposed, weather-dependent final section that may require checking conditions before setting out."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 2. You now have half a minute to check your answers."}
+            ]
+          },
+          3: {
+            n: 3,
+            label: "Section 3",
+            qlabel: "Questions 21\u201330",
+            blocks: [
+              {
+                type: "mcq",
+                qlabel: "Questions 21\u201326",
+                inst: "Choose the correct letter, <b>A, B or C</b>.",
+                notesTitle: "Labels giving nutritional information on food packaging",
+                items: [
+                  {n:21, q:"What was Jack's attitude to nutritional food labels before this project?", opts:["He didn't read everything on them.","He didn't think they were important.","He thought they were too complicated."]},
+                  {n:22, q:"Alice says that before doing this project,", opts:["she was unaware of what certain foods contained.","she was too lazy to read food labels.","she was only interested in the number of calories."]},
+                  {n:23, q:"When discussing supermarket brands of pizza, Jack agrees with Alice that", opts:["the list of ingredients is shocking.","he will hesitate before buying pizza again.","the nutritional label is misleading."]},
+                  {n:24, q:"Jack prefers the daily value system to other labelling systems because it is", opts:["more accessible.","more logical.","more comprehensive."]},
+                  {n:25, q:"What surprised both students about one flavour of crisps?", opts:["The percentage of artificial additives given was incorrect.","The products did not contain any meat.","The labels did not list all the ingredients."]},
+                  {n:26, q:"What do the students think about research into the impact of nutritional food labelling?", opts:["It did not produce clear results.","It focused on the wrong people.","It made unrealistic recommendations."]}
+                ]
+              },
+              {
+                type: "multi_select",
+                qlabel: "Questions 27 and 28",
+                inst: "Choose <b>TWO</b> letters, <b>A\u2013E</b>.<br>Which TWO things surprised the students about the traffic-light system for nutritional labels?",
+                qns: [27,28],
+                options: [
+                  {letter:"A", text:"its widespread use"},
+                  {letter:"B", text:"the fact that it is voluntary for supermarkets"},
+                  {letter:"C", text:"how little research was done before its introduction"},
+                  {letter:"D", text:"its unpopularity with food manufacturers"},
+                  {letter:"E", text:"the way that certain colours are used"}
+                ]
+              },
+              {
+                type: "multi_select",
+                qlabel: "Questions 29 and 30",
+                inst: "Choose <b>TWO</b> letters, <b>A\u2013E</b>.<br>Which TWO things are true about the participants in the study on the traffic-light system?",
+                qns: [29,30],
+                options: [
+                  {letter:"A", text:"They had low literacy levels."},
+                  {letter:"B", text:"They were regular consumers of packaged food."},
+                  {letter:"C", text:"They were selected randomly."},
+                  {letter:"D", text:"They were from all socio-economic groups."},
+                  {letter:"E", text:"They were interviewed face-to-face."}
+                ]
+              }
+            ],
+            multiGroups: [[27,28],[29,30]],
+            answers: {21:"A",22:"A",23:"C",24:"C",25:"B",26:"A",27:"B",28:"C",29:"D",30:"E"},
+            script: [
+              {sp:"ANNOUNCER", t:"Introduces two students, Jack and Alice, discussing their report on nutritional food labels."},
+              {sp:"JACK", t:"Admits he's only ever checked labels for peanut traces due to his allergy, without much concern for overall healthiness."},
+              {sp:"ALICE", t:"Says the project taught her to read labels more carefully, realising a yogurt she'd trusted as 'healthy' was actually high in sugar and calories, despite believing claims like 'low in fat' before."},
+              {sp:"JACK", t:"Calls supermarket pizza labels an eye-opener regarding calorie content."},
+              {sp:"ALICE", t:"Notes the values shown are often for half a pizza, misleading since most people eat the whole thing."},
+              {sp:"JACK", t:"Agrees this isn't transparent, though admits it likely won't stop him buying pizza; found comparing labelling systems interesting, preferring the traditional daily value system since it shows the full ingredient picture, not just fat, salt and sugar, even if not the easiest to use; calls for more consistency in portion sizes across supermarkets."},
+              {sp:"ALICE", t:"Mentions the differences seen in chicken-flavour crisp brands."},
+              {sp:"JACK", t:"Expresses surprise the crisps contain no real chicken at all, only artificial additives."},
+              {sp:"ALICE", t:"Agrees, having expected at least some real chicken content; believes nutritional labelling should improve buying habits, especially for parents."},
+              {sp:"JACK", t:"Points out a study suggested otherwise, that people didn't necessarily change their buying habits."},
+              {sp:"ALICE", t:"Notes those findings weren't conclusive, given the small scale of the study, and that more research is needed."},
+              {sp:"ANNOUNCER", t:"Prompts the listener to look at questions 27 to 30 before the discussion continues."},
+              {sp:"JACK", t:"Asks about the traffic-light labelling system."},
+              {sp:"ALICE", t:"Explains supermarkets favour the colour-coded system for fat, sugar and salt levels, though it isn't universal or compulsory, likely due to pressure from food manufacturers unhappy with flagging their products as unhealthy."},
+              {sp:"JACK", t:"Finds it odd it isn't compulsory."},
+              {sp:"ALICE", t:"Is surprised it was introduced without sufficient consultation, despite experts having reservations."},
+              {sp:"JACK", t:"Suggests there's an argument for researching it now, since consumers are already familiar with the system, and notes survey participants responded positively."},
+              {sp:"ALICE", t:"Thinks the wrong people were surveyed, since the labels are meant to help people with low literacy specifically."},
+              {sp:"JACK", t:"Counters that it's still useful to get feedback across all socio-economic groups, and that responses didn't vary much."},
+              {sp:"ALICE", t:"Notes that interviewing face-to-face limited the possible sample size, and wonders why that method was chosen, along with the fact participants volunteered rather than being selected, and that how often they bought packaged food wasn't recorded, only how often they used the supermarket."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 3. You now have half a minute to check your answers."}
+            ]
+          },
+          4: {
+            n: 4,
+            label: "Section 4",
+            qlabel: "Questions 31\u201340",
+            blocks: [
+              {
+                type: "notes",
+                qlabel: "Questions 31\u201340",
+                inst: "Complete the notes below.<br>Write <b>ONE WORD ONLY</b> for each answer.",
+                notesTitle: "The history of coffee",
+                groups: [
+                  {
+                    heading: "Coffee in the Arab world",
+                    items: [
+                      {n:null, before:"There was small-scale trade in wild coffee from Ethiopia.", input:null, after:""},
+                      {n:null, before:"1522: Coffee was approved in the Ottoman court as a type of medicine.", input:null, after:""},
+                      {n:31, before:"1623: In Constantinople, the ruler ordered the", input:31, after:"of every coffee house."}
+                    ]
+                  },
+                  {
+                    heading: "Coffee arrives in Europe (17th century)",
+                    items: [
+                      {n:32, before:"Coffee shops were compared to", input:32, after:"."},
+                      {n:33, before:"They played an important part in social and", input:33, after:"changes."}
+                    ]
+                  },
+                  {
+                    heading: "Coffee and European colonisation",
+                    items: [
+                      {n:null, before:"European powers established coffee plantations in their colonies.", input:null, after:""},
+                      {n:34, before:"Types of coffee were often named according to the", input:34, after:"they came from."},
+                      {n:35, before:"In Brazil and the Caribbean, most cultivation depended on", input:35, after:"."},
+                      {n:36, before:"In Java, coffee was used as a form of", input:36, after:"."},
+                      {n:37, before:"Coffee became almost as important as", input:37, after:"."},
+                      {n:38, before:"The move towards the consumption of", input:38, after:"in Britain did not also take place in the USA."}
+                    ]
+                  },
+                  {
+                    heading: "Coffee in the 19th century",
+                    items: [
+                      {n:39, before:"Prices dropped because of improvements in", input:39, after:"."},
+                      {n:40, before:"Industrial workers found coffee helped them to work at", input:40, after:"."}
+                    ]
+                  }
+                ]
+              }
+            ],
+            answers: {31:"destruction",32:"universities",33:"political",34:"port",35:"slavery",36:"taxation",37:"sugar",38:"tea",39:"transportation",40:"night"},
+            script: [
+              {sp:"SPEAKER", t:"Introduces a presentation on the economic and social importance of coffee, believed first drunk in the Arab world, though documented only from the 1500s, with early evidence of it gathered from wild bushes in Ethiopia; by the early 1500s it was being traded and spreading through the Middle East, with its medicinal use approved by the court physician in Constantinople in 1522."},
+              {sp:"SPEAKER", t:"Describes coffee cultivation in Yemen from the mid-1500s, supplying most of Africa and the Arab world for the next century; highlights coffee's social role, drunk mainly in coffee houses rather than at home, where mostly men gathered to discuss current issues, seen as potentially dangerous enough that the ruler of Constantinople ordered every coffee house in the city destroyed in 1623, though many reopened after his death."},
+              {sp:"SPEAKER", t:"Describes coffee's spread to Europe in the 17th century, where coffee shops similarly became gathering places for ordinary men to exchange ideas, likened by some to universities, contributing significantly to social and political change and the origins of various movements."},
+              {sp:"SPEAKER", t:"Describes the breakdown of Yemen's coffee monopoly in the late 1600s as production spread globally through European colonisation, with plantations set up in Indonesia and the Caribbean; notes coffee types were often named after the port they were shipped from, like Mocha or Java; describes differing labour systems \u2014 slavery on large plantations in Brazil and the Caribbean, versus a taxation-based system in Dutch-colonised Java where peasants grew coffee and passed a portion to colonial authorities; notes coffee became nearly as important as sugar under 18th-century colonial powers, though still a luxury mostly consumed in public coffee houses rather than at home."},
+              {sp:"SPEAKER", t:"Describes tea's introduction to Britain from China, gradually overtaking coffee there despite initially being expensive and reserved for the upper classes, while the USA, after gaining independence in 1776, associated tea with Britain and kept coffee as its preferred drink, as remains true today."},
+              {sp:"SPEAKER", t:"Describes 19th-century coffee production booming and prices falling, partly due to cheaper, more efficient transportation, making coffee affordable to working people, not just the middle classes; notes coffee's growing importance as a stimulant for industrial workers whose shifts extended into the night, not just as a morning drink."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 4. You now have half a minute to check your answers."}
+            ]
+          }
+        }
       }
     }
   }
