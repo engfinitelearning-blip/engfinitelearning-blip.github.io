@@ -214,6 +214,255 @@ Object.assign(LISTENING_DATA, {
             ]
           }
         }
+      },
+      2: {
+        title: "Cambridge IELTS 13 — Test 2 — Listening",
+        audio: "https://fhioawgwdmqybjvadrpf.supabase.co/storage/v1/object/public/Listening%20Audio%20bucket/cam%2013%20test%202%20.mp3",
+        sections: {
+          1: {
+            n: 1,
+            label: "Section 1",
+            qlabel: "Questions 1\u201310",
+            blocks: [
+              {
+                type: "notes",
+                qlabel: "Questions 1\u201310",
+                inst: "Complete the notes below.<br>Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
+                notesTitle: "SOUTH CITY CYCLING CLUB",
+                example: {label: "Name of club secretary:", value: "Jim Hunter"},
+                groups: [
+                  {
+                    heading: "Membership",
+                    items: [
+                      {n:1, before:"Full membership costs $260; this covers cycling and", input:1, after:"all over Australia"},
+                      {n:null, before:"Recreational membership costs $108", input:null, after:""},
+                      {n:2, before:"Cost of membership includes the club fee and", input:2, after:""},
+                      {n:3, before:"The club kit is made by a company called", input:3, after:""}
+                    ]
+                  },
+                  {
+                    heading: "Training rides",
+                    items: [
+                      {n:null, before:"Chance to improve cycling skills and fitness", input:null, after:""},
+                      {n:4, before:"Level B: speed about", input:4, after:"kph"}
+                    ]
+                  },
+                  {
+                    heading: "Weekly sessions",
+                    items: [
+                      {n:5, before:"Tuesdays at 5.30 am, meet at the", input:5, after:""},
+                      {n:6, before:"Thursdays at 5.30 am, meet at the entrance to the", input:6, after:""}
+                    ]
+                  },
+                  {
+                    heading: "Further information",
+                    items: [
+                      {n:null, before:"Rides are about an hour and a half", input:null, after:""},
+                      {n:7, before:"Members often have", input:7, after:"together afterwards"},
+                      {n:8, before:"There is not always a", input:8, after:"with the group on these rides"},
+                      {n:9, before:"Check and print the", input:9, after:"on the website beforehand"},
+                      {n:10, before:"Bikes must have", input:10, after:""}
+                    ]
+                  }
+                ]
+              }
+            ],
+            answers: {1:"races",2:"insurance",3:"Jerriz",4:"25",5:"stadium",6:"park",7:"coffee",8:"leader",9:"route",10:"lights"},
+            script: [
+              {sp:"ANNOUNCER", t:"Introduces a woman phoning the secretary of a cycling club, Jim Hunter, to ask about membership; the example (Jim Hunter's name) has already been filled in before the recording proper begins."},
+              {sp:"WOMAN", t:"Asks about joining the club for herself."},
+              {sp:"JIM", t:"Describes full membership at $260, covering ordinary cycling plus races in the city and elsewhere in Australia; since the woman is more of a casual cyclist, recommends recreational membership instead, at $108 for adults over 19 (or $95 under 19), paid quarterly, upgradeable later; explains both types include a $20 club fee and insurance in case of accidents."},
+              {sp:"WOMAN", t:"Chooses recreational membership and asks about club activities."},
+              {sp:"JIM", t:"Confirms members may wear the club's green-and-white kit, which isn't sold at the club itself but made to order by a Brisbane company called Jerriz, orderable online using a membership number; describes daily training rides at three speed levels \u2014 Level A around 30\u201335 km/h, Level B around 25 km/h, Level C (novices) around 15 km/h."},
+              {sp:"WOMAN", t:"Identifies herself as Level B and asks about session times."},
+              {sp:"JIM", t:"Describes two weekly Level B sessions, both starting at 5:30am: Tuesdays, meeting at the stadium, and Thursdays, meeting at the main gate to the park, near the shopping mall."},
+              {sp:"ANNOUNCER", t:"Prompts the listener to look at questions 7 to 10 before the conversation continues."},
+              {sp:"WOMAN", t:"Asks how long the rides last."},
+              {sp:"JIM", t:"Explains rides last about ninety minutes, easy to fit in before work, and members often go for coffee together afterwards; notes rides don't always have a designated leader since members support one another; explains riders should check the club website beforehand, where each week's route is clearly marked and can be printed out, though it varies slightly week to week; advises bringing water and a phone (not to be used while riding), and in winter, making sure bikes have lights since it's still dark when rides set out."},
+              {sp:"WOMAN", t:"Thanks Jim and confirms she'd like to join, asking how to proceed."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 1. You now have half a minute to check your answers."}
+            ]
+          },
+          2: {
+            n: 2,
+            label: "Section 2",
+            qlabel: "Questions 11\u201320",
+            blocks: [
+              {
+                type: "mcq",
+                qlabel: "Questions 11\u201316",
+                inst: "Choose the correct letter, <b>A, B or C</b>.",
+                notesTitle: "Information on company volunteering projects",
+                items: [
+                  {n:11, q:"How much time for volunteering does the company allow per employee?", opts:["two hours per week","one day per month","8 hours per year"]},
+                  {n:12, q:"In feedback almost all employees said that volunteering improved their", opts:["chances of promotion.","job satisfaction.","relationships with colleagues."]},
+                  {n:13, q:"Last year some staff helped unemployed people with their", opts:["literacy skills.","job applications.","communication skills."]},
+                  {n:14, q:"This year the company will start a new volunteering project with a local", opts:["school.","park.","charity."]},
+                  {n:15, q:"Where will the Digital Inclusion Day be held?", opts:["at the company's training facility","at a college","in a community centre"]},
+                  {n:16, q:"What should staff do if they want to take part in the Digital Inclusion Day?", opts:["fill in a form","attend a training workshop","get permission from their manager"]}
+                ]
+              },
+              {
+                type: "multi_select",
+                qlabel: "Questions 17 and 18",
+                inst: "Choose <b>TWO</b> letters, <b>A\u2013E</b>.<br>Which TWO things are mentioned about the participants on the last Digital Inclusion Day?",
+                qns: [17,18],
+                options: [
+                  {letter:"A", text:"They were all over 70."},
+                  {letter:"B", text:"They never used their computer."},
+                  {letter:"C", text:"Their phones were mostly old-fashioned."},
+                  {letter:"D", text:"They only used their phones for making calls."},
+                  {letter:"E", text:"They initially showed little interest."}
+                ]
+              },
+              {
+                type: "multi_select",
+                qlabel: "Questions 19 and 20",
+                inst: "Choose <b>TWO</b> letters, <b>A\u2013E</b>.<br>Which TWO activities on the last Digital Inclusion Day did participants describe as useful?",
+                qns: [19,20],
+                options: [
+                  {letter:"A", text:"learning to use tablets"},
+                  {letter:"B", text:"communicating with family"},
+                  {letter:"C", text:"shopping online"},
+                  {letter:"D", text:"playing online games"},
+                  {letter:"E", text:"sending emails"}
+                ]
+              }
+            ],
+            multiGroups: [[17,18],[19,20]],
+            answers: {11:"C",12:"B",13:"C",14:"B",15:"B",16:"A",17:"C",18:"E",19:"B",20:"D"},
+            script: [
+              {sp:"ANNOUNCER", t:"Introduces a company manager talking to new staff about volunteering for local charity projects."},
+              {sp:"SPEAKER", t:"Explains the company has run the volunteering scheme for five years; the company pays for 8 hours per year of volunteering time, which can be taken flexibly, though some staff also give up their own free time; notes feedback has been overwhelmingly positive, with almost everyone saying it made them feel more motivated at work (job satisfaction), and some mentioning the benefit for their CVs."},
+              {sp:"SPEAKER", t:"Describes last year's Get Working project helping unemployed people improve telephone and communication skills, useful for job interviews; introduces this year's new project, a conservation project in Redfern Park, alongside continuing education and reading projects."},
+              {sp:"SPEAKER", t:"Announces the annual Digital Inclusion Day, to be held this year at the ICT suite of Hill College rather than the company's own training facility, since it holds more people; over 60 people from the Silver Age Community Centre are expected; interested staff should complete a form on the volunteering section of the website, and will be paired with an experienced volunteer if new to it."},
+              {sp:"ANNOUNCER", t:"Prompts the listener to look at questions 17 to 20 before the talk continues."},
+              {sp:"SPEAKER", t:"Describes last year's Digital Inclusion Day participants: mostly in their 70s, though ages ranged wider; many owned computers and mobile phones but with outdated models, and knew basic functions like texting but not newer features; most were initially dismissive about learning new skills, though this changed; feedback was very positive, especially about feeling more confident using social media to stay in touch with grandchildren, and enjoying online games for making friends and mental stimulation; participants were less enthusiastic about ordering groceries online, though acknowledged it could help if unwell or in bad weather; several had unused tablets they wanted help with, which will be included in this year's event."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 2. You now have half a minute to check your answers."}
+            ]
+          },
+          3: {
+            n: 3,
+            label: "Section 3",
+            qlabel: "Questions 21\u201330",
+            blocks: [
+              {
+                type: "mcq",
+                qlabel: "Questions 21\u201325",
+                inst: "Choose the correct letter, <b>A, B or C</b>.",
+                notesTitle: "Planning a presentation on nanotechnology",
+                items: [
+                  {n:21, q:"Russ says that his difficulty in planning the presentation is due to", opts:["his lack of knowledge about the topic.","his uncertainty about what he should try to achieve.","the short time that he has for preparation."]},
+                  {n:22, q:"Russ and his tutor agree that his approach in the presentation will be", opts:["to concentrate on how nanotechnology is used in one field.","to follow the chronological development of nanotechnology.","to show the range of applications of nanotechnology."]},
+                  {n:23, q:"In connection with slides, the tutor advises Russ to", opts:["talk about things that he can find slides to illustrate.","look for slides to illustrate the points he makes.","consider omitting slides altogether."]},
+                  {n:24, q:"They both agree that the best way for Russ to start his presentation is", opts:["to encourage the audience to talk.","to explain what Russ intends to do.","to provide an example."]},
+                  {n:25, q:"What does the tutor advise Russ to do next while preparing his presentation?", opts:["summarise the main point he wants to make","read the notes he has already made","list the topics he wants to cover"]}
+                ]
+              },
+              {
+                type: "map_label",
+                qlabel: "Questions 26\u201330",
+                inst: "What comments do the speakers make about each of the following aspects of Russ's previous presentation?<br>Choose the correct letter, <b>A\u2013G</b>, next to Questions 26\u201330.",
+                mapTitle: "Comments on Russ's previous presentation",
+                mapNote: "A. lacked a conclusion<br>B. useful in the future<br>C. not enough<br>D. sometimes distracting<br>E. showed originality<br>F. covered a wide range<br>G. not too technical",
+                options: ["A","B","C","D","E","F","G"],
+                items: [
+                  {n:26, label:"structure"},
+                  {n:27, label:"eye contact"},
+                  {n:28, label:"body language"},
+                  {n:29, label:"choice of words"},
+                  {n:30, label:"handouts"}
+                ]
+              }
+            ],
+            answers: {21:"B",22:"A",23:"C",24:"C",25:"A",26:"A",27:"C",28:"D",29:"G",30:"B"},
+            script: [
+              {sp:"ANNOUNCER", t:"Introduces a student, Russ, consulting his tutor about a class presentation on nanotechnology, due the following week."},
+              {sp:"RUSS", t:"Explains he's struggling: having researched the topic thoroughly, he now has too much material for his allotted 20 minutes, and is unsure whether to give a general introduction or focus on one aspect that fascinates him."},
+              {sp:"TUTOR", t:"Says either approach could work, but Russ needs to decide clearly."},
+              {sp:"RUSS", t:"Decides on an overview."},
+              {sp:"TUTOR", t:"Suggests working through developments chronologically, or covering the many applications of nanotechnology."},
+              {sp:"RUSS", t:"Mentions examples like water-repellent camera coatings and stronger, lighter motorcycle helmets."},
+              {sp:"TUTOR", t:"Suggests instead focusing on nanotechnology's impact in one particular field, such as medicine or space exploration, which Russ agrees would make it easier to focus."},
+              {sp:"RUSS", t:"Asks about using slides."},
+              {sp:"TUTOR", t:"Advises that slides aren't essential and risk shaping the talk around whatever images can be found, or wasting time searching; suggests it may be better to leave them out altogether."},
+              {sp:"RUSS", t:"Considers starting by asking the audience what they already know about nanotechnology, rather than the usual outline-first approach."},
+              {sp:"TUTOR", t:"Warns that would only work with a much longer time slot, and the responses may not be usable; suggests instead opening with a specific example of nanotechnology in use to capture attention, which Russ agrees with."},
+              {sp:"RUSS", t:"Asks what to do next, given he must plan the presentation over the next two days."},
+              {sp:"TUTOR", t:"Advises setting aside all his notes and writing one short sentence that captures the whole presentation's central idea, then building the content around that, adjusting the sentence later if needed."},
+              {sp:"ANNOUNCER", t:"Prompts the listener to look at questions 26 to 30 before the discussion continues."},
+              {sp:"TUTOR", t:"Turns to Russ's previous presentation, about an experiment; notes its structure ended abruptly with no proper conclusion; says Russ made too little eye contact, looking down at notes too often; describes his body language as sometimes distracting, turning his back on the audience to view slides and repeatedly scratching his head."},
+              {sp:"RUSS", t:"Asks about the language he used, since he simplified things for an audience unfamiliar with the topic."},
+              {sp:"TUTOR", t:"Confirms the language came across well \u2014 specialist terms were used but always explained, so not too technical; praises the handouts as a well-thought-out summary that would be useful to refer back to later."},
+              {sp:"TUTOR", t:"Wishes Russ well and expects a big improvement next time."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 3. You now have half a minute to check your answers."}
+            ]
+          },
+          4: {
+            n: 4,
+            label: "Section 4",
+            qlabel: "Questions 31\u201340",
+            blocks: [
+              {
+                type: "notes",
+                qlabel: "Questions 31\u201340",
+                inst: "Complete the notes below.<br>Write <b>ONE WORD ONLY</b> for each answer.",
+                notesTitle: "Episodic memory",
+                groups: [
+                  {
+                    heading: "Episodic memory",
+                    items: [
+                      {n:31, before:"the ability to recall details, e.g. the time and", input:31, after:"of past events"},
+                      {n:32, before:"different to semantic memory \u2013 the ability to remember general information about the", input:32, after:", which does not involve recalling"},
+                      {n:33, before:"", input:33, after:"information"}
+                    ]
+                  },
+                  {
+                    heading: "Encoding",
+                    items: [
+                      {n:null, before:"involves receiving and processing information", input:null, after:""},
+                      {n:34, before:"the more", input:34, after:"given to an event, the more successfully it can be encoded"},
+                      {n:35, before:"to remember a", input:35, after:", it is useful to have a strategy for encoding such information"}
+                    ]
+                  },
+                  {
+                    heading: "Consolidation",
+                    items: [
+                      {n:null, before:"how memories are strengthened and stored", input:null, after:""},
+                      {n:36, before:"most effective when memories can be added to a", input:36, after:"of related information"},
+                      {n:37, before:"the", input:37, after:"of retrieval affects the strength of memories"}
+                    ]
+                  },
+                  {
+                    heading: "Retrieval",
+                    items: [
+                      {n:38, before:"memory retrieval often depends on using a prompt, e.g. the", input:38, after:"of an object near to the place where you left your car"}
+                    ]
+                  },
+                  {
+                    heading: "Episodic memory impairments",
+                    items: [
+                      {n:null, before:"these affect people with a wide range of medical conditions", input:null, after:""},
+                      {n:39, before:"games which stimulate the", input:39, after:"have been found to help people with schizophrenia"},
+                      {n:40, before:"children with autism may have difficulty forming episodic memories \u2013 possibly because their concept of the", input:40, after:"may be absent"},
+                      {n:null, before:"memory training may help autistic children develop social skills", input:null, after:""}
+                    ]
+                  }
+                ]
+              }
+            ],
+            answers: {31:"location",32:"world",33:"personal",34:"attention",35:"name",36:"network",37:"frequency",38:"colour",39:"brain",40:"self"},
+            script: [
+              {sp:"SPEAKER", t:"Continues a lecture series on memory, introducing episodic memory \u2014 memory of specific past events, allowing mental time travel, including details like when and where an event happened; illustrates with the example of remembering a restaurant meal."},
+              {sp:"SPEAKER", t:"Distinguishes episodic memory from semantic memory, our shared factual knowledge of the world, which unlike episodic memory doesn't rely on recalling personal experience; gives the example that remembering where you parked your car is episodic, while knowing what a car is and how an engine works is semantic."},
+              {sp:"SPEAKER", t:"Outlines three stages of episodic memory formation: encoding, consolidation, and retrieval. Encoding is receiving and registering information, and depends heavily on the level of attention given at the time; distraction hampers it; encoding is also aided by using a strategy, such as linking a new name like Charlie to someone you already know with that name."},
+              {sp:"SPEAKER", t:"Describes consolidation as the strengthening and storing of encoded memories, most effective when new information can be linked to an existing network of related information; notes that how often memories are retrieved affects how well they're retained, as memories fade if rarely used."},
+              {sp:"SPEAKER", t:"Describes retrieval as consciously recalling encoded information, often aided by sensory prompts, such as the colour of a nearby sign helping you recall where you parked."},
+              {sp:"SPEAKER", t:"Discusses conditions affecting episodic memory, including Alzheimer's, schizophrenia, and autism; notes that in schizophrenia, medication can control symptoms but episodic memory impairment may still prevent a return to work or study, though brain-stimulating computer games have shown promise in improving it; explains that people with autism often struggle to share personal memories with others, possibly due to an absent sense of self, and that memory-focused treatments may also support their social development."},
+              {sp:"ANNOUNCER", t:"That is the end of Section 4. You now have half a minute to check your answers."}
+            ]
+          }
+        }
       }
     }
   }
