@@ -4192,15 +4192,44 @@ function applyHL(cls){
     });
   } else {
     try{
+      // Fast path: selection is a single continuous run of text
       const sp=document.createElement("span");
       sp.className=cls;
       sp.title="Click to remove highlight";
       sp.onclick=function(e){e.stopPropagation();const p=this.parentNode;while(this.firstChild)p.insertBefore(this.firstChild,this);p.removeChild(this);};
       range.surroundContents(sp);
-    }catch(e){}
+    }catch(e){
+      // Selection crosses multiple elements/paragraphs (e.g. spans several
+      // questions or lines) - surroundContents can't wrap that in one go,
+      // so highlight each piece of text inside the selection separately.
+      highlightAcrossNodes(range,cls);
+    }
   }
   window.getSelection().removeAllRanges();
   hideHLPopup();
+}
+function highlightAcrossNodes(range,cls){
+  const root=range.commonAncestorContainer;
+  const walker=document.createTreeWalker(root.nodeType===1?root:root.parentNode,NodeFilter.SHOW_TEXT,null);
+  const nodes=[];
+  let node;
+  while((node=walker.nextNode())){
+    if(node.nodeValue.trim()!=="" && range.intersectsNode(node)) nodes.push(node);
+  }
+  nodes.forEach(node=>{
+    let start=0, end=node.nodeValue.length;
+    if(node===range.startContainer) start=range.startOffset;
+    if(node===range.endContainer) end=range.endOffset;
+    if(start>=end) return;
+    const sub=document.createRange();
+    sub.setStart(node,start);
+    sub.setEnd(node,end);
+    const sp=document.createElement("span");
+    sp.className=cls;
+    sp.title="Click to remove highlight";
+    sp.onclick=function(e){e.stopPropagation();const p=this.parentNode;while(this.firstChild)p.insertBefore(this.firstChild,this);p.removeChild(this);};
+    try{ sub.surroundContents(sp); }catch(e){}
+  });
 }
 document.addEventListener("mouseup",function(e){
   if(e.target.closest && e.target.closest("#hlPopup")) return;
@@ -6151,39 +6180,39 @@ function _hmStillUsed(bankId, val, excludeQn){
   </div>
 </div>
 
-<script src="/data-cam6.js?v=20260731f"></script>
-<script src="/data-cam7.js?v=20260731f"></script>
-<script src="/data-cam8.js?v=20260731f"></script>
-<script src="/data-cam9.js?v=20260731f"></script>
-<script src="/data-cam10.js?v=20260731f"></script>
-<script src="/data-cam11.js?v=20260731f"></script>
-<script src="/data-cam12.js?v=20260731f"></script>
-<script src="/data-cam13.js?v=20260731f"></script>
-<script src="/data-cam14.js?v=20260731f"></script>
-<script src="/data-cam15.js?v=20260731f"></script>
-<script src="/data-cam16.js?v=20260731f"></script>
-<script src="/data-cam17.js?v=20260731f"></script>
-<script src="/data-cam18.js?v=20260731f"></script>
-<script src="/data-cam19.js?v=20260731f"></script>
-<script src="/data-cam20.js?v=20260731f"></script>
-<script src="/data-cam21.js?v=20260731f"></script>
+<script src="/data-cam6.js?v=20260731g"></script>
+<script src="/data-cam7.js?v=20260731g"></script>
+<script src="/data-cam8.js?v=20260731g"></script>
+<script src="/data-cam9.js?v=20260731g"></script>
+<script src="/data-cam10.js?v=20260731g"></script>
+<script src="/data-cam11.js?v=20260731g"></script>
+<script src="/data-cam12.js?v=20260731g"></script>
+<script src="/data-cam13.js?v=20260731g"></script>
+<script src="/data-cam14.js?v=20260731g"></script>
+<script src="/data-cam15.js?v=20260731g"></script>
+<script src="/data-cam16.js?v=20260731g"></script>
+<script src="/data-cam17.js?v=20260731g"></script>
+<script src="/data-cam18.js?v=20260731g"></script>
+<script src="/data-cam19.js?v=20260731g"></script>
+<script src="/data-cam20.js?v=20260731g"></script>
+<script src="/data-cam21.js?v=20260731g"></script>
 
-<script src="/data-listening-cam6.js?v=20260731f"></script>
-<script src="/data-listening-cam7.js?v=20260731f"></script>
-<script src="/data-listening-cam8.js?v=20260731f"></script>
-<script src="/data-listening-cam9.js?v=20260731f"></script>
-<script src="/data-listening-cam10.js?v=20260731f"></script>
-<script src="/data-listening-cam11.js?v=20260731f"></script>
-<script src="/data-listening-cam12.js?v=20260731f"></script>
-<script src="/data-listening-cam13.js?v=20260731f"></script>
-<script src="/data-listening-cam14.js?v=20260731f"></script>
-<script src="/data-listening-cam15.js?v=20260731f"></script>
-<script src="/data-listening-cam16.js?v=20260731f"></script>
-<script src="/data-listening-cam17.js?v=20260731f"></script>
-<script src="/data-listening-cam18.js?v=20260731f"></script>
-<script src="/data-listening-cam19.js?v=20260731f"></script>
-<script src="/data-listening-cam20.js?v=20260731f"></script>
-<script src="/data-listening-cam21.js?v=20260731f"></script>
+<script src="/data-listening-cam6.js?v=20260731g"></script>
+<script src="/data-listening-cam7.js?v=20260731g"></script>
+<script src="/data-listening-cam8.js?v=20260731g"></script>
+<script src="/data-listening-cam9.js?v=20260731g"></script>
+<script src="/data-listening-cam10.js?v=20260731g"></script>
+<script src="/data-listening-cam11.js?v=20260731g"></script>
+<script src="/data-listening-cam12.js?v=20260731g"></script>
+<script src="/data-listening-cam13.js?v=20260731g"></script>
+<script src="/data-listening-cam14.js?v=20260731g"></script>
+<script src="/data-listening-cam15.js?v=20260731g"></script>
+<script src="/data-listening-cam16.js?v=20260731g"></script>
+<script src="/data-listening-cam17.js?v=20260731g"></script>
+<script src="/data-listening-cam18.js?v=20260731g"></script>
+<script src="/data-listening-cam19.js?v=20260731g"></script>
+<script src="/data-listening-cam20.js?v=20260731g"></script>
+<script src="/data-listening-cam21.js?v=20260731g"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -6448,7 +6477,7 @@ function filterActivity(type, btn){
   </div>
 </div>
 
-<script src="/typing-practice.js?v=20260731f"></script>
+<script src="/typing-practice.js?v=20260731g"></script>
 <!-- BAND SCORE CALCULATOR -->
 <div class="selpage" id="bandCalculatorPage" style="max-width:760px;width:100%">
   <button class="bk" onclick="goHome()">← Back to Home</button>
