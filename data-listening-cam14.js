@@ -462,7 +462,8 @@ Object.assign(LISTENING_DATA, {
                   {
                     heading: "Ancient Greeks",
                     items: [
-                      {n:null, before:"a more scientific approach; Aristotle tried to explain the formation of various weather phenomena", input:null, after:""},
+                      {n:null, before:"a more scientific approach", input:null, after:""},
+                      {n:null, before:"Aristotle tried to explain the formation of various weather phenomena", input:null, after:""},
                       {n:35, before:"Aristotle also described haloes and", input:35, after:""}
                     ]
                   },
@@ -478,7 +479,8 @@ Object.assign(LISTENING_DATA, {
                     items: [
                       {n:37, before:"15th century: scientists recognised value of", input:37, after:"for the first time"},
                       {n:38, before:"Galileo invented the", input:38, after:""},
-                      {n:null, before:"Pascal showed relationship between atmospheric pressure and altitude; from the 17th century, scientists could measure atmospheric pressure and temperature", input:null, after:""},
+                      {n:null, before:"Pascal showed relationship between atmospheric pressure and altitude", input:null, after:""},
+                      {n:null, before:"from the 17th century, scientists could measure atmospheric pressure and temperature", input:null, after:""},
                       {n:39, before:"18th century: Franklin identified the movement of", input:39, after:""},
                       {n:40, before:"19th century: data from different locations could be sent to the same place by", input:40, after:""}
                     ]
@@ -951,9 +953,12 @@ Object.assign(LISTENING_DATA, {
                   {
                     heading: "ATLIT-YAM",
                     items: [
-                      {n:null, before:"was a village on coast of eastern Mediterranean; thrived until about 7,000 BC; stone homes had a courtyard", input:null, after:""},
+                      {n:null, before:"was a village on coast of eastern Mediterranean", input:null, after:""},
+                      {n:null, before:"thrived until about 7,000 BC", input:null, after:""},
+                      {n:null, before:"stone homes had a courtyard", input:null, after:""},
                       {n:31, before:"had a semicircle of large stones round a", input:31, after:""},
-                      {n:null, before:"cause of destruction unknown - now under the sea; biggest settlement from the prehistoric period found on the seabed", input:null, after:""},
+                      {n:null, before:"cause of destruction unknown - now under the sea", input:null, after:""},
+                      {n:null, before:"biggest settlement from the prehistoric period found on the seabed", input:null, after:""},
                       {n:32, before:"research carried out into structures,", input:32, after:"and human remains"}
                     ]
                   },
