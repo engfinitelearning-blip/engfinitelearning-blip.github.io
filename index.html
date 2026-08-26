@@ -1526,6 +1526,8 @@ option{background:#fff;color:#1a2e40}
 .lst-group-heading{font-weight:700;font-size:13px;color:#0066cc;margin-bottom:8px;font-family:'Poppins',sans-serif;letter-spacing:0.5px}
 .lst-item{font-size:13.5px;line-height:1.9;color:#222;font-family:'Times New Roman',Times,serif;margin-bottom:6px;padding-left:14px;position:relative}
 .lst-item::before{content:"•";position:absolute;left:0;color:#999}
+.lst-item.lst-indent{padding-left:34px;font-size:12.5px}
+.lst-item.lst-indent::before{content:"◦";left:20px;font-size:11px}
 .lst-qn{font-weight:700;color:#0066cc;margin-right:4px;font-family:'Poppins',sans-serif;font-size:11px;background:#e8f0fe;padding:1px 6px;border-radius:4px}
 .lst-input{display:inline-block;width:130px;margin:0 4px;padding:4px 8px;font-family:'Times New Roman',Times,serif;font-size:13.5px;border:none;border-bottom:1.5px solid #555;border-radius:0;background:transparent;outline:none;vertical-align:middle;color:#000}
 .sumbox table td input.fi{width:100px;max-width:calc(100% - 24px);box-sizing:border-box;padding:2px 5px;margin:0 2px}
@@ -2966,7 +2968,7 @@ function lsRenderQuestions(sec){
         html+=`<div class="lst-group">`;
         if(g.heading) html+=`<div class="lst-group-heading">${g.heading}</div>`;
         g.items.forEach(it=>{
-          html+=`<div class="lst-item">`;
+          html+=`<div class="lst-item${it.indent?' lst-indent':''}">`;
           if(it.before) html+=it.before+" ";
           if(it.input){
             html+=`<span class="lst-qn">${it.input}</span><input class="lst-input" id="lsq${it.input}" oninput="lsSetAns(${it.input},this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();jumpToNext(this)}"/>`;
@@ -6180,39 +6182,39 @@ function _hmStillUsed(bankId, val, excludeQn){
   </div>
 </div>
 
-<script src="/data-cam6.js?v=20260731y"></script>
-<script src="/data-cam7.js?v=20260731y"></script>
-<script src="/data-cam8.js?v=20260731y"></script>
-<script src="/data-cam9.js?v=20260731y"></script>
-<script src="/data-cam10.js?v=20260731y"></script>
-<script src="/data-cam11.js?v=20260731y"></script>
-<script src="/data-cam12.js?v=20260731y"></script>
-<script src="/data-cam13.js?v=20260731y"></script>
-<script src="/data-cam14.js?v=20260731y"></script>
-<script src="/data-cam15.js?v=20260731y"></script>
-<script src="/data-cam16.js?v=20260731y"></script>
-<script src="/data-cam17.js?v=20260731y"></script>
-<script src="/data-cam18.js?v=20260731y"></script>
-<script src="/data-cam19.js?v=20260731y"></script>
-<script src="/data-cam20.js?v=20260731y"></script>
-<script src="/data-cam21.js?v=20260731y"></script>
+<script src="/data-cam6.js?v=20260731z"></script>
+<script src="/data-cam7.js?v=20260731z"></script>
+<script src="/data-cam8.js?v=20260731z"></script>
+<script src="/data-cam9.js?v=20260731z"></script>
+<script src="/data-cam10.js?v=20260731z"></script>
+<script src="/data-cam11.js?v=20260731z"></script>
+<script src="/data-cam12.js?v=20260731z"></script>
+<script src="/data-cam13.js?v=20260731z"></script>
+<script src="/data-cam14.js?v=20260731z"></script>
+<script src="/data-cam15.js?v=20260731z"></script>
+<script src="/data-cam16.js?v=20260731z"></script>
+<script src="/data-cam17.js?v=20260731z"></script>
+<script src="/data-cam18.js?v=20260731z"></script>
+<script src="/data-cam19.js?v=20260731z"></script>
+<script src="/data-cam20.js?v=20260731z"></script>
+<script src="/data-cam21.js?v=20260731z"></script>
 
-<script src="/data-listening-cam6.js?v=20260731y"></script>
-<script src="/data-listening-cam7.js?v=20260731y"></script>
-<script src="/data-listening-cam8.js?v=20260731y"></script>
-<script src="/data-listening-cam9.js?v=20260731y"></script>
-<script src="/data-listening-cam10.js?v=20260731y"></script>
-<script src="/data-listening-cam11.js?v=20260731y"></script>
-<script src="/data-listening-cam12.js?v=20260731y"></script>
-<script src="/data-listening-cam13.js?v=20260731y"></script>
-<script src="/data-listening-cam14.js?v=20260731y"></script>
-<script src="/data-listening-cam15.js?v=20260731y"></script>
-<script src="/data-listening-cam16.js?v=20260731y"></script>
-<script src="/data-listening-cam17.js?v=20260731y"></script>
-<script src="/data-listening-cam18.js?v=20260731y"></script>
-<script src="/data-listening-cam19.js?v=20260731y"></script>
-<script src="/data-listening-cam20.js?v=20260731y"></script>
-<script src="/data-listening-cam21.js?v=20260731y"></script>
+<script src="/data-listening-cam6.js?v=20260731z"></script>
+<script src="/data-listening-cam7.js?v=20260731z"></script>
+<script src="/data-listening-cam8.js?v=20260731z"></script>
+<script src="/data-listening-cam9.js?v=20260731z"></script>
+<script src="/data-listening-cam10.js?v=20260731z"></script>
+<script src="/data-listening-cam11.js?v=20260731z"></script>
+<script src="/data-listening-cam12.js?v=20260731z"></script>
+<script src="/data-listening-cam13.js?v=20260731z"></script>
+<script src="/data-listening-cam14.js?v=20260731z"></script>
+<script src="/data-listening-cam15.js?v=20260731z"></script>
+<script src="/data-listening-cam16.js?v=20260731z"></script>
+<script src="/data-listening-cam17.js?v=20260731z"></script>
+<script src="/data-listening-cam18.js?v=20260731z"></script>
+<script src="/data-listening-cam19.js?v=20260731z"></script>
+<script src="/data-listening-cam20.js?v=20260731z"></script>
+<script src="/data-listening-cam21.js?v=20260731z"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -6477,7 +6479,7 @@ function filterActivity(type, btn){
   </div>
 </div>
 
-<script src="/typing-practice.js?v=20260731y"></script>
+<script src="/typing-practice.js?v=20260731z"></script>
 <!-- BAND SCORE CALCULATOR -->
 <div class="selpage" id="bandCalculatorPage" style="max-width:760px;width:100%">
   <button class="bk" onclick="goHome()">← Back to Home</button>
