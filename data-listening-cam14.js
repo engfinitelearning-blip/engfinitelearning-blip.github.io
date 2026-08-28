@@ -17,42 +17,45 @@ Object.assign(LISTENING_DATA, {
                 type: "notes",
                 qlabel: "Questions 1\u201310",
                 inst: "Complete the form below.<br>Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
+                type: "form",
+                qlabel: "Questions 1\u201310",
+                inst: "Complete the form below.<br>Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
                 notesTitle: "CRIME REPORT FORM",
-                example: {label: "Type of crime: theft<br>Name (Example): Louise", value: "Taylor"},
+                subtitle: "Type of crime: theft",
+                example: {label: "Name", value: "Louise <i>Taylor</i>"},
                 groups: [
                   {
                     heading: "Personal information",
-                    items: [
-                      {n:1, before:"Nationality:", input:1, after:""},
-                      {n:null, before:"Date of birth: 14 December 1977", input:null, after:""},
-                      {n:null, before:"Occupation: interior designer", input:null, after:""},
-                      {n:2, before:"Reason for visit: business (to buy antique", input:2, after:")"},
-                      {n:null, before:"Length of stay: two months", input:null, after:""},
-                      {n:3, before:"Current address:", input:3, after:"Apartments (No 15)"}
+                    rows: [
+                      {label: "Nationality", parts: [{input:1}]},
+                      {label: "Date of birth", parts: [{text:"14 December 1977"}]},
+                      {label: "Occupation", parts: [{text:"interior designer"}]},
+                      {label: "Reason for visit", parts: [{text:"business (to buy antique"},{input:2},{text:")"}]},
+                      {label: "Length of stay", parts: [{text:"two months"}]},
+                      {label: "Current address", parts: [{input:3},{text:"Apartments (No 15)"}]}
                     ]
                   },
                   {
                     heading: "Details of theft",
-                    items: [
-                      {n:4, before:"Items stolen: a wallet containing approximately £", input:4, after:""},
-                      {n:5, before:"a", input:5, after:""},
-                      {n:6, before:"Date of theft:", input:6, after:""}
+                    rows: [
+                      {label: "Items stolen", parts: [{text:"\u2013 a wallet containing approximately £"},{input:4}]},
+                      {label: "", parts: [{text:"\u2013 a"},{input:5}]},
+                      {label: "Date of theft", parts: [{input:6}]}
                     ]
                   },
                   {
                     heading: "Possible time and place of theft",
-                    items: [
-                      {n:7, before:"Location: outside the", input:7, after:"at about 4 pm"},
-                      {n:null, before:"Details of suspect:", input:null, after:""},
-                      {n:8, before:"some boys asked for the", input:8, after:"then ran off"},
-                      {n:null, before:"one had a T-shirt with a picture of a tiger", input:null, after:""},
-                      {n:9, before:"he was about 12, slim build with", input:9, after:"hair"}
+                    rows: [
+                      {label: "Location", parts: [{text:"outside the"},{input:7},{text:"at about 4 pm"}]},
+                      {label: "Details of suspect", parts: [{text:"\u2013 some boys asked for the"},{input:8},{text:"then ran off"}]},
+                      {label: "", parts: [{text:"\u2013 one had a T-shirt with a picture of a tiger"}]},
+                      {label: "", parts: [{text:"\u2013 he was about 12, slim build with"},{input:9},{text:"hair"}]}
                     ]
                   },
                   {
                     heading: "Crime reference number allocated",
-                    items: [
-                      {n:10, before:"Crime reference number:", input:10, after:""}
+                    rows: [
+                      {label: "Crime reference number", parts: [{input:10}]}
                     ]
                   }
                 ]
