@@ -277,40 +277,40 @@ Object.assign(LISTENING_DATA, {
                 type: "notes",
                 qlabel: "Questions 1\u201310",
                 inst: "Complete the notes below.<br>Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
-                notesTitle: "TOTAL HEALTH CLINIC \u2014 PATIENT DETAILS",
-                example: {label: "Personal information<br>Name (Example): Julie Anne", value: "Garcia"},
+                type: "form",
+                qlabel: "Questions 1\u201310",
+                inst: "Complete the notes below.<br>Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
+                notesTitle: "TOTAL HEALTH CLINIC",
+                subtitle: "PATIENT DETAILS",
                 groups: [
                   {
                     heading: "Personal information",
-                    items: [
-                      {n:1, before:"Contact phone:", input:1, after:""},
-                      {n:2, before:"Date of birth:", input:2, after:", 1992"},
-                      {n:3, before:"Occupation: works as a", input:3, after:""},
-                      {n:4, before:"Insurance company:", input:4, after:"Life Insurance"}
+                    rows: [
+                      {label: "<i>(Example)</i> Name: Julie Anne", parts: [{text:"Garcia"}]},
+                      {label: "Contact phone:", parts: [{input:1}]},
+                      {label: "Date of birth:", parts: [{input:2},{text:", 1992"}]},
+                      {label: "Occupation: works as a", parts: [{input:3}]},
+                      {label: "Insurance company:", parts: [{input:4},{text:"Life Insurance"}]}
                     ]
                   },
                   {
                     heading: "Details of the problem",
-                    items: [
-                      {n:5, before:"Type of problem: pain in her left", input:5, after:""},
-                      {n:6, before:"When it began:", input:6, after:"ago"},
-                      {n:null, before:"Action already taken: has taken painkillers and applied ice", input:null, after:""}
+                    rows: [
+                      {label: "Type of problem: pain in her left", parts: [{input:5}]},
+                      {label: "When it began:", parts: [{input:6},{text:"ago"}]},
+                      {label: "Action already taken: has taken painkillers and applied ice", parts: []}
                     ]
                   },
                   {
                     heading: "Other information",
-                    items: [
-                      {n:null, before:"Sports played", input:null, after:""},
-                      {n:7, before:"belongs to a", input:7, after:"club"},
-                      {n:8, before:"goes", input:8, after:"regularly"}
-                    ]
-                  },
-                  {
-                    heading: "Medical history",
-                    items: [
-                      {n:9, before:"injured her", input:9, after:"last year"},
-                      {n:null, before:"no allergies", input:null, after:""},
-                      {n:10, before:"no regular medication apart from", input:10, after:""}
+                    rows: [
+                      {label: "<b>Sports played</b>", parts: []},
+                      {label: "belongs to a", parts: [{input:7},{text:"club"}]},
+                      {label: "goes", parts: [{input:8},{text:"regularly"}]},
+                      {label: "<b>Medical history</b>", parts: []},
+                      {label: "injured her", parts: [{input:9},{text:"last year"}]},
+                      {label: "no allergies", parts: []},
+                      {label: "no regular medication apart from", parts: [{input:10}]}
                     ]
                   }
                 ]
@@ -399,7 +399,8 @@ Object.assign(LISTENING_DATA, {
               {
                 type: "map_label",
                 qlabel: "Questions 25\u201330",
-                inst: "What action will the students take for each of the following sections of their presentation?<br>Choose the correct letter, <b>A\u2013H</b>, next to Questions 25\u201330.",
+                inst: "What action will the students take for each of the following sections of their presentation?<br>Choose SIX answers from the box and write the correct letter, <b>A\u2013H</b>, next to Questions 25\u201330.",
+                mapNoteTitle: "Actions",
                 mapTitle: "Sections of presentation",
                 mapNote: "A. make it more interactive<br>B. reduce visual input<br>C. add personal opinions<br>D. contact one of the researchers<br>E. make detailed notes<br>F. find information online<br>G. check timing<br>H. organise the content more clearly",
                 options: ["A","B","C","D","E","F","G","H"],
@@ -529,8 +530,7 @@ Object.assign(LISTENING_DATA, {
                   {
                     heading: "Conference facilities",
                     items: [
-                      {n:1, before:"the", input:1, after:"room for talks (projector and"},
-                      {n:2, before:"", input:2, after:"available)"},
+                      {n:1, before:"the", input:1, mid:"room for talks (projector and", input2:2, after:"available)"},
                       {n:3, before:"area for coffee and an", input:3, after:""},
                       {n:4, before:"free", input:4, after:"throughout"},
                       {n:5, before:"a standard buffet lunch costs $", input:5, after:"per head"}
@@ -615,6 +615,7 @@ Object.assign(LISTENING_DATA, {
                 type: "map_label",
                 qlabel: "Questions 15\u201320",
                 inst: "What has each of the following volunteers helped someone to do?<br>Choose the correct letter, <b>A\u2013G</b>, next to Questions 15\u201320.",
+                mapNoteTitle: "What volunteers have helped people to do",
                 mapTitle: "Volunteers",
                 mapNote: "A. overcome physical difficulties<br>B. rediscover skills not used for a long time<br>C. improve their communication skills<br>D. solve problems independently<br>E. escape isolation<br>F. remember past times<br>G. start a new hobby",
                 options: ["A","B","C","D","E","F","G"],
@@ -665,7 +666,8 @@ Object.assign(LISTENING_DATA, {
               {
                 type: "map_label",
                 qlabel: "Questions 27\u201330",
-                inst: "What problem does Joe mention in connection with each of the following band members?<br>Choose the correct letter, <b>A\u2013F</b>, next to Questions 27\u201330.",
+                inst: "What problem does Joe mention in connection with each of the following band members?<br>Choose FOUR answers from the box and write the correct letter, <b>A\u2013F</b>, next to Questions 27\u201330.",
+                mapNoteTitle: "Problems",
                 mapTitle: "Band members",
                 mapNote: "A. makes a lot of mistakes in rehearsals<br>B. keeps making unhelpful suggestions<br>C. has difficulty with rhythm<br>D. misses too many rehearsals<br>E. has a health problem<br>F. doesn't mix with other students",
                 options: ["A","B","C","D","E","F"],
@@ -799,7 +801,8 @@ Object.assign(LISTENING_DATA, {
               {
                 type: "map_label",
                 qlabel: "Questions 8\u201310",
-                inst: "What is said about using each of the following hotel facilities?<br>Choose the correct letter, <b>A\u2013C</b>, next to Questions 8\u201310.",
+                inst: "What is said about using each of the following hotel facilities?<br>Choose THREE answers from the box and write the correct letter, <b>A, B or C</b>, next to Questions 8\u201310.",
+                mapNoteTitle: "Availability",
                 mapTitle: "Hotel facilities",
                 mapNote: "A. included in cost of hiring room<br>B. available at extra charge<br>C. not available",
                 options: ["A","B","C"],
@@ -835,7 +838,8 @@ Object.assign(LISTENING_DATA, {
               {
                 type: "map_label",
                 qlabel: "Questions 11\u201316",
-                inst: "What information does the speaker give about each of the following excursions?<br>Choose the correct letter, <b>A\u2013H</b>, next to Questions 11\u201316.",
+                inst: "What information does the speaker give about each of the following excursions?<br>Choose SIX answers from the box and write the correct letter, <b>A\u2013H</b>, next to Questions 11\u201316.",
+                mapNoteTitle: "Information",
                 mapTitle: "Excursions",
                 mapNote: "A. all downhill<br>B. suitable for beginners<br>C. only in good weather<br>D. food included<br>E. no charge<br>F. swimming possible<br>G. fully booked today<br>H. transport not included",
                 options: ["A","B","C","D","E","F","G","H"],
@@ -907,7 +911,8 @@ Object.assign(LISTENING_DATA, {
               {
                 type: "map_label",
                 qlabel: "Questions 26\u201330",
-                inst: "What comment is made about each of these stories?<br>Choose the correct letter, <b>A\u2013G</b>, next to Questions 26\u201330.",
+                inst: "What comment is made about each of these stories?<br>Choose FIVE answers from the box and write the correct letter, <b>A\u2013G</b>, next to Questions 26\u201330.",
+                mapNoteTitle: "Comments",
                 mapTitle: "Stories",
                 mapNote: "A. translated into many other languages<br>B. hard to read<br>C. inspired a work in a different area of art<br>D. more popular than the author's other works<br>E. original title refers to another book<br>F. started a new genre<br>G. unlikely topic",
                 options: ["A","B","C","D","E","F","G"],
