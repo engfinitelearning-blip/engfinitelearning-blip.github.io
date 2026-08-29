@@ -1071,7 +1071,11 @@ Object.assign(LISTENING_DATA, {
                     ]
                   },
                   {
-                    heading: "MAIN AREAS OF CHANGE \u2014 Manufacturing",
+                    heading: "MAIN AREAS OF CHANGE",
+                    items: []
+                  },
+                  {
+                    heading: "Manufacturing",
                     items: [
                       {n:33, before:"The Industrial Revolution would not have happened without the new types of", input:33, after:"that were used then."},
                       {n:34, before:"The leading industry was", input:34, after:"(its products became widely available)."},
@@ -1081,17 +1085,19 @@ Object.assign(LISTENING_DATA, {
                   {
                     heading: "Transport",
                     items: [
-                      {n:null, before:"The railways took the place of canals. Because of the new transport:", input:null, after:""},
-                      {n:36, before:"greater access to", input:36, after:"made people more aware of what they could buy in shops."},
-                      {n:37, before:"when shopping, people were not limited to buying", input:37, after:"goods."}
+                      {n:null, before:"The railways took the place of canals.", input:null, after:""},
+                      {n:null, before:"Because of the new transport:", input:null, after:""},
+                      {n:36, before:"greater access to", input:36, after:"made people more aware of what they could buy in shops.", indent:true},
+                      {n:37, before:"when shopping, people were not limited to buying", input:37, after:"goods.", indent:true}
                     ]
                   },
                   {
                     heading: "Retailing",
                     items: [
-                      {n:null, before:"The first department stores were opened. The displays of goods were more visible:", input:null, after:""},
-                      {n:38, before:"inside stores because of better", input:38, after:"."},
-                      {n:39, before:"outside stores, because", input:39, after:"were bigger."},
+                      {n:null, before:"The first department stores were opened.", input:null, after:""},
+                      {n:null, before:"The displays of goods were more visible:", input:null, after:""},
+                      {n:38, before:"inside stores because of better", input:38, after:".", indent:true},
+                      {n:39, before:"outside stores, because", input:39, after:"were bigger.", indent:true},
                       {n:40, before:"", input:40, after:"that was persuasive became much more common."}
                     ]
                   }
