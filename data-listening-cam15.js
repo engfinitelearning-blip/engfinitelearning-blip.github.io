@@ -165,8 +165,9 @@ Object.assign(LISTENING_DATA, {
               {
                 type: "map_label",
                 qlabel: "Questions 21\u201326",
-                inst: "What did findings of previous research claim about the personality traits a child is likely to have because of their position in the family?<br>Choose the correct letter, <b>A\u2013H</b>, next to Questions 21\u201326.",
-                mapTitle: "Personality Traits",
+                inst: "What did findings of previous research claim about the personality traits a child is likely to have because of their position in the family?<br>Choose SIX answers from the box and write the correct letter, <b>A\u2013H</b>, next to Questions 21\u201326.",
+                mapNoteTitle: "Personality Traits",
+                mapTitle: "Position in family",
                 mapNote: "A. outgoing<br>B. selfish<br>C. independent<br>D. attention-seeking<br>E. introverted<br>F. co-operative<br>G. caring<br>H. competitive",
                 options: ["A","B","C","D","E","F","G","H"],
                 items: [
@@ -252,13 +253,16 @@ Object.assign(LISTENING_DATA, {
                   {
                     heading: "Reasons for present decline in number",
                     items: [
-                      {n:null, before:"A) Diseases<br>(i) 'Mundulla Yellows'<br>Cause", input:null, after:""},
-                      {n:33, before:"lime used for making", input:33, after:"was absorbed"},
-                      {n:null, before:"trees were unable to take in necessary iron through their roots", input:null, after:""},
-                      {n:null, before:"(ii) 'Bell-miner Associated Die-back'<br>Cause", input:null, after:""},
-                      {n:34, before:"", input:34, after:"feed on eucalyptus leaves"},
-                      {n:null, before:"they secrete a substance containing sugar", input:null, after:""},
-                      {n:null, before:"bell-miner birds are attracted by this and keep away other species", input:null, after:""}
+                      {n:null, before:"A) Diseases", input:null, after:""},
+                      {n:null, before:"(i) 'Mundulla Yellows'", input:null, after:"", indent:true},
+                      {n:null, before:"Cause", input:null, after:"", indent:true},
+                      {n:33, before:"lime used for making", input:33, after:"was absorbed", indent:true},
+                      {n:null, before:"trees were unable to take in necessary iron through their roots", input:null, after:"", indent:true},
+                      {n:null, before:"(ii) 'Bell-miner Associated Die-back'", input:null, after:"", indent:true},
+                      {n:null, before:"Cause", input:null, after:"", indent:true},
+                      {n:34, before:"", input:34, after:"feed on eucalyptus leaves", indent:true},
+                      {n:null, before:"they secrete a substance containing sugar", input:null, after:"", indent:true},
+                      {n:null, before:"bell-miner birds are attracted by this and keep away other species", input:null, after:"", indent:true}
                     ]
                   },
                   {
@@ -459,7 +463,8 @@ Object.assign(LISTENING_DATA, {
               {
                 type: "map_label",
                 qlabel: "Questions 25\u201330",
-                inst: "What topic do Cathy and Graham choose to illustrate with each novel?<br>Choose the correct letter, <b>A\u2013H</b>, next to Questions 25\u201330.",
+                inst: "What topic do Cathy and Graham choose to illustrate with each novel?<br>Choose SIX answers from the box and write the correct letter, <b>A\u2013H</b>, next to Questions 25\u201330.",
+                mapNoteTitle: "Topics",
                 mapTitle: "Novels by Dickens",
                 mapNote: "A. poverty<br>B. education<br>C. Dickens's travels<br>D. entertainment<br>E. crime and the law<br>F. wealth<br>G. medicine<br>H. a woman's life",
                 options: ["A","B","C","D","E","F","G","H"],
@@ -518,17 +523,18 @@ Object.assign(LISTENING_DATA, {
                   {
                     heading: "How the programme was organised",
                     items: [
-                      {n:null, before:"It focused on a dry and arid region in Chicualacuala district, near the Limpopo River. People depended on the forest to provide charcoal as a source of income.", input:null, after:""},
+                      {n:null, before:"It focused on a dry and arid region in Chicualacuala district, near the Limpopo River.", input:null, after:""},
+                      {n:null, before:"People depended on the forest to provide charcoal as a source of income.", input:null, after:""},
                       {n:31, before:"", input:31, after:"was seen as the main priority to ensure the supply of water."},
                       {n:32, before:"Most of the work organised by farmers' associations was done by", input:32, after:"."},
                       {n:null, before:"Fenced areas were created to keep animals away from crops.", input:null, after:""},
-                      {n:null, before:"The programme provided", input:null, after:""},
-                      {n:33, before:"", input:33, after:"for the fences"},
-                      {n:34, before:"", input:34, after:"for suitable crops"},
-                      {n:null, before:"water pumps.", input:null, after:""},
-                      {n:null, before:"The farmers provided", input:null, after:""},
-                      {n:null, before:"labour", input:null, after:""},
-                      {n:35, before:"", input:35, after:"for the fences on their land."}
+                      {n:null, before:"<b>The programme provided</b>", input:null, after:""},
+                      {n:33, before:"", input:33, after:"for the fences", indent:true},
+                      {n:34, before:"", input:34, after:"for suitable crops", indent:true},
+                      {n:null, before:"water pumps.", input:null, after:"", indent:true},
+                      {n:null, before:"<b>The farmers provided</b>", input:null, after:""},
+                      {n:null, before:"labour", input:null, after:"", indent:true},
+                      {n:35, before:"", input:35, after:"for the fences on their land.", indent:true}
                     ]
                   },
                   {
@@ -996,6 +1002,7 @@ Object.assign(LISTENING_DATA, {
                 type: "map_label",
                 qlabel: "Questions 25\u201330",
                 inst: "Who is going to do research into each topic?<br>Choose the correct letter, <b>A\u2013C</b>, next to Questions 25\u201330.",
+                mapNoteTitle: "People",
                 mapTitle: "Topics",
                 mapNote: "A. Annie<br>B. Jack<br>C. both Annie and Jack",
                 options: ["A","B","C"],
