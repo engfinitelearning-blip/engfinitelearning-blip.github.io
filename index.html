@@ -1542,6 +1542,7 @@ option{background:#fff;color:#1a2e40}
 .lst-badge.ok{color:#22c55e}
 .lst-badge.no{color:#ef4444}
 .lst-map-note{font-size:12.5px;color:#777;background:#f0f4f8;border:1px solid #e0e8f0;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:'Poppins',sans-serif;line-height:1.6}
+.lst-map-note-title{font-weight:700;font-size:13px;color:#222;font-family:'Times New Roman',Times,serif;margin-bottom:6px;text-align:center}
 .lst-map-img-wrap{text-align:center;margin-bottom:16px}
 .lst-map-img{max-width:100%;width:480px;border:1px solid #ccc;border-radius:6px}
 .lst-map-items{display:flex;flex-direction:column;gap:10px}
@@ -3010,12 +3011,18 @@ function lsRenderQuestions(sec){
       html+=`<div class="lst-notes">`;
       if(block.qlabel) html+=`<div class="qstitle">${block.qlabel}</div>`;
       html+=`<div class="qsinst">${block.inst}</div>`;
-      html+=`<div class="lst-notes-title">${block.mapTitle}</div>`;
       if(block.mapImage){
+        html+=`<div class="lst-notes-title">${block.mapTitle}</div>`;
         html+=`<div class="lst-map-img-wrap"><img src="${block.mapImage}" alt="${block.mapTitle}" class="lst-map-img"/></div>`;
-      }
-      if(block.mapNote){
-        html+=`<div class="lst-map-note">${block.mapNote}</div>`;
+        if(block.mapNote){
+          html+=`<div class="lst-map-note">${block.mapNote}</div>`;
+        }
+      } else {
+        if(block.mapNote){
+          if(block.mapNoteTitle) html+=`<div class="lst-map-note-title">${block.mapNoteTitle}</div>`;
+          html+=`<div class="lst-map-note">${block.mapNote}</div>`;
+        }
+        html+=`<div class="lst-notes-title">${block.mapTitle}</div>`;
       }
       html+=`<div class="lst-map-items">`;
       block.items.forEach(it=>{
@@ -6203,39 +6210,39 @@ function _hmStillUsed(bankId, val, excludeQn){
   </div>
 </div>
 
-<script src="/data-cam6.js?v=20260732a"></script>
-<script src="/data-cam7.js?v=20260732a"></script>
-<script src="/data-cam8.js?v=20260732a"></script>
-<script src="/data-cam9.js?v=20260732a"></script>
-<script src="/data-cam10.js?v=20260732a"></script>
-<script src="/data-cam11.js?v=20260732a"></script>
-<script src="/data-cam12.js?v=20260732a"></script>
-<script src="/data-cam13.js?v=20260732a"></script>
-<script src="/data-cam14.js?v=20260732a"></script>
-<script src="/data-cam15.js?v=20260732a"></script>
-<script src="/data-cam16.js?v=20260732a"></script>
-<script src="/data-cam17.js?v=20260732a"></script>
-<script src="/data-cam18.js?v=20260732a"></script>
-<script src="/data-cam19.js?v=20260732a"></script>
-<script src="/data-cam20.js?v=20260732a"></script>
-<script src="/data-cam21.js?v=20260732a"></script>
+<script src="/data-cam6.js?v=20260732c"></script>
+<script src="/data-cam7.js?v=20260732c"></script>
+<script src="/data-cam8.js?v=20260732c"></script>
+<script src="/data-cam9.js?v=20260732c"></script>
+<script src="/data-cam10.js?v=20260732c"></script>
+<script src="/data-cam11.js?v=20260732c"></script>
+<script src="/data-cam12.js?v=20260732c"></script>
+<script src="/data-cam13.js?v=20260732c"></script>
+<script src="/data-cam14.js?v=20260732c"></script>
+<script src="/data-cam15.js?v=20260732c"></script>
+<script src="/data-cam16.js?v=20260732c"></script>
+<script src="/data-cam17.js?v=20260732c"></script>
+<script src="/data-cam18.js?v=20260732c"></script>
+<script src="/data-cam19.js?v=20260732c"></script>
+<script src="/data-cam20.js?v=20260732c"></script>
+<script src="/data-cam21.js?v=20260732c"></script>
 
-<script src="/data-listening-cam6.js?v=20260732a"></script>
-<script src="/data-listening-cam7.js?v=20260732a"></script>
-<script src="/data-listening-cam8.js?v=20260732a"></script>
-<script src="/data-listening-cam9.js?v=20260732a"></script>
-<script src="/data-listening-cam10.js?v=20260732a"></script>
-<script src="/data-listening-cam11.js?v=20260732a"></script>
-<script src="/data-listening-cam12.js?v=20260732a"></script>
-<script src="/data-listening-cam13.js?v=20260732a"></script>
-<script src="/data-listening-cam14.js?v=20260732a"></script>
-<script src="/data-listening-cam15.js?v=20260732a"></script>
-<script src="/data-listening-cam16.js?v=20260732a"></script>
-<script src="/data-listening-cam17.js?v=20260732a"></script>
-<script src="/data-listening-cam18.js?v=20260732a"></script>
-<script src="/data-listening-cam19.js?v=20260732a"></script>
-<script src="/data-listening-cam20.js?v=20260732a"></script>
-<script src="/data-listening-cam21.js?v=20260732a"></script>
+<script src="/data-listening-cam6.js?v=20260732c"></script>
+<script src="/data-listening-cam7.js?v=20260732c"></script>
+<script src="/data-listening-cam8.js?v=20260732c"></script>
+<script src="/data-listening-cam9.js?v=20260732c"></script>
+<script src="/data-listening-cam10.js?v=20260732c"></script>
+<script src="/data-listening-cam11.js?v=20260732c"></script>
+<script src="/data-listening-cam12.js?v=20260732c"></script>
+<script src="/data-listening-cam13.js?v=20260732c"></script>
+<script src="/data-listening-cam14.js?v=20260732c"></script>
+<script src="/data-listening-cam15.js?v=20260732c"></script>
+<script src="/data-listening-cam16.js?v=20260732c"></script>
+<script src="/data-listening-cam17.js?v=20260732c"></script>
+<script src="/data-listening-cam18.js?v=20260732c"></script>
+<script src="/data-listening-cam19.js?v=20260732c"></script>
+<script src="/data-listening-cam20.js?v=20260732c"></script>
+<script src="/data-listening-cam21.js?v=20260732c"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -6500,7 +6507,7 @@ function filterActivity(type, btn){
   </div>
 </div>
 
-<script src="/typing-practice.js?v=20260732a"></script>
+<script src="/typing-practice.js?v=20260732c"></script>
 <!-- BAND SCORE CALCULATOR -->
 <div class="selpage" id="bandCalculatorPage" style="max-width:760px;width:100%">
   <button class="bk" onclick="goHome()">← Back to Home</button>

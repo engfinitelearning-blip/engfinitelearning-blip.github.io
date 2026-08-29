@@ -158,7 +158,8 @@ Object.assign(LISTENING_DATA, {
               {
                 type: "map_label",
                 qlabel: "Questions 26\u201330",
-                inst: "What decision do the students make about each of the following parts of their presentation?<br>Choose the correct letter, <b>A\u2013G</b>, next to Questions 26\u201330.",
+                inst: "What decision do the students make about each of the following parts of their presentation?<br>Choose FIVE answers from the box and write the correct letter, <b>A\u2013G</b>, next to Questions 26\u201330.",
+                mapNoteTitle: "Decisions",
                 mapTitle: "Parts of the presentation",
                 mapNote: "A. use visuals<br>B. keep it short<br>C. involve other students<br>D. check the information is accurate<br>E. provide a handout<br>F. focus on one example<br>G. do online research",
                 options: ["A","B","C","D","E","F","G"],
