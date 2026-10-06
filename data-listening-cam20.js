@@ -24,7 +24,7 @@ Object.assign(LISTENING_DATA, {
                       [{text:"The Junction"}],
                       [{text:"Greyson Street, near the station"}],
                       [{text:"Good for people who are especially keen on"},{input:1}],
-                      [{text:"Quite expensive"},{text:"The"},{input:2},{text:"is a good place for a drink"}]
+                      [{text:"Quite expensive"},{text:"The",nl:true},{input:2},{text:"is a good place for a drink"}]
                     ]
                   },
                   {
@@ -32,7 +32,7 @@ Object.assign(LISTENING_DATA, {
                       [{text:"Paloma"}],
                       [{text:"In Bow Street next to the cinema"}],
                       [{input:3},{text:"food, good for sharing"}],
-                      [{text:"Staff are very friendly"},{text:"Need to pay £50 deposit"},{text:"A limited selection of"},{input:4},{text:"food on the menu"}]
+                      [{text:"Staff are very friendly"},{text:"Need to pay £50 deposit",nl:true},{text:"A limited selection of",nl:true},{input:4},{text:"food on the menu"}]
                     ]
                   },
                   {
@@ -40,7 +40,7 @@ Object.assign(LISTENING_DATA, {
                       [{text:"The"},{input:5}],
                       [{text:"At the top of a"},{input:6}],
                       [{text:"A famous chef"}],
-                      [{text:"All the"},{input:7},{text:"are very good"},{text:"Only uses"},{input:8},{text:"ingredients"},{text:"Set lunch costs £"},{input:9},{text:"per person"},{text:"Portions probably of"},{input:10},{text:"size"}]
+                      [{text:"All the"},{input:7},{text:"are very good"},{text:"Only uses",nl:true},{input:8},{text:"ingredients"},{text:"Set lunch costs £",nl:true},{input:9},{text:"per person"},{text:"Portions probably of",nl:true},{input:10},{text:"size"}]
                     ]
                   }
                 ]
