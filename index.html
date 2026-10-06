@@ -1565,6 +1565,8 @@ option{background:#fff;color:#1a2e40}
 .lst-table th{background:#eef2f6;padding:8px 10px;border:1px solid #ccc;text-align:left;font-family:'Poppins',sans-serif;font-size:11.5px;font-weight:700;color:#333}
 .lst-table td{padding:8px 10px;border:1px solid #ddd;vertical-align:top;line-height:1.9}
 .lst-cell-line{line-height:1.9;margin-bottom:4px}
+.lst-table .lst-inp-wrap{white-space:nowrap}
+.lst-table .lst-input{width:78px;max-width:100%;margin:0 2px}
 .lst-flowchart{margin-top:10px;display:flex;flex-direction:column;gap:0}
 .lst-flow-box{border:1px solid #ccc;border-radius:8px;padding:14px 18px;background:#fafafa}
 .lst-flow-heading{font-weight:700;font-family:'Poppins',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;color:#222}
@@ -2942,7 +2944,7 @@ function lsRenderCellParts(parts){
     if(p.text!==undefined){
       html+=p.text+" ";
     } else if(p.input!==undefined){
-      html+=`<span class="lst-qn">${p.input}</span><input class="lst-input" id="lsq${p.input}" oninput="lsSetAns(${p.input},this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();jumpToNext(this)}"/><span class="lst-badge" id="lsbadge${p.input}"></span> `;
+      html+=`<span class="lst-inp-wrap"><span class="lst-qn">${p.input}</span><input class="lst-input" id="lsq${p.input}" oninput="lsSetAns(${p.input},this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();jumpToNext(this)}"/><span class="lst-badge" id="lsbadge${p.input}"></span></span> `;
     }
   });
   return html;
@@ -6216,39 +6218,39 @@ function _hmStillUsed(bankId, val, excludeQn){
   </div>
 </div>
 
-<script src="/data-cam6.js?v=20260732u"></script>
-<script src="/data-cam7.js?v=20260732u"></script>
-<script src="/data-cam8.js?v=20260732u"></script>
-<script src="/data-cam9.js?v=20260732u"></script>
-<script src="/data-cam10.js?v=20260732u"></script>
-<script src="/data-cam11.js?v=20260732u"></script>
-<script src="/data-cam12.js?v=20260732u"></script>
-<script src="/data-cam13.js?v=20260732u"></script>
-<script src="/data-cam14.js?v=20260732u"></script>
-<script src="/data-cam15.js?v=20260732u"></script>
-<script src="/data-cam16.js?v=20260732u"></script>
-<script src="/data-cam17.js?v=20260732u"></script>
-<script src="/data-cam18.js?v=20260732u"></script>
-<script src="/data-cam19.js?v=20260732u"></script>
-<script src="/data-cam20.js?v=20260732u"></script>
-<script src="/data-cam21.js?v=20260732u"></script>
+<script src="/data-cam6.js?v=20260732v"></script>
+<script src="/data-cam7.js?v=20260732v"></script>
+<script src="/data-cam8.js?v=20260732v"></script>
+<script src="/data-cam9.js?v=20260732v"></script>
+<script src="/data-cam10.js?v=20260732v"></script>
+<script src="/data-cam11.js?v=20260732v"></script>
+<script src="/data-cam12.js?v=20260732v"></script>
+<script src="/data-cam13.js?v=20260732v"></script>
+<script src="/data-cam14.js?v=20260732v"></script>
+<script src="/data-cam15.js?v=20260732v"></script>
+<script src="/data-cam16.js?v=20260732v"></script>
+<script src="/data-cam17.js?v=20260732v"></script>
+<script src="/data-cam18.js?v=20260732v"></script>
+<script src="/data-cam19.js?v=20260732v"></script>
+<script src="/data-cam20.js?v=20260732v"></script>
+<script src="/data-cam21.js?v=20260732v"></script>
 
-<script src="/data-listening-cam6.js?v=20260732u"></script>
-<script src="/data-listening-cam7.js?v=20260732u"></script>
-<script src="/data-listening-cam8.js?v=20260732u"></script>
-<script src="/data-listening-cam9.js?v=20260732u"></script>
-<script src="/data-listening-cam10.js?v=20260732u"></script>
-<script src="/data-listening-cam11.js?v=20260732u"></script>
-<script src="/data-listening-cam12.js?v=20260732u"></script>
-<script src="/data-listening-cam13.js?v=20260732u"></script>
-<script src="/data-listening-cam14.js?v=20260732u"></script>
-<script src="/data-listening-cam15.js?v=20260732u"></script>
-<script src="/data-listening-cam16.js?v=20260732u"></script>
-<script src="/data-listening-cam17.js?v=20260732u"></script>
-<script src="/data-listening-cam18.js?v=20260732u"></script>
-<script src="/data-listening-cam19.js?v=20260732u"></script>
-<script src="/data-listening-cam20.js?v=20260732u"></script>
-<script src="/data-listening-cam21.js?v=20260732u"></script>
+<script src="/data-listening-cam6.js?v=20260732v"></script>
+<script src="/data-listening-cam7.js?v=20260732v"></script>
+<script src="/data-listening-cam8.js?v=20260732v"></script>
+<script src="/data-listening-cam9.js?v=20260732v"></script>
+<script src="/data-listening-cam10.js?v=20260732v"></script>
+<script src="/data-listening-cam11.js?v=20260732v"></script>
+<script src="/data-listening-cam12.js?v=20260732v"></script>
+<script src="/data-listening-cam13.js?v=20260732v"></script>
+<script src="/data-listening-cam14.js?v=20260732v"></script>
+<script src="/data-listening-cam15.js?v=20260732v"></script>
+<script src="/data-listening-cam16.js?v=20260732v"></script>
+<script src="/data-listening-cam17.js?v=20260732v"></script>
+<script src="/data-listening-cam18.js?v=20260732v"></script>
+<script src="/data-listening-cam19.js?v=20260732v"></script>
+<script src="/data-listening-cam20.js?v=20260732v"></script>
+<script src="/data-listening-cam21.js?v=20260732v"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -6513,7 +6515,7 @@ function filterActivity(type, btn){
   </div>
 </div>
 
-<script src="/typing-practice.js?v=20260732u"></script>
+<script src="/typing-practice.js?v=20260732v"></script>
 <!-- BAND SCORE CALCULATOR -->
 <div class="selpage" id="bandCalculatorPage" style="max-width:760px;width:100%">
   <button class="bk" onclick="goHome()">← Back to Home</button>
