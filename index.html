@@ -537,6 +537,14 @@ option{background:#fff;color:#1a2e40}
 .wo-meta b{color:#39b54a}
 .wo-meta button{padding:6px 14px;border-radius:8px;border:1px solid rgba(0,174,239,.45);background:transparent;color:#00aeef;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
 .wo-meta button:hover{background:rgba(0,174,239,.12)}
+.wi-ex{margin-top:8px;font-size:13px;line-height:1.6;color:#9fb3c8;font-style:italic}
+.wo-voc{padding:10px 0;border-bottom:1px solid var(--bor)}
+.wo-voc:last-child{border-bottom:none}
+.wo-voc b{color:#fff;font-size:14.5px}
+.wo-voc .m{font-size:14px;color:#e8eef5;margin-top:2px}
+.wo-voc .e{font-size:13px;color:#9fb3c8;font-style:italic;margin-top:2px;line-height:1.6}
+.wi-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.wi-two{grid-template-columns:1fr}}
 #wrBlockedDlg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:3500;padding:20px}
 #wrBlockedDlg .bx{background:#fff;border-radius:12px;padding:26px 28px;max-width:420px;width:100%;color:#222;text-align:center;font-family:'Poppins',sans-serif}
 #wrBlockedDlg h3{margin:0 0 10px;font-size:18px}
@@ -2529,6 +2537,9 @@ makeChain("/writing-practice/task-2/own","writingOwn",[
     enter:(v)=>{ curOwnQuestion=v; curWritingTopic="custom"; curWritingQ="c"+wrHash(v); curWritingMode="write"; showPage("writingOwn"); showPage("writingOwnWork"); } }
 ]);
 
+// ---- Ideas page for the student's own question ----
+registerFlat("/writing-practice/task-2/own/ideas","writingOwnIdeas");
+
 // ---- Materials: flat pages, some nested under /materials/ielts/ ----
 // matSpeaking listed first under its canonical URL so computePath prefers it;
 // the /materials/ielts/speaking URL still resolves correctly on incoming links.
@@ -2593,6 +2604,8 @@ function __updateTitle(p){
       title="Write Your Own IELTS Writing Task 2 Question | "+base;
     } else if(p==="writingOwnWork"){
       title="IELTS Writing Task 2 \u2014 Your Own Question | "+base;
+    } else if(p==="writingOwnIdeas"){
+      title="Ideas & Vocabulary \u2014 Your Own Question | "+base;
     } else if(p==="materialsIELTS"){
       title="IELTS Study Materials | "+base;
     } else if(p==="materialsGrammar"){
@@ -2726,7 +2739,7 @@ window.addEventListener("popstate",(event)=>{
 });
 function _renderPage(p){
   if(p!=="typingPractice" && typeof tpCleanup==="function") tpCleanup();
-  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingOwnPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
+  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.cssText="display:none";
   });
@@ -2800,6 +2813,7 @@ function _renderPage(p){
       "writingPractice":"writingPracticePage",
       "writingTask2":"writingTask2Page",
       "writingOwn":"writingOwnPage",
+      "writingOwnIdeas":"writingOwnIdeasPage",
       "writingTopic":"writingTopicPage",
       "speakingPractice":"speakingPracticePage",
       "adminPanel":"adminPanelPage"
@@ -2809,6 +2823,7 @@ function _renderPage(p){
       if(el) el.style.cssText="display:block;position:relative;z-index:1;padding:40px 24px 60px;max-width:920px;margin:0 auto;min-height:60vh";
       if(p==="writingTask2") buildWritingTopics();
       if(p==="writingOwn") renderWritingOwn();
+      if(p==="writingOwnIdeas") renderWritingOwnIdeas();
       if(p==="writingTopic") renderWritingTopic();
       if(p==="vocab") setTimeout(()=>renderVocab(VOCAB),50);
       if(p==="activity") setTimeout(()=>loadActivityLog(),50);
@@ -3311,7 +3326,7 @@ async function wrCheckOpen(){
   return v;
 }
 function wrBlockedDialog(){
-  if(document.getElementById("wrBlockedDlg")) return;
+  const prev=document.getElementById("wrBlockedDlg"); if(prev) prev.remove();
   const d=document.createElement("div");
   d.id="wrBlockedDlg";
   d.innerHTML='<div class="bx"><h3>Essay writing is not available yet</h3><p>Essay writing with AI feedback will open soon. You can still read the Ideas &amp; Vocabulary for every question.</p><button onclick="document.getElementById(\'wrBlockedDlg\').remove()">OK</button></div>';
@@ -3347,6 +3362,9 @@ async function wrOwnStart(){
   const v=(document.getElementById("woQ").value||"").replace(/\r\n/g,"\n").split("\n").map(x=>x.trim()).filter(Boolean).join("\n");
   if(v.length<10){ showToast("Please type your question first."); return; }
   if(v.length>1500){ showToast("Your question is too long (maximum 1500 characters)."); return; }
+  wrOwnGo(v);
+}
+async function wrOwnGo(v){
   const ok=await wrCheckOpen();
   if(!ok){ wrBlockedDialog(); return; }
   curOwnQuestion=v;
@@ -3354,6 +3372,104 @@ async function wrOwnStart(){
   curWritingTopic="custom"; curWritingQ="c"+wrHash(v); curWritingMode="write";
   showPage("writingOwnWork");
 }
+// ── WRITING: ideas & vocabulary for the student's own question ──
+let curOwnIdeasId=null;
+function wrDialog(title,text,btn){
+  const old=document.getElementById("wrBlockedDlg"); if(old) old.remove();
+  const d=document.createElement("div"); d.id="wrBlockedDlg";
+  d.innerHTML='<div class="bx"><h3>'+wEsc(title)+'</h3><p>'+wEsc(text)+'</p>'+(btn?'<button onclick="document.getElementById(\'wrBlockedDlg\').remove()">'+wEsc(btn)+'</button>':'')+'</div>';
+  document.body.appendChild(d);
+}
+function wrOwnQuestionText(){
+  return (document.getElementById("woQ").value||"").replace(/\r\n/g,"\n").split("\n").map(x=>x.trim()).filter(Boolean).join("\n");
+}
+function wrOpenIdeasPage(id){
+  curOwnIdeasId=id;
+  try{ sessionStorage.setItem("wr_own_ideas_id",id); }catch(e){}
+  const d=document.getElementById("wrBlockedDlg"); if(d) d.remove();
+  showPage("writingOwnIdeas");
+}
+async function wrOwnIdeas(){
+  const v=wrOwnQuestionText();
+  if(v.length<10){ showToast("Please type your question first."); return; }
+  if(v.length>1500){ showToast("Your question is too long (maximum 1500 characters)."); return; }
+  let session=null;
+  try{ const r=await sb.auth.getSession(); session=r&&r.data&&r.data.session; }catch(e){}
+  if(!currentUser||!session){ wrDialog("Please log in","Please log in to get ideas and vocabulary.","OK"); return; }
+  const ok=await wrCheckOpen();
+  if(!ok){ wrBlockedDialog(); return; }
+  wrDialog("Preparing your ideas…","This takes about 20 to 40 seconds. Please wait here.",null);
+  try{
+    const res=await fetch(SUPABASE_URL+"/functions/v1/mark-writing",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_ANON_KEY},
+      body:JSON.stringify({action:"ideas",question:v})
+    });
+    let data={}; try{ data=await res.json(); }catch(e){}
+    if((res.status===200||res.status===202)&&data.id){
+      if(data.status==="done"){ wrOpenIdeasPage(data.id); return; }
+      wrIdeasPoll(data.id); return;
+    }
+    if(data.code==="not_open"||data.code==="not_approved"){ wrBlockedDialog(); return; }
+    if(res.status===401){ wrDialog("Please log in again","Your login has expired. Please log in again.","OK"); return; }
+    if(data.error&&["limit","busy","bad_question"].indexOf(data.code)>=0){
+      wrDialog(data.code==="limit"?"Daily limit reached":"Cannot make ideas",data.error+(data.next_slot?" You can try again after "+new Date(data.next_slot).toLocaleString()+".":""),"OK"); return;
+    }
+    wrDialog("Ideas are not available right now","Please try again later.","OK");
+  }catch(e){
+    console.error(e);
+    wrDialog("Ideas are not available right now","Please check your internet and try again.","OK");
+  }
+}
+function wrIdeasPoll(id){
+  const t0=Date.now();
+  const tick=async()=>{
+    if(!document.getElementById("wrBlockedDlg")) return; // the student closed the box or moved on
+    let row=null;
+    try{ const r=await sb.from("writing_ideas").select("status,error").eq("id",id).single(); row=r&&r.data; }catch(e){}
+    if(row&&row.status==="done"){ wrOpenIdeasPage(id); return; }
+    if(row&&row.status==="failed"){ wrDialog("Sorry, the ideas could not be made","Something went wrong. This did not use one of your daily tries. Please try again.","OK"); return; }
+    if(Date.now()-t0>3*60*1000){ wrDialog("This is taking too long","Please try again in a few minutes.","OK"); return; }
+    setTimeout(tick,3000);
+  };
+  setTimeout(tick,4000);
+}
+async function renderWritingOwnIdeas(){
+  const body=document.getElementById("woiBody"), qb=document.getElementById("woiQuestion");
+  if(!body||!qb) return;
+  let id=curOwnIdeasId;
+  try{ if(!id) id=sessionStorage.getItem("wr_own_ideas_id"); }catch(e){}
+  qb.innerHTML="";
+  body.innerHTML='<div style="color:var(--muted);font-size:13px;padding:14px 0">Loading…</div>';
+  let row=null;
+  if(id){ try{ const r=await sb.from("writing_ideas").select("question_text,status,content").eq("id",id).single(); row=r&&r.data; }catch(e){} }
+  if(__navStack[__navStack.length-1]!=="writingOwnIdeas") return;
+  if(!row||!row.content){
+    body.innerHTML='<div style="color:var(--muted);font-size:14px;padding:14px 0;line-height:1.7">We could not open this page. Please go back and generate the ideas again.</div>';
+    return;
+  }
+  curOwnQuestion=row.question_text;
+  qb.innerHTML='<div class="wq-text">'+String(row.question_text||"").split(/\n+/).filter(Boolean).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>';
+  const c=row.content; let h="";
+  if(c.question_type) h+='<div class="wi-sec"><span class="wi-kind">'+wEsc(c.question_type)+'</span></div>';
+  h+='<div class="wi-sec"><div class="wi-h">🧠 What this question is asking</div><div class="wi-card"><p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#e8eef5">'+wEsc(c.simple_explanation)+'</p>'
+    +((c.key_parts&&c.key_parts.length)?'<div class="wi-card-t">You must answer:</div><ul>'+c.key_parts.map(k=>'<li><b>'+wEsc(k.part)+'</b> — '+wEsc(k.meaning)+'</li>').join("")+'</ul>':'')+'</div></div>';
+  if((c.do&&c.do.length)||(c.dont&&c.dont.length)){
+    h+='<div class="wi-sec wi-two">'
+      +'<div class="wi-card" style="margin:0"><div class="wi-card-t" style="color:#39b54a">✅ What to do</div><ul>'+(c.do||[]).map(x=>'<li>'+wEsc(x)+'</li>').join("")+'</ul></div>'
+      +'<div class="wi-card" style="margin:0"><div class="wi-card-t" style="color:#e5604d">❌ What not to do</div><ul>'+(c.dont||[]).map(x=>'<li>'+wEsc(x)+'</li>').join("")+'</ul></div></div>';
+  }
+  if(c.plan&&c.plan.length) h+='<div class="wi-sec"><div class="wi-h">🧭 How to plan your answer</div><div class="wi-card"><ol>'+c.plan.map(x=>'<li>'+wEsc(x)+'</li>').join("")+'</ol></div></div>';
+  if(c.ideas&&c.ideas.length) h+='<div class="wi-sec"><div class="wi-h">💡 Ideas you can use</div>'+c.ideas.map(g=>'<div class="wi-card"><div class="wi-card-t">'+wEsc(g.title)+'</div><ul>'+(g.points||[]).map(x=>'<li>'+wEsc(x)+'</li>').join("")+'</ul>'+(g.example?'<div class="wi-ex">Example: '+wEsc(g.example)+'</div>':'')+'</div>').join("")+'</div>';
+  if(c.vocabulary&&c.vocabulary.length) h+='<div class="wi-sec"><div class="wi-h">📚 Useful vocabulary</div><div class="wi-card">'+c.vocabulary.map(v=>'<div class="wo-voc"><b>'+wEsc(v.word)+'</b><div class="m">'+wEsc(v.meaning)+'</div>'+(v.example?'<div class="e">“'+wEsc(v.example)+'”</div>':'')+'</div>').join("")+'</div></div>';
+  body.innerHTML=h;
+  window.scrollTo({top:0});
+}
+function wrOwnWriteFromIdeas(){
+  if(!curOwnQuestion){ showToast("Please go back and open your ideas page again."); return; }
+  wrOwnGo(curOwnQuestion);
+}
+
 async function wrLoadOwnAttempts(){
   if(__woTimer){ clearTimeout(__woTimer); __woTimer=null; }
   const box=document.getElementById("woList"); if(!box) return;
@@ -3364,6 +3480,7 @@ async function wrLoadOwnAttempts(){
       .eq("topic","custom").in("status",["done","pending"]).order("created_at",{ascending:false}).limit(10);
     rows=r&&r.data;
   }catch(e){ rows=null; }
+  wrLoadOwnIdeasList();
   if(!rows) return;
   if(__navStack[__navStack.length-1]!=="writingOwn") return;
   const now=Date.now(); let anyPending=false; __woRows={};
@@ -3381,6 +3498,28 @@ async function wrLoadOwnAttempts(){
   box.querySelectorAll("button[data-v]").forEach(b=>{ b.onclick=()=>wrViewReport(b.getAttribute("data-v")); });
   box.querySelectorAll("button[data-u]").forEach(b=>{ b.onclick=()=>{ const t=document.getElementById("woQ"); t.value=__woRows[b.getAttribute("data-u")]||""; t.focus(); window.scrollTo({top:0,behavior:"smooth"}); }; });
   if(anyPending) __woTimer=setTimeout(wrLoadOwnAttempts,8000);
+}
+
+async function wrLoadOwnIdeasList(){
+  const box=document.getElementById("woIdeasList"); if(!box) return;
+  if(!currentUser){ box.innerHTML=""; return; }
+  let rows=null;
+  try{
+    const r=await sb.from("writing_ideas").select("id,question_text,status,created_at")
+      .in("status",["done","pending"]).order("created_at",{ascending:false}).limit(10);
+    rows=r&&r.data;
+  }catch(e){ rows=null; }
+  if(!rows||__navStack[__navStack.length-1]!=="writingOwn") return;
+  const now=Date.now();
+  rows=rows.filter(x=>!(x.status==="pending"&&now-new Date(x.created_at).getTime()>10*60*1000));
+  if(!rows.length){ box.innerHTML=""; return; }
+  box.innerHTML='<div class="wo-list-t">Your ideas pages (open for free)</div>'+rows.map(x=>{
+    const when=new Date(x.created_at).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+    const qt=String(x.question_text||""); const snip=qt.length>110?qt.slice(0,110)+"…":qt;
+    return '<div class="wo-item"><div class="wo-q">'+wEsc(snip)+'</div><div class="wo-meta"><span>'+wEsc(when)+(x.status==="pending"?' · ⏳ Preparing…':'')+'</span>'
+      +(x.status==="pending"?'':'<button data-o="'+wEsc(x.id)+'">Open ideas</button>')+'</div></div>';
+  }).join("");
+  box.querySelectorAll("button[data-o]").forEach(b=>{ b.onclick=()=>wrOpenIdeasPage(b.getAttribute("data-o")); });
 }
 
 // ── WRITING: the student's last 3 attempts for each question ──
@@ -8572,9 +8711,19 @@ function spPrint(){
     <div class="wq-num">Your question</div>
     <textarea class="wo-ta" id="woQ" maxlength="1500" placeholder="Paste or type your Writing Task 2 question here…" spellcheck="false"></textarea>
     <div class="wo-hint">Only real IELTS Writing Task 2 (essay) questions can be marked. Task 1 questions are not supported yet.</div>
-    <div class="wq-actions" style="display:flex"><button class="wq-btn pri" onclick="wrOwnStart()">✍️ Start writing</button></div>
+    <div class="wq-actions" style="display:flex"><button class="wq-btn" onclick="wrOwnIdeas()">💡 Generate ideas &amp; vocabulary</button><button class="wq-btn pri" onclick="wrOwnStart()">✍️ Start writing</button></div>
   </div>
+  <div id="woIdeasList"></div>
   <div id="woList"></div>
+</div>
+
+<!-- WRITING TASK 2 — IDEAS & VOCABULARY FOR THE STUDENT'S OWN QUESTION -->
+<div class="selpage" id="writingOwnIdeasPage">
+  <div class="ptitle">💡 Ideas &amp; Vocabulary</div>
+  <div class="psub">For your own question</div>
+  <div class="wq-card" id="woiQuestion" style="cursor:default"></div>
+  <div id="woiBody"></div>
+  <div style="margin-top:22px;text-align:center"><button class="prac-btn" style="padding:12px 28px;font-size:14px;cursor:pointer" onclick="wrOwnWriteFromIdeas()">✍️ Write this essay →</button></div>
 </div>
 
 <!-- WRITING TASK 2 — QUESTIONS IN A TOPIC -->
