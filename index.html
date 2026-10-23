@@ -468,7 +468,15 @@ option{background:#fff;color:#1a2e40}
 .wq-text p:last-child{margin-bottom:0}
 .wq-link{cursor:pointer;position:relative;transition:transform .2s,border-color .2s,background .2s}
 .wq-link:hover{transform:translateY(-3px);background:rgba(0,174,239,0.06);border-color:rgba(0,174,239,0.28)}
-.wq-go{position:absolute;top:18px;right:22px;font-size:12px;font-weight:600;color:#00aeef}
+.wq-go{position:absolute;top:16px;right:22px;font-size:16px;font-weight:700;color:#00aeef;transition:transform .2s}
+.wq-card.open .wq-go{transform:rotate(180deg)}
+.wq-card.open{border-color:rgba(0,174,239,0.4);background:rgba(0,174,239,0.05)}
+.wq-actions{display:none;gap:10px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--bor)}
+.wq-card.open .wq-actions{display:flex}
+.wq-btn{padding:10px 18px;border-radius:10px;border:1px solid rgba(0,174,239,0.45);background:transparent;color:#00aeef;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.wq-btn:hover{background:rgba(0,174,239,0.12)}
+.wq-btn.pri{background:#00aeef;color:#04141c;border-color:#00aeef}
+.wq-btn.pri:hover{background:#2cc0f5}
 .wi-sec{margin-top:22px}
 .wi-h{font-size:15px;font-weight:700;color:#fff;margin-bottom:10px}
 .wi-card{background:var(--sur);border:1px solid var(--bor);border-radius:14px;padding:16px 20px;margin-bottom:12px}
@@ -2427,14 +2435,10 @@ makeChain("/writing-practice/task-2","writingTask2",[
     seg:()=>curWritingTopic||null,
     parseSeg:(s)=>(WRITING_DATA.task2&&WRITING_DATA.task2.topics&&WRITING_DATA.task2.topics[s])?s:null,
     enter:(k)=>{ selectWritingTopic(k); } },
-  { pageId:"writingQuestion",
-    seg:()=>curWritingQ?("q"+curWritingQ):null,
-    parseSeg:(s,par)=>{ const m=s.match(/^q(\d+)$/); if(!m) return null; const n=parseInt(m[1],10); const t=WRITING_DATA.task2&&WRITING_DATA.task2.topics&&WRITING_DATA.task2.topics[par.writingTopic]; return (t&&(t.questions||[]).some(q=>q.n===n))?n:null; },
-    enter:(n)=>{ selectWritingQuestion(n); } },
   { pageId:"writingWork",
-    seg:()=>curWritingMode||null,
-    parseSeg:(s)=>(s==="ideas"||s==="write")?s:null,
-    enter:(m)=>{ selectWritingMode(m); } }
+    seg:()=>(curWritingQ&&curWritingMode)?("q"+curWritingQ+"-"+curWritingMode):null,
+    parseSeg:(s,par)=>{ const m=s.match(/^q(\d+)-(ideas|write)$/); if(!m) return null; const n=parseInt(m[1],10); const t=WRITING_DATA.task2&&WRITING_DATA.task2.topics&&WRITING_DATA.task2.topics[par.writingTopic]; return (t&&(t.questions||[]).some(q=>q.n===n))?{n:n,mode:m[2]}:null; },
+    enter:(v)=>{ openWriting(v.n,v.mode); } }
 ]);
 
 // ---- Materials: flat pages, some nested under /materials/ielts/ ----
@@ -2495,8 +2499,6 @@ function __updateTitle(p){
       title="IELTS Writing Task 2 Topics | "+base;
     } else if(p==="writingTopic" && curWritingTopic && WRITING_DATA.task2 && WRITING_DATA.task2.topics[curWritingTopic]){
       title="IELTS Writing Task 2 \u2014 "+WRITING_DATA.task2.topics[curWritingTopic].name+" | "+base;
-    } else if(p==="writingQuestion"){
-      title="IELTS Writing Task 2 \u2014 Question "+curWritingQ+" | "+base;
     } else if(p==="writingWork"){
       title="IELTS Writing Task 2 \u2014 "+(curWritingMode==="write"?"Write Essay":"Ideas & Vocabulary")+" | "+base;
     } else if(p==="materialsIELTS"){
@@ -2631,7 +2633,7 @@ window.addEventListener("popstate",(event)=>{
 });
 function _renderPage(p){
   if(p!=="typingPractice" && typeof tpCleanup==="function") tpCleanup();
-  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingTopicPage","writingQuestionPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
+  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.cssText="display:none";
   });
@@ -2704,7 +2706,6 @@ function _renderPage(p){
       "writingPractice":"writingPracticePage",
       "writingTask2":"writingTask2Page",
       "writingTopic":"writingTopicPage",
-      "writingQuestion":"writingQuestionPage",
       "speakingPractice":"speakingPracticePage",
       "adminPanel":"adminPanelPage"
     };
@@ -2713,7 +2714,6 @@ function _renderPage(p){
       if(el) el.style.cssText="display:block;position:relative;z-index:1;padding:40px 24px 60px;max-width:920px;margin:0 auto;min-height:60vh";
       if(p==="writingTask2") buildWritingTopics();
       if(p==="writingTopic") renderWritingTopic();
-      if(p==="writingQuestion") renderWritingQuestion();
       if(p==="vocab") setTimeout(()=>renderVocab(VOCAB),50);
       if(p==="activity") setTimeout(()=>loadActivityLog(),50);
       if(p==="typingPractice") setTimeout(()=>tpStartFresh(),50);
@@ -2822,6 +2822,7 @@ function buildWritingTopics(){
 }
 function selectWritingTopic(key){
   curWritingTopic=key;
+  curWritingQ=null;
   showPage("writingTopic");
 }
 function renderWritingTopic(){
@@ -2835,9 +2836,17 @@ function renderWritingTopic(){
   document.getElementById("wtpSub").textContent="Writing Task 2 · "+t.name+" · "+(t.questions||[]).length+" questions";
   (t.questions||[]).forEach(q=>{
     const d=document.createElement("div");
-    d.className="wq-card wq-link";
-    d.innerHTML='<div class="wq-num">Question '+wEsc(q.n)+'</div><div class="wq-go">Open →</div><div class="wq-text">'+(q.lines||[]).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>';
-    d.onclick=()=>selectWritingQuestion(q.n);
+    d.className="wq-card wq-link"+(String(curWritingQ)===String(q.n)?" open":"");
+    d.innerHTML='<div class="wq-num">Question '+wEsc(q.n)+'</div><div class="wq-go">▾</div><div class="wq-text">'+(q.lines||[]).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>'
+      +'<div class="wq-actions"><button class="wq-btn" data-m="ideas">💡 See Ideas &amp; Vocabulary</button><button class="wq-btn pri" data-m="write">✍️ Write This Essay</button></div>';
+    d.onclick=()=>{
+      const was=d.classList.contains("open");
+      list.querySelectorAll(".wq-card.open").forEach(x=>x.classList.remove("open"));
+      if(!was) d.classList.add("open");
+    };
+    d.querySelectorAll(".wq-btn").forEach(b=>{
+      b.onclick=(ev)=>{ ev.stopPropagation(); openWriting(q.n,b.getAttribute("data-m")); };
+    });
     list.appendChild(d);
   });
 }
@@ -2852,9 +2861,10 @@ function wrCurQuestion(){
   if(!t) return null;
   return (t.questions||[]).find(q=>String(q.n)===String(curWritingQ))||null;
 }
-function selectWritingQuestion(n){
+function openWriting(n,mode){
   curWritingQ=n;
-  showPage("writingQuestion");
+  curWritingMode=mode;
+  showPage("writingWork");
 }
 function selectWritingMode(mode){
   curWritingMode=mode;
@@ -2862,15 +2872,6 @@ function selectWritingMode(mode){
 }
 function wrQuestionHtml(q){
   return (q.lines||[]).map(l=>'<p>'+wEsc(l)+'</p>').join("");
-}
-function renderWritingQuestion(){
-  const q=wrCurQuestion();
-  const topics=(WRITING_DATA.task2&&WRITING_DATA.task2.topics)||{};
-  const t=topics[curWritingTopic];
-  if(!q||!t) return;
-  document.getElementById("wqpTitle").textContent="Question "+q.n;
-  document.getElementById("wqpSub").textContent="Writing Task 2 · "+t.name;
-  document.getElementById("wqpCard").innerHTML='<div class="wq-text">'+wrQuestionHtml(q)+'</div>';
 }
 function renderWritingIdeas(){
   const q=wrCurQuestion();
@@ -6494,40 +6495,40 @@ function _hmStillUsed(bankId, val, excludeQn){
   </div>
 </div>
 
-<script src="/data-cam6.js?v=20260733c"></script>
-<script src="/data-cam7.js?v=20260733c"></script>
-<script src="/data-cam8.js?v=20260733c"></script>
-<script src="/data-cam9.js?v=20260733c"></script>
-<script src="/data-cam10.js?v=20260733c"></script>
-<script src="/data-cam11.js?v=20260733c"></script>
-<script src="/data-cam12.js?v=20260733c"></script>
-<script src="/data-cam13.js?v=20260733c"></script>
-<script src="/data-cam14.js?v=20260733c"></script>
-<script src="/data-cam15.js?v=20260733c"></script>
-<script src="/data-cam16.js?v=20260733c"></script>
-<script src="/data-cam17.js?v=20260733c"></script>
-<script src="/data-cam18.js?v=20260733c"></script>
-<script src="/data-cam19.js?v=20260733c"></script>
-<script src="/data-cam20.js?v=20260733c"></script>
-<script src="/data-cam21.js?v=20260733c"></script>
+<script src="/data-cam6.js?v=20260733d"></script>
+<script src="/data-cam7.js?v=20260733d"></script>
+<script src="/data-cam8.js?v=20260733d"></script>
+<script src="/data-cam9.js?v=20260733d"></script>
+<script src="/data-cam10.js?v=20260733d"></script>
+<script src="/data-cam11.js?v=20260733d"></script>
+<script src="/data-cam12.js?v=20260733d"></script>
+<script src="/data-cam13.js?v=20260733d"></script>
+<script src="/data-cam14.js?v=20260733d"></script>
+<script src="/data-cam15.js?v=20260733d"></script>
+<script src="/data-cam16.js?v=20260733d"></script>
+<script src="/data-cam17.js?v=20260733d"></script>
+<script src="/data-cam18.js?v=20260733d"></script>
+<script src="/data-cam19.js?v=20260733d"></script>
+<script src="/data-cam20.js?v=20260733d"></script>
+<script src="/data-cam21.js?v=20260733d"></script>
 
-<script src="/data-listening-cam6.js?v=20260733c"></script>
-<script src="/data-listening-cam7.js?v=20260733c"></script>
-<script src="/data-listening-cam8.js?v=20260733c"></script>
-<script src="/data-listening-cam9.js?v=20260733c"></script>
-<script src="/data-listening-cam10.js?v=20260733c"></script>
-<script src="/data-listening-cam11.js?v=20260733c"></script>
-<script src="/data-listening-cam12.js?v=20260733c"></script>
-<script src="/data-listening-cam13.js?v=20260733c"></script>
-<script src="/data-listening-cam14.js?v=20260733c"></script>
-<script src="/data-listening-cam15.js?v=20260733c"></script>
-<script src="/data-listening-cam16.js?v=20260733c"></script>
-<script src="/data-listening-cam17.js?v=20260733c"></script>
-<script src="/data-listening-cam18.js?v=20260733c"></script>
-<script src="/data-listening-cam19.js?v=20260733c"></script>
-<script src="/data-listening-cam20.js?v=20260733c"></script>
-<script src="/data-listening-cam21.js?v=20260733c"></script>
-<script src="/data-writing.js?v=20260733c"></script>
+<script src="/data-listening-cam6.js?v=20260733d"></script>
+<script src="/data-listening-cam7.js?v=20260733d"></script>
+<script src="/data-listening-cam8.js?v=20260733d"></script>
+<script src="/data-listening-cam9.js?v=20260733d"></script>
+<script src="/data-listening-cam10.js?v=20260733d"></script>
+<script src="/data-listening-cam11.js?v=20260733d"></script>
+<script src="/data-listening-cam12.js?v=20260733d"></script>
+<script src="/data-listening-cam13.js?v=20260733d"></script>
+<script src="/data-listening-cam14.js?v=20260733d"></script>
+<script src="/data-listening-cam15.js?v=20260733d"></script>
+<script src="/data-listening-cam16.js?v=20260733d"></script>
+<script src="/data-listening-cam17.js?v=20260733d"></script>
+<script src="/data-listening-cam18.js?v=20260733d"></script>
+<script src="/data-listening-cam19.js?v=20260733d"></script>
+<script src="/data-listening-cam20.js?v=20260733d"></script>
+<script src="/data-listening-cam21.js?v=20260733d"></script>
+<script src="/data-writing.js?v=20260733d"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -6792,7 +6793,7 @@ function filterActivity(type, btn){
   </div>
 </div>
 
-<script src="/typing-practice.js?v=20260733c"></script>
+<script src="/typing-practice.js?v=20260733d"></script>
 <!-- BAND SCORE CALCULATOR -->
 <div class="selpage" id="bandCalculatorPage" style="max-width:760px;width:100%">
   <button class="bk" onclick="goHome()">← Back to Home</button>
@@ -8100,25 +8101,6 @@ function spPrint(){
   <div class="wq-list" id="wtpList"></div>
 </div>
 
-
-<!-- WRITING — ONE QUESTION (choose ideas or write) -->
-<div class="selpage" id="writingQuestionPage">
-  <div class="ptitle" id="wqpTitle">Question</div>
-  <div class="psub" id="wqpSub"></div>
-  <div class="wq-card" id="wqpCard"></div>
-  <div class="folder-grid" style="margin-top:18px">
-    <div class="folder-card" onclick="selectWritingMode('ideas')">
-      <div class="folder-ico">💡</div>
-      <div class="folder-name">See Ideas &amp; Vocabulary</div>
-      <div class="folder-sub">How to plan your answer, ideas for both sides and useful words</div>
-    </div>
-    <div class="folder-card" onclick="selectWritingMode('write')">
-      <div class="folder-ico">✍️</div>
-      <div class="folder-name">Write This Essay</div>
-      <div class="folder-sub">Exam-style screen · 40 minutes · at least 250 words</div>
-    </div>
-  </div>
-</div>
 
 <!-- WRITING — IDEAS & VOCABULARY -->
 <div class="selpage" id="writingIdeasPage">
