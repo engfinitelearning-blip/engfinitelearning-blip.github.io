@@ -516,6 +516,22 @@ option{background:#fff;color:#1a2e40}
 .wr-modal p{font-size:14px;line-height:1.7;margin:0 0 18px;color:#444}
 .wr-modal button{padding:9px 18px;border-radius:8px;border:1px solid #ccc;background:#f4f6f8;font-size:13px;font-weight:600;cursor:pointer;margin:0 4px;font-family:'Poppins',sans-serif}
 .wr-modal button.pri{background:#1a3a4a;color:#fff;border-color:#1a3a4a}
+#wrLeaveBtns{display:none}
+.wq-badge{display:inline-block;margin-left:10px;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px;text-transform:none;background:rgba(57,181,74,.14);color:#39b54a;border:1px solid rgba(57,181,74,.4)}
+.wq-badge.wait{background:rgba(255,193,7,.12);color:#e0a800;border-color:rgba(255,193,7,.4)}
+.wq-hist{display:none;margin-top:14px;padding-top:12px;border-top:1px solid var(--bor)}
+.wq-card.open .wq-hist.has{display:block}
+.wq-hist-t{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.wq-att{color:#e8eef5;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 0;font-size:13px;border-bottom:1px solid var(--bor)}
+.wq-att:last-child{border-bottom:none}
+.wq-att b{color:#39b54a}
+.wq-att button{padding:6px 14px;border-radius:8px;border:1px solid rgba(0,174,239,.45);background:transparent;color:#00aeef;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.wq-att button:hover{background:rgba(0,174,239,.12)}
+#wrBlockedDlg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:3500;padding:20px}
+#wrBlockedDlg .bx{background:#fff;border-radius:12px;padding:26px 28px;max-width:420px;width:100%;color:#222;text-align:center;font-family:'Poppins',sans-serif}
+#wrBlockedDlg h3{margin:0 0 10px;font-size:18px}
+#wrBlockedDlg p{font-size:14px;line-height:1.7;margin:0 0 18px;color:#444}
+#wrBlockedDlg button{padding:9px 22px;border-radius:8px;border:none;background:#1a3a4a;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
 .wrp-overlay{position:fixed;inset:0;z-index:3000;background:#e9edf0;display:flex;flex-direction:column;font-family:'Poppins',sans-serif;color:#222}
 .wrp-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 18px;background:#1a3a4a;color:#fff;flex-shrink:0}
 .wrp-bar-t{font-weight:600;font-size:14px}
@@ -2660,6 +2676,7 @@ function __restoreFromSnapshot(state){
 // restore it directly; otherwise (e.g. the very first entry, or a path typed
 // in manually) we fall back to the same resolution used on initial page load.
 window.addEventListener("popstate",(event)=>{
+  if(typeof wrInterceptBack==="function" && wrInterceptBack()) return;
   __suppressHistoryPush=true;
   try{
     if(event.state && event.state.navStack){
@@ -2735,8 +2752,7 @@ function _renderPage(p){
     startTrackingTime();
   } else if(p==="writingWork"){
     if(curWritingMode==="write"){
-      document.getElementById("writingEditorPage").style.display="flex";
-      wrOpenEditor();
+      wrEnterEditor();
     } else {
       const ip=document.getElementById("writingIdeasPage");
       ip.style.cssText="display:block;position:relative;z-index:1;padding:40px 24px 60px;max-width:920px;margin:0 auto;min-height:60vh";
@@ -2891,18 +2907,21 @@ function renderWritingTopic(){
   (t.questions||[]).forEach(q=>{
     const d=document.createElement("div");
     d.className="wq-card wq-link"+(String(curWritingQ)===String(q.n)?" open":"");
-    d.innerHTML='<div class="wq-num">Question '+wEsc(q.n)+'</div><div class="wq-go">▾</div><div class="wq-text">'+(q.lines||[]).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>'
-      +'<div class="wq-actions"><button class="wq-btn" data-m="ideas">💡 See Ideas &amp; Vocabulary</button><button class="wq-btn pri" data-m="write">✍️ Write This Essay</button></div>';
+    d.innerHTML='<div class="wq-num">Question '+wEsc(q.n)+'<span class="wq-badge" id="wqb_'+wEsc(q.n)+'" style="display:none"></span></div><div class="wq-go">▾</div><div class="wq-text">'+(q.lines||[]).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>'
+      +'<div class="wq-actions"><button class="wq-btn" data-m="ideas">💡 See Ideas &amp; Vocabulary</button><button class="wq-btn pri" data-m="write">✍️ Write This Essay</button></div>'
+      +'<div class="wq-hist" id="wqh_'+wEsc(q.n)+'"></div>';
     d.onclick=()=>{
       const was=d.classList.contains("open");
       list.querySelectorAll(".wq-card.open").forEach(x=>x.classList.remove("open"));
       if(!was) d.classList.add("open");
     };
     d.querySelectorAll(".wq-btn").forEach(b=>{
-      b.onclick=(ev)=>{ ev.stopPropagation(); openWriting(q.n,b.getAttribute("data-m")); };
+      b.onclick=(ev)=>{ ev.stopPropagation(); if(b.getAttribute("data-m")==="write") wrStartWrite(q.n); else openWriting(q.n,b.getAttribute("data-m")); };
     });
+    const hs=d.querySelector(".wq-hist"); if(hs) hs.onclick=(ev)=>ev.stopPropagation();
     list.appendChild(d);
   });
+  wrLoadAttempts();
 }
 
 
@@ -2948,7 +2967,10 @@ function renderWritingIdeas(){
   }
   document.getElementById("wipBody").innerHTML=html;
 }
-function wrDraftKey(){ return "wrdraft_t2_"+curWritingTopic+"_"+curWritingQ; }
+function wrDraftKey(){ return "wrsaved_t2_"+curWritingTopic+"_"+curWritingQ; }
+// One-time clean-up: essays used to be saved automatically on every key press. They are not kept any more.
+(function(){ try{ Object.keys(localStorage).forEach(k=>{ if(k.indexOf("wrdraft_t2_")===0) localStorage.removeItem(k); }); }catch(e){} })();
+let __wrSavedText="",__wrLeaving=false;
 function wrClearTimer(){
   if(__wrTimer){ clearInterval(__wrTimer); __wrTimer=null; }
   __wrPollStop=true; __wrBusy=false;
@@ -2970,7 +2992,6 @@ function wrOnInput(){
   const n=wrCountWords(ta.value);
   document.getElementById("wrWords").textContent=n;
   document.getElementById("wrWordsBox").classList.toggle("ok",n>=250);
-  try{ localStorage.setItem(wrDraftKey(),ta.value); }catch(e){}
 }
 function wrOpenEditor(){
   const q=wrCurQuestion();
@@ -2987,6 +3008,7 @@ function wrOpenEditor(){
   let draft="";
   try{ draft=localStorage.getItem(wrDraftKey())||""; }catch(e){}
   ta.value=draft;
+  __wrSavedText=draft; __wrLeaving=false;
   wrOnInput();
   wrClearTimer();
   __wrStart=Date.now();
@@ -3004,6 +3026,7 @@ function wrSetModal(title,text,showBtns){
   document.getElementById("wrModalTitle").textContent=title;
   document.getElementById("wrModalText").textContent=text;
   document.getElementById("wrModalBtns").style.display=showBtns?"":"none";
+  document.getElementById("wrLeaveBtns").style.display="none";
   document.getElementById("wrOverlay").style.display="flex";
 }
 async function wrSubmit(){
@@ -3014,12 +3037,13 @@ async function wrSubmit(){
   const mins=Math.floor(el/60);
   let fallback="You wrote "+n+" word"+(n===1?"":"s")+" in "+mins+" minute"+(mins===1?"":"s")+". ";
   if(n<250) fallback+="IELTS Task 2 needs at least 250 words. ";
-  fallback+="Your essay is saved on this device. AI feedback is coming soon.";
+  fallback+="AI marking is not available for your account yet. Your essay is still on this page. Press Save if you want to keep it on this device.";
   const soon=()=>wrSetModal("Essay saved",fallback,true);
   let session=null;
   try{ const r=await sb.auth.getSession(); session=r&&r.data&&r.data.session; }catch(e){}
   const q=wrCurQuestion();
-  if(!session||!q){ soon(); return; }
+  if(!q){ soon(); return; }
+  if(!session){ wrSetModal("Please log in","Please log in to submit your essay for marking. Your essay is still on this page. Press Save if you want to keep it on this device.",true); return; }
   __wrBusy=true; __wrPollStop=false;
   wrSetModal("Sending your essay…","Please wait a moment.",false);
   try{
@@ -3032,16 +3056,16 @@ async function wrSubmit(){
     if(res.status===202&&data.id){ wrPoll(data.id); return; }
     __wrBusy=false;
     if(data.code==="not_open"||data.code==="not_approved"){ soon(); return; }
-    if(res.status===401){ wrSetModal("Please log in again","Your login has expired. Your essay is saved on this device.",true); return; }
+    if(res.status===401){ wrSetModal("Please log in again","Your login has expired. Your essay is still on this page. Press Save to keep it on this device.",true); return; }
     if(data.error&&["limit","busy","too_short","too_long","bad_question"].indexOf(data.code)>=0){
       wrSetModal(data.code==="limit"?"Daily limit reached":"Cannot mark this essay",
-        data.error+(data.next_slot?" You can send another essay after "+new Date(data.next_slot).toLocaleString()+".":"")+" Your essay is saved on this device.",true);
+        data.error+(data.next_slot?" You can send another essay after "+new Date(data.next_slot).toLocaleString()+".":"")+" Your essay is still on this page. Press Save to keep it on this device.",true);
       return;
     }
-    wrSetModal("AI marking is not available right now","Your essay is saved on this device. Please try again later.",true);
+    wrSetModal("AI marking is not available right now","Your essay is still on this page. Press Save to keep it on this device. Please try again later.",true);
   }catch(e){
     __wrBusy=false; console.error(e);
-    wrSetModal("AI marking is not available right now","Your essay is saved on this device. Please check your internet and try again.",true);
+    wrSetModal("AI marking is not available right now","Your essay is still on this page. Press Save to keep it on this device. Please check your internet and try again.",true);
   }
 }
 function wrPoll(id){
@@ -3053,16 +3077,19 @@ function wrPoll(id){
     try{ const r=await sb.from("writing_submissions").select("status,error,result").eq("id",id).single(); row=r&&r.data; }catch(e){}
     if(__wrPollStop){ __wrBusy=false; return; }
     if(row&&row.status==="done"&&row.result){
-      __wrBusy=false; document.getElementById("wrOverlay").style.display="none"; wrShowReport(row.result); return;
+      __wrBusy=false; document.getElementById("wrOverlay").style.display="none";
+      try{ localStorage.removeItem(wrDraftKey()); }catch(e){}
+      __wrSavedText=document.getElementById("wrText").value;
+      wrShowReport(row.result); return;
     }
     if(row&&row.status==="failed"){
       __wrBusy=false;
-      wrSetModal("Sorry, marking failed","Something went wrong while marking. This did not use up one of your daily essays. Your essay is saved on this device. Please try again.",true);
+      wrSetModal("Sorry, marking failed","Something went wrong while marking. This did not use up one of your daily essays. Your essay is still on this page. Press Save to keep it on this device. Please try again.",true);
       return;
     }
     if(Date.now()-t0>5*60*1000){
       __wrBusy=false;
-      wrSetModal("This is taking too long","Marking did not finish. Please try again in a few minutes. Your essay is saved on this device.",true);
+      wrSetModal("This is taking too long","Marking did not finish. Please try again in a few minutes. Your essay is still on this page. Press Save to keep it on this device.",true);
       return;
     }
     __wrPollTimer=setTimeout(tick,4000);
@@ -3197,10 +3224,126 @@ function wrpPrint(){
   window.print();
 }
 function wrCloseModal(){ document.getElementById("wrOverlay").style.display="none"; }
-function wrExit(){
+function wrSave(){
+  const ta=document.getElementById("wrText"); const v=ta?ta.value:"";
+  if(!v.trim()){ showToast("Nothing to save yet."); return false; }
+  try{ localStorage.setItem(wrDraftKey(),v); __wrSavedText=v; showToast("Saved on this device ✓"); return true; }
+  catch(e){ showToast("Could not save on this device."); return false; }
+}
+function wrHasUnsaved(){
+  const ta=document.getElementById("wrText"); const v=ta?ta.value:"";
+  return !!v.trim() && v!==__wrSavedText;
+}
+function wrAskLeave(){
+  document.getElementById("wrModalTitle").textContent="Save your essay?";
+  document.getElementById("wrModalText").textContent="Do you want to save your essay on this device, so you can continue writing later?";
+  document.getElementById("wrModalBtns").style.display="none";
+  document.getElementById("wrLeaveBtns").style.display="block";
+  document.getElementById("wrOverlay").style.display="flex";
+}
+function wrLeaveNow(){
+  __wrLeaving=true;
   wrClearTimer();
   document.getElementById("wrOverlay").style.display="none";
   navGoBack();
+}
+function wrLeaveSave(){ if(wrSave()) wrLeaveNow(); }
+function wrExit(){
+  if(wrHasUnsaved()){ wrAskLeave(); return; }
+  wrLeaveNow();
+}
+// Browser Back button / swipe-back from the editor: ask first if there is unsaved text.
+function wrInterceptBack(){
+  const ed=document.getElementById("writingEditorPage");
+  if(!ed||ed.style.display!=="flex") return false;
+  if(__wrLeaving){ __wrLeaving=false; return false; }
+  if(__wrBusy||!wrHasUnsaved()) return false;
+  try{ history.pushState(__snapshotState(),"",__computePath("writingWork")); }catch(e){}
+  wrAskLeave();
+  return true;
+}
+
+// Refresh / closing the tab while the editor holds unsaved text: show the browser's own "Leave site?" warning.
+window.addEventListener("beforeunload",function(e){
+  try{
+    const ed=document.getElementById("writingEditorPage");
+    if(ed&&ed.style.display==="flex"&&wrHasUnsaved()){ e.preventDefault(); e.returnValue=""; return ""; }
+  }catch(err){}
+});
+
+// ── WRITING: is AI marking open for this student? (decides if the editor can be opened) ──
+let __wrOpenCache=null;
+async function wrCheckOpen(){
+  if(__wrOpenCache&&Date.now()-__wrOpenCache.t<30000) return __wrOpenCache.v;
+  let v=false;
+  try{ const r=await sb.rpc("ai_marking_open"); v=!!(r&&r.data===true); }catch(e){ v=false; }
+  __wrOpenCache={v:v,t:Date.now()};
+  return v;
+}
+function wrBlockedDialog(){
+  if(document.getElementById("wrBlockedDlg")) return;
+  const d=document.createElement("div");
+  d.id="wrBlockedDlg";
+  d.innerHTML='<div class="bx"><h3>Essay writing is not available yet</h3><p>Essay writing with AI feedback will open soon. You can still read the Ideas &amp; Vocabulary for every question.</p><button onclick="document.getElementById(\'wrBlockedDlg\').remove()">OK</button></div>';
+  document.body.appendChild(d);
+}
+async function wrStartWrite(n){
+  const ok=await wrCheckOpen();
+  if(!ok){ wrBlockedDialog(); return; }
+  openWriting(n,"write");
+}
+async function wrEnterEditor(){
+  const ok=await wrCheckOpen();
+  if(__navStack[__navStack.length-1]!=="writingWork"||curWritingMode!=="write") return;
+  if(ok){ document.getElementById("writingEditorPage").style.display="flex"; wrOpenEditor(); }
+  else { showPage("writingTopic"); wrBlockedDialog(); }
+}
+
+// ── WRITING: the student's last 3 attempts for each question ──
+let __wrAttTimer=null;
+async function wrLoadAttempts(){
+  if(__wrAttTimer){ clearTimeout(__wrAttTimer); __wrAttTimer=null; }
+  if(!currentUser||!curWritingTopic) return;
+  let rows=null;
+  try{
+    const r=await sb.from("writing_submissions").select("id,question_no,status,created_at,overall:result->overall")
+      .eq("topic",curWritingTopic).in("status",["done","pending"]).order("created_at",{ascending:false}).limit(80);
+    rows=r&&r.data;
+  }catch(e){ rows=null; }
+  if(!rows) return;
+  if(__navStack[__navStack.length-1]!=="writingTopic") return;
+  const now=Date.now(), by={}; let anyPending=false;
+  rows.forEach(x=>{
+    if(x.status==="pending"){ if(now-new Date(x.created_at).getTime()>10*60*1000) return; anyPending=true; }
+    const k=String(x.question_no); (by[k]=by[k]||[]); if(by[k].length<3) by[k].push(x);
+  });
+  document.querySelectorAll("#wtpList .wq-badge").forEach(b=>{
+    const k=b.id.replace("wqb_",""); const a=by[k]; const h=document.getElementById("wqh_"+k);
+    if(!a||!a.length){ b.style.display="none"; if(h){ h.className="wq-hist"; h.innerHTML=""; } return; }
+    const first=a[0];
+    if(first.status==="pending"){ b.className="wq-badge wait"; b.textContent="⏳ Marking…"; }
+    else { b.className="wq-badge"; b.textContent="✓ Done"+(first.overall!=null?" · Band "+wrBandStr(first.overall):""); }
+    b.style.display="";
+    if(h){
+      h.className="wq-hist has";
+      h.innerHTML='<div class="wq-hist-t">Your last '+(a.length===1?"attempt":a.length+" attempts")+'</div>'+a.map(x=>{
+        const when=new Date(x.created_at).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+        return x.status==="pending"
+          ? '<div class="wq-att"><span>'+wEsc(when)+' · Marking…</span></div>'
+          : '<div class="wq-att"><span>'+wEsc(when)+' · <b>'+(x.overall!=null?"Band "+wrBandStr(x.overall):"Done")+'</b></span><button data-id="'+wEsc(x.id)+'">View report</button></div>';
+      }).join("");
+      h.querySelectorAll("button[data-id]").forEach(btn=>{ btn.onclick=(ev)=>{ ev.stopPropagation(); wrViewReport(btn.getAttribute("data-id")); }; });
+    }
+  });
+  if(anyPending) __wrAttTimer=setTimeout(wrLoadAttempts,8000);
+}
+async function wrViewReport(id){
+  showToast("Loading your report…");
+  try{
+    const r=await sb.from("writing_submissions").select("result").eq("id",id).single();
+    if(r&&r.data&&r.data.result){ wrShowReport(r.data.result); return; }
+  }catch(e){}
+  showToast("Could not open this report. Please try again.");
 }
 
 function goHome(){
@@ -8350,7 +8493,7 @@ function spPrint(){
   <div class="psub" id="wipSub"></div>
   <div class="wq-card" id="wipQuestion"></div>
   <div id="wipBody"></div>
-  <div style="margin-top:22px;text-align:center"><button class="prac-btn" style="padding:12px 28px;font-size:14px;cursor:pointer" onclick="selectWritingMode('write')">✍️ Write this essay →</button></div>
+  <div style="margin-top:22px;text-align:center"><button class="prac-btn" style="padding:12px 28px;font-size:14px;cursor:pointer" onclick="wrStartWrite(curWritingQ)">✍️ Write this essay →</button></div>
 </div>
 
 <!-- WRITING — EXAM-STYLE EDITOR -->
@@ -8364,6 +8507,7 @@ function spPrint(){
       <div class="wr-timer" id="wrTimerBox">⏱ <span id="wrTimer">00:00</span></div>
       <div class="wr-words" id="wrWordsBox">Words: <span id="wrWords">0</span></div>
       <button class="wr-btn" id="wrToggleQ" onclick="wrToggleQuestion()">Hide question</button>
+      <button class="wr-btn" onclick="wrSave()">💾 Save</button>
       <button class="wr-submit" onclick="wrSubmit()">Submit</button>
       <button class="wr-btn" onclick="wrExit()">✕ Exit</button>
     </div>
@@ -8383,6 +8527,7 @@ function spPrint(){
       <p id="wrModalText"></p>
       <div id="wrModalBtns"><button onclick="wrCloseModal()">Keep writing</button>
       <button class="pri" onclick="wrExit()">Finish &amp; exit</button></div>
+      <div id="wrLeaveBtns"><button class="pri" onclick="wrLeaveSave()">Yes, save</button><button onclick="wrLeaveNow()">No, don't save</button><button onclick="wrCloseModal()">Keep writing</button></div>
     </div>
   </div>
 </div>
