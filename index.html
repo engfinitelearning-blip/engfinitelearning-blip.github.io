@@ -3057,7 +3057,7 @@ async function wrSubmit(){
     __wrBusy=false;
     if(data.code==="not_open"||data.code==="not_approved"){ soon(); return; }
     if(res.status===401){ wrSetModal("Please log in again","Your login has expired. Your essay is still on this page. Press Save to keep it on this device.",true); return; }
-    if(data.error&&["limit","busy","too_short","too_long","bad_question"].indexOf(data.code)>=0){
+    if(data.error&&["limit","busy","too_short","too_long","bad_question","off_topic","not_essay"].indexOf(data.code)>=0){
       wrSetModal(data.code==="limit"?"Daily limit reached":"Cannot mark this essay",
         data.error+(data.next_slot?" You can send another essay after "+new Date(data.next_slot).toLocaleString()+".":"")+" Your essay is still on this page. Press Save to keep it on this device.",true);
       return;
