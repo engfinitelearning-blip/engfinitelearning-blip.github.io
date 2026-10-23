@@ -527,6 +527,16 @@ option{background:#fff;color:#1a2e40}
 .wq-att b{color:#39b54a}
 .wq-att button{padding:6px 14px;border-radius:8px;border:1px solid rgba(0,174,239,.45);background:transparent;color:#00aeef;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
 .wq-att button:hover{background:rgba(0,174,239,.12)}
+.wo-ta{width:100%;min-height:130px;box-sizing:border-box;margin-top:6px;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:#e8eef5;font-size:14px;line-height:1.6;font-family:'Poppins',sans-serif;resize:vertical}
+.wo-ta:focus{outline:none;border-color:rgba(0,174,239,.6)}
+.wo-hint{font-size:12px;color:var(--muted);margin-top:8px}
+.wo-list-t{font-size:13px;font-weight:700;color:var(--muted);margin:26px 0 10px;text-transform:uppercase;letter-spacing:.5px}
+.wo-item{background:var(--sur);border:1px solid var(--bor);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.wo-q{font-size:13.5px;line-height:1.6;color:#e8eef5;margin-bottom:8px}
+.wo-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:#cfd8e3}
+.wo-meta b{color:#39b54a}
+.wo-meta button{padding:6px 14px;border-radius:8px;border:1px solid rgba(0,174,239,.45);background:transparent;color:#00aeef;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.wo-meta button:hover{background:rgba(0,174,239,.12)}
 #wrBlockedDlg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:3500;padding:20px}
 #wrBlockedDlg .bx{background:#fff;border-radius:12px;padding:26px 28px;max-width:420px;width:100%;color:#222;text-align:center;font-family:'Poppins',sans-serif}
 #wrBlockedDlg h3{margin:0 0 10px;font-size:18px}
@@ -2511,6 +2521,14 @@ makeChain("/writing-practice/task-2","writingTask2",[
     enter:(v)=>{ openWriting(v.n,v.mode); } }
 ]);
 
+// ---- Writing Task 2, student's own question: /writing-practice/task-2/own/write ----
+makeChain("/writing-practice/task-2/own","writingOwn",[
+  { pageId:"writingOwnWork",
+    seg:()=>curOwnQuestion?"write":null,
+    parseSeg:(s)=>{ if(s!=="write") return null; let v=""; try{ v=sessionStorage.getItem("wr_own_q")||""; }catch(e){} return v?v:null; },
+    enter:(v)=>{ curOwnQuestion=v; curWritingTopic="custom"; curWritingQ="c"+wrHash(v); curWritingMode="write"; showPage("writingOwn"); showPage("writingOwnWork"); } }
+]);
+
 // ---- Materials: flat pages, some nested under /materials/ielts/ ----
 // matSpeaking listed first under its canonical URL so computePath prefers it;
 // the /materials/ielts/speaking URL still resolves correctly on incoming links.
@@ -2571,6 +2589,10 @@ function __updateTitle(p){
       title="IELTS Writing Task 2 \u2014 "+WRITING_DATA.task2.topics[curWritingTopic].name+" | "+base;
     } else if(p==="writingWork"){
       title="IELTS Writing Task 2 \u2014 "+(curWritingMode==="write"?"Write Essay":"Ideas & Vocabulary")+" | "+base;
+    } else if(p==="writingOwn"){
+      title="Write Your Own IELTS Writing Task 2 Question | "+base;
+    } else if(p==="writingOwnWork"){
+      title="IELTS Writing Task 2 \u2014 Your Own Question | "+base;
     } else if(p==="materialsIELTS"){
       title="IELTS Study Materials | "+base;
     } else if(p==="materialsGrammar"){
@@ -2704,7 +2726,7 @@ window.addEventListener("popstate",(event)=>{
 });
 function _renderPage(p){
   if(p!=="typingPractice" && typeof tpCleanup==="function") tpCleanup();
-  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
+  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingOwnPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.cssText="display:none";
   });
@@ -2714,7 +2736,7 @@ function _renderPage(p){
   if(lex) lex.style.display="none";
   const wre=document.getElementById("writingEditorPage");
   if(wre) wre.style.display="none";
-  if(p!=="writingWork") wrClearTimer();
+  if(p!=="writingWork"&&p!=="writingOwnWork") wrClearTimer();
   if(p==="home"){
     document.getElementById("homePage").style.cssText="display:block;position:relative;z-index:1";
     updateHomeStats();
@@ -2750,6 +2772,8 @@ function _renderPage(p){
   } else if(p==="exam"){
     document.getElementById("examPage").style.display="flex";
     startTrackingTime();
+  } else if(p==="writingOwnWork"){
+    wrEnterEditor();
   } else if(p==="writingWork"){
     if(curWritingMode==="write"){
       wrEnterEditor();
@@ -2775,6 +2799,7 @@ function _renderPage(p){
       "studyPlan":"studyPlanPage",
       "writingPractice":"writingPracticePage",
       "writingTask2":"writingTask2Page",
+      "writingOwn":"writingOwnPage",
       "writingTopic":"writingTopicPage",
       "speakingPractice":"speakingPracticePage",
       "adminPanel":"adminPanelPage"
@@ -2783,6 +2808,7 @@ function _renderPage(p){
       const el=document.getElementById(pageMap[p]);
       if(el) el.style.cssText="display:block;position:relative;z-index:1;padding:40px 24px 60px;max-width:920px;margin:0 auto;min-height:60vh";
       if(p==="writingTask2") buildWritingTopics();
+      if(p==="writingOwn") renderWritingOwn();
       if(p==="writingTopic") renderWritingTopic();
       if(p==="vocab") setTimeout(()=>renderVocab(VOCAB),50);
       if(p==="activity") setTimeout(()=>loadActivityLog(),50);
@@ -2926,10 +2952,14 @@ function renderWritingTopic(){
 
 
 // ── WRITING TASK 2: one question, ideas, editor ───
-let curWritingQ=null,curWritingMode=null;
+let curWritingQ=null,curWritingMode=null,curOwnQuestion="";
 let __wrTimer=null,__wrStart=0;
 let __wrBusy=false,__wrPollTimer=null,__wrPollStop=false;
 function wrCurQuestion(){
+  if(curWritingTopic==="custom"){
+    if(!curOwnQuestion) return null;
+    return {n:curWritingQ,lines:curOwnQuestion.split(/\n+/).map(x=>x.trim()).filter(Boolean)};
+  }
   const topics=(WRITING_DATA.task2&&WRITING_DATA.task2.topics)||{};
   const t=topics[curWritingTopic];
   if(!t) return null;
@@ -2996,10 +3026,10 @@ function wrOnInput(){
 function wrOpenEditor(){
   const q=wrCurQuestion();
   const topics=(WRITING_DATA.task2&&WRITING_DATA.task2.topics)||{};
-  const t=topics[curWritingTopic];
+  const t=(curWritingTopic==="custom")?{name:"Your own question"}:topics[curWritingTopic];
   if(!q||!t) return;
   document.getElementById("wrTitle").textContent="Writing Task 2 — "+t.name;
-  document.getElementById("wrSub").textContent="Question "+q.n;
+  document.getElementById("wrSub").textContent=(curWritingTopic==="custom")?"":"Question "+q.n;
   document.getElementById("wrQBox").innerHTML=wrQuestionHtml(q);
   document.getElementById("wrQPane").style.display="";
   document.getElementById("wrToggleQ").textContent="Hide question";
@@ -3258,7 +3288,7 @@ function wrInterceptBack(){
   if(!ed||ed.style.display!=="flex") return false;
   if(__wrLeaving){ __wrLeaving=false; return false; }
   if(__wrBusy||!wrHasUnsaved()) return false;
-  try{ history.pushState(__snapshotState(),"",__computePath("writingWork")); }catch(e){}
+  try{ history.pushState(__snapshotState(),"",__computePath(__navStack[__navStack.length-1])); }catch(e){}
   wrAskLeave();
   return true;
 }
@@ -3293,10 +3323,64 @@ async function wrStartWrite(n){
   openWriting(n,"write");
 }
 async function wrEnterEditor(){
+  const own=(curWritingTopic==="custom");
   const ok=await wrCheckOpen();
-  if(__navStack[__navStack.length-1]!=="writingWork"||curWritingMode!=="write") return;
+  if(__navStack[__navStack.length-1]!==(own?"writingOwnWork":"writingWork")||curWritingMode!=="write") return;
   if(ok){ document.getElementById("writingEditorPage").style.display="flex"; wrOpenEditor(); }
-  else { showPage("writingTopic"); wrBlockedDialog(); }
+  else { showPage(own?"writingOwn":"writingTopic"); wrBlockedDialog(); }
+}
+
+// ── WRITING: the student's own question ──
+function wrHash(s){ let h=5381; for(let i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))|0; } return (h>>>0).toString(36); }
+async function wrOwnOpen(){
+  const ok=await wrCheckOpen();
+  if(!ok){ wrBlockedDialog(); return; }
+  showPage("writingOwn");
+}
+let __woTimer=null,__woRows={};
+function renderWritingOwn(){
+  const ta=document.getElementById("woQ");
+  if(ta&&!ta.value&&curOwnQuestion) ta.value=curOwnQuestion;
+  wrLoadOwnAttempts();
+}
+async function wrOwnStart(){
+  const v=(document.getElementById("woQ").value||"").replace(/\r\n/g,"\n").split("\n").map(x=>x.trim()).filter(Boolean).join("\n");
+  if(v.length<10){ showToast("Please type your question first."); return; }
+  if(v.length>1500){ showToast("Your question is too long (maximum 1500 characters)."); return; }
+  const ok=await wrCheckOpen();
+  if(!ok){ wrBlockedDialog(); return; }
+  curOwnQuestion=v;
+  try{ sessionStorage.setItem("wr_own_q",v); }catch(e){}
+  curWritingTopic="custom"; curWritingQ="c"+wrHash(v); curWritingMode="write";
+  showPage("writingOwnWork");
+}
+async function wrLoadOwnAttempts(){
+  if(__woTimer){ clearTimeout(__woTimer); __woTimer=null; }
+  const box=document.getElementById("woList"); if(!box) return;
+  if(!currentUser){ box.innerHTML=""; return; }
+  let rows=null;
+  try{
+    const r=await sb.from("writing_submissions").select("id,question_text,status,created_at,overall:result->overall")
+      .eq("topic","custom").in("status",["done","pending"]).order("created_at",{ascending:false}).limit(10);
+    rows=r&&r.data;
+  }catch(e){ rows=null; }
+  if(!rows) return;
+  if(__navStack[__navStack.length-1]!=="writingOwn") return;
+  const now=Date.now(); let anyPending=false; __woRows={};
+  rows=rows.filter(x=>{ if(x.status==="pending"){ if(now-new Date(x.created_at).getTime()>10*60*1000) return false; anyPending=true; } return true; });
+  if(!rows.length){ box.innerHTML=""; return; }
+  rows.forEach(x=>{ __woRows[x.id]=x.question_text; });
+  box.innerHTML='<div class="wo-list-t">Your recent essays</div>'+rows.map(x=>{
+    const when=new Date(x.created_at).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+    const qt=String(x.question_text||""); const snip=qt.length>110?qt.slice(0,110)+"…":qt;
+    const res=x.status==="pending"?'⏳ Marking…':'<b>'+(x.overall!=null?"Band "+wrBandStr(x.overall):"Done")+'</b>';
+    return '<div class="wo-item"><div class="wo-q">'+wEsc(snip)+'</div><div class="wo-meta"><span>'+wEsc(when)+' · '+res+'</span>'
+      +(x.status==="pending"?'':'<button data-v="'+wEsc(x.id)+'">View report</button>')
+      +'<button data-u="'+wEsc(x.id)+'">Use this question again</button></div></div>';
+  }).join("");
+  box.querySelectorAll("button[data-v]").forEach(b=>{ b.onclick=()=>wrViewReport(b.getAttribute("data-v")); });
+  box.querySelectorAll("button[data-u]").forEach(b=>{ b.onclick=()=>{ const t=document.getElementById("woQ"); t.value=__woRows[b.getAttribute("data-u")]||""; t.focus(); window.scrollTo({top:0,behavior:"smooth"}); }; });
+  if(anyPending) __woTimer=setTimeout(wrLoadOwnAttempts,8000);
 }
 
 // ── WRITING: the student's last 3 attempts for each question ──
@@ -8476,7 +8560,21 @@ function spPrint(){
 <div class="selpage" id="writingTask2Page">
   <div class="ptitle">📝 Writing Task 2</div>
   <div class="psub">Choose a topic</div>
+  <div class="folder-grid" style="margin-bottom:18px"><div class="folder-card" onclick="wrOwnOpen()"><div class="folder-ico">✍️</div><div class="folder-name">Write your own question</div><div class="folder-sub">Type your own question and get AI feedback</div></div></div>
   <div class="folder-grid" id="wt2grid"></div>
+</div>
+
+<!-- WRITING TASK 2 — YOUR OWN QUESTION -->
+<div class="selpage" id="writingOwnPage">
+  <div class="ptitle">✍️ Write your own question</div>
+  <div class="psub">Type or paste a real IELTS Writing Task 2 question. Then write your essay and get AI feedback.</div>
+  <div class="wq-card" style="cursor:default">
+    <div class="wq-num">Your question</div>
+    <textarea class="wo-ta" id="woQ" maxlength="1500" placeholder="Paste or type your Writing Task 2 question here…" spellcheck="false"></textarea>
+    <div class="wo-hint">Only real IELTS Writing Task 2 (essay) questions can be marked. Task 1 questions are not supported yet.</div>
+    <div class="wq-actions" style="display:flex"><button class="wq-btn pri" onclick="wrOwnStart()">✍️ Start writing</button></div>
+  </div>
+  <div id="woList"></div>
 </div>
 
 <!-- WRITING TASK 2 — QUESTIONS IN A TOPIC -->
