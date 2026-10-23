@@ -461,6 +461,11 @@ option{background:#fff;color:#1a2e40}
 .folder-card:hover:not(.locked){transform:translateY(-5px);background:rgba(0,174,239,0.06);border-color:rgba(0,174,239,0.28)}
 .folder-card.locked{opacity:0.4;cursor:not-allowed}
 .folder-ico{font-size:42px;margin-bottom:14px}
+.wq-list{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+.wq-card{background:var(--sur);border:1px solid var(--bor);border-radius:16px;padding:20px 22px}
+.wq-num{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#00aeef;margin-bottom:8px}
+.wq-text p{margin:0 0 8px;line-height:1.7;font-size:14.5px;color:#e8eef5}
+.wq-text p:last-child{margin-bottom:0}
 .folder-name{font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
 .folder-sub{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}
 .folder-count{font-size:11px;font-weight:600;color:var(--blue);background:rgba(0,174,239,0.08);border:1px solid rgba(0,174,239,0.18);padding:3px 12px;border-radius:20px;display:inline-block}
@@ -2228,6 +2233,7 @@ body.dark-mode .lst-map-img{
 const DATA = {};
 
 const LISTENING_DATA = {}; // Loaded from data-listening-cam11.js ... data-listening-cam21.js
+const WRITING_DATA = {}; // Loaded from data-writing.js
 
 // ── STATE ──────────────────────────────────────────
 let curBook=null,curTest=null,curMode=null,curPassIdx=0;
@@ -2373,6 +2379,14 @@ makeChain("/listening/cambridge-official-tests","listeningbooks",[
     enter:(n)=>{ selectListeningTest(n); } }
 ]);
 
+// ---- Writing Task 2: /writing-practice/task-2/<topic> ----
+makeChain("/writing-practice/task-2","writingTask2",[
+  { pageId:"writingTopic",
+    seg:()=>curWritingTopic||null,
+    parseSeg:(s)=>(WRITING_DATA.task2&&WRITING_DATA.task2.topics&&WRITING_DATA.task2.topics[s])?s:null,
+    enter:(k)=>{ selectWritingTopic(k); } }
+]);
+
 // ---- Materials: flat pages, some nested under /materials/ielts/ ----
 // matSpeaking listed first under its canonical URL so computePath prefers it;
 // the /materials/ielts/speaking URL still resolves correctly on incoming links.
@@ -2427,6 +2441,10 @@ function __updateTitle(p){
       title=LISTENING_DATA[lsCurBook].name+" \u2014 Select a Test | "+base;
     } else if(p==="listeningexam" && typeof lsCurBook!=="undefined" && lsCurBook && lsCurTest && LISTENING_DATA[lsCurBook] && LISTENING_DATA[lsCurBook].tests[lsCurTest]){
       title=LISTENING_DATA[lsCurBook].tests[lsCurTest].title+" | "+base;
+    } else if(p==="writingTask2"){
+      title="IELTS Writing Task 2 Topics | "+base;
+    } else if(p==="writingTopic" && curWritingTopic && WRITING_DATA.task2 && WRITING_DATA.task2.topics[curWritingTopic]){
+      title="IELTS Writing Task 2 \u2014 "+WRITING_DATA.task2.topics[curWritingTopic].name+" | "+base;
     } else if(p==="materialsIELTS"){
       title="IELTS Study Materials | "+base;
     } else if(p==="materialsGrammar"){
@@ -2559,7 +2577,7 @@ window.addEventListener("popstate",(event)=>{
 });
 function _renderPage(p){
   if(p!=="typingPractice" && typeof tpCleanup==="function") tpCleanup();
-  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","speakingPracticePage","adminPanelPage"].forEach(id=>{
+  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingTopicPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.cssText="display:none";
   });
@@ -2618,12 +2636,16 @@ function _renderPage(p){
       "bandCalculator":"bandCalculatorPage",
       "studyPlan":"studyPlanPage",
       "writingPractice":"writingPracticePage",
+      "writingTask2":"writingTask2Page",
+      "writingTopic":"writingTopicPage",
       "speakingPractice":"speakingPracticePage",
       "adminPanel":"adminPanelPage"
     };
     if(pageMap[p]){
       const el=document.getElementById(pageMap[p]);
       if(el) el.style.cssText="display:block;position:relative;z-index:1;padding:40px 24px 60px;max-width:920px;margin:0 auto;min-height:60vh";
+      if(p==="writingTask2") buildWritingTopics();
+      if(p==="writingTopic") renderWritingTopic();
       if(p==="vocab") setTimeout(()=>renderVocab(VOCAB),50);
       if(p==="activity") setTimeout(()=>loadActivityLog(),50);
       if(p==="typingPractice") setTimeout(()=>tpStartFresh(),50);
@@ -2707,6 +2729,50 @@ function __upgradeLegacyUrl(){
     try{ history.replaceState(null,"",__RENAMED_FLAT_PAGES[bareName]); } catch(e){}
   }
 }
+// ── WRITING TASK 2: topics → questions ────────────
+let curWritingTopic=null;
+function wEsc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function buildWritingTopics(){
+  const g=document.getElementById("wt2grid");
+  if(!g) return;
+  g.innerHTML="";
+  const topics=(WRITING_DATA.task2&&WRITING_DATA.task2.topics)||{};
+  const keys=Object.keys(topics);
+  if(!keys.length){
+    g.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px 0">Topics are being added. Check back soon!</div>';
+    return;
+  }
+  keys.forEach(k=>{
+    const t=topics[k];
+    const d=document.createElement("div");
+    d.className="folder-card";
+    const n=(t.questions||[]).length;
+    d.innerHTML='<div class="folder-ico">'+wEsc(t.icon||"📝")+'</div><div class="folder-name">'+wEsc(t.name)+'</div><div class="folder-sub">'+n+(n===1?" question":" questions")+'</div>';
+    d.onclick=()=>selectWritingTopic(k);
+    g.appendChild(d);
+  });
+}
+function selectWritingTopic(key){
+  curWritingTopic=key;
+  showPage("writingTopic");
+}
+function renderWritingTopic(){
+  const topics=(WRITING_DATA.task2&&WRITING_DATA.task2.topics)||{};
+  const t=topics[curWritingTopic];
+  const list=document.getElementById("wtpList");
+  if(!list) return;
+  list.innerHTML="";
+  if(!t){ document.getElementById("wtpTitle").textContent="Topic"; return; }
+  document.getElementById("wtpTitle").textContent=(t.icon?t.icon+" ":"")+t.name;
+  document.getElementById("wtpSub").textContent="Writing Task 2 · "+t.name+" · "+(t.questions||[]).length+" questions";
+  (t.questions||[]).forEach(q=>{
+    const d=document.createElement("div");
+    d.className="wq-card";
+    d.innerHTML='<div class="wq-num">Question '+wEsc(q.n)+'</div><div class="wq-text">'+(q.lines||[]).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>';
+    list.appendChild(d);
+  });
+}
+
 function goHome(){
   document.getElementById("resOv").classList.remove("open");
   if(lsResultsActive){
@@ -6241,39 +6307,40 @@ function _hmStillUsed(bankId, val, excludeQn){
   </div>
 </div>
 
-<script src="/data-cam6.js?v=20260733a"></script>
-<script src="/data-cam7.js?v=20260733a"></script>
-<script src="/data-cam8.js?v=20260733a"></script>
-<script src="/data-cam9.js?v=20260733a"></script>
-<script src="/data-cam10.js?v=20260733a"></script>
-<script src="/data-cam11.js?v=20260733a"></script>
-<script src="/data-cam12.js?v=20260733a"></script>
-<script src="/data-cam13.js?v=20260733a"></script>
-<script src="/data-cam14.js?v=20260733a"></script>
-<script src="/data-cam15.js?v=20260733a"></script>
-<script src="/data-cam16.js?v=20260733a"></script>
-<script src="/data-cam17.js?v=20260733a"></script>
-<script src="/data-cam18.js?v=20260733a"></script>
-<script src="/data-cam19.js?v=20260733a"></script>
-<script src="/data-cam20.js?v=20260733a"></script>
-<script src="/data-cam21.js?v=20260733a"></script>
+<script src="/data-cam6.js?v=20260733b"></script>
+<script src="/data-cam7.js?v=20260733b"></script>
+<script src="/data-cam8.js?v=20260733b"></script>
+<script src="/data-cam9.js?v=20260733b"></script>
+<script src="/data-cam10.js?v=20260733b"></script>
+<script src="/data-cam11.js?v=20260733b"></script>
+<script src="/data-cam12.js?v=20260733b"></script>
+<script src="/data-cam13.js?v=20260733b"></script>
+<script src="/data-cam14.js?v=20260733b"></script>
+<script src="/data-cam15.js?v=20260733b"></script>
+<script src="/data-cam16.js?v=20260733b"></script>
+<script src="/data-cam17.js?v=20260733b"></script>
+<script src="/data-cam18.js?v=20260733b"></script>
+<script src="/data-cam19.js?v=20260733b"></script>
+<script src="/data-cam20.js?v=20260733b"></script>
+<script src="/data-cam21.js?v=20260733b"></script>
 
-<script src="/data-listening-cam6.js?v=20260733a"></script>
-<script src="/data-listening-cam7.js?v=20260733a"></script>
-<script src="/data-listening-cam8.js?v=20260733a"></script>
-<script src="/data-listening-cam9.js?v=20260733a"></script>
-<script src="/data-listening-cam10.js?v=20260733a"></script>
-<script src="/data-listening-cam11.js?v=20260733a"></script>
-<script src="/data-listening-cam12.js?v=20260733a"></script>
-<script src="/data-listening-cam13.js?v=20260733a"></script>
-<script src="/data-listening-cam14.js?v=20260733a"></script>
-<script src="/data-listening-cam15.js?v=20260733a"></script>
-<script src="/data-listening-cam16.js?v=20260733a"></script>
-<script src="/data-listening-cam17.js?v=20260733a"></script>
-<script src="/data-listening-cam18.js?v=20260733a"></script>
-<script src="/data-listening-cam19.js?v=20260733a"></script>
-<script src="/data-listening-cam20.js?v=20260733a"></script>
-<script src="/data-listening-cam21.js?v=20260733a"></script>
+<script src="/data-listening-cam6.js?v=20260733b"></script>
+<script src="/data-listening-cam7.js?v=20260733b"></script>
+<script src="/data-listening-cam8.js?v=20260733b"></script>
+<script src="/data-listening-cam9.js?v=20260733b"></script>
+<script src="/data-listening-cam10.js?v=20260733b"></script>
+<script src="/data-listening-cam11.js?v=20260733b"></script>
+<script src="/data-listening-cam12.js?v=20260733b"></script>
+<script src="/data-listening-cam13.js?v=20260733b"></script>
+<script src="/data-listening-cam14.js?v=20260733b"></script>
+<script src="/data-listening-cam15.js?v=20260733b"></script>
+<script src="/data-listening-cam16.js?v=20260733b"></script>
+<script src="/data-listening-cam17.js?v=20260733b"></script>
+<script src="/data-listening-cam18.js?v=20260733b"></script>
+<script src="/data-listening-cam19.js?v=20260733b"></script>
+<script src="/data-listening-cam20.js?v=20260733b"></script>
+<script src="/data-listening-cam21.js?v=20260733b"></script>
+<script src="/data-writing.js?v=20260733b"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -6538,7 +6605,7 @@ function filterActivity(type, btn){
   </div>
 </div>
 
-<script src="/typing-practice.js?v=20260733a"></script>
+<script src="/typing-practice.js?v=20260733b"></script>
 <!-- BAND SCORE CALCULATOR -->
 <div class="selpage" id="bandCalculatorPage" style="max-width:760px;width:100%">
   <button class="bk" onclick="goHome()">← Back to Home</button>
@@ -7823,15 +7890,28 @@ function spPrint(){
       <div class="folder-sub">Describe a graph, chart, table, map or process<br>Minimum 150 words · 20 minutes</div>
       <div class="pz-tag soon">Coming Soon</div>
     </div>
-    <div class="folder-card locked" style="opacity:1;cursor:default">
+    <div class="folder-card" onclick="showPage('writingTask2')">
       <div class="folder-ico">📝</div>
       <div class="folder-name">Writing Task 2</div>
       <div class="folder-sub">Essay writing: opinion, discussion, problem and solution<br>Minimum 250 words · 40 minutes</div>
-      <div class="pz-tag soon">Coming Soon</div>
     </div>
   </div>
 </div>
 
+
+<!-- WRITING TASK 2 — TOPICS -->
+<div class="selpage" id="writingTask2Page">
+  <div class="ptitle">📝 Writing Task 2</div>
+  <div class="psub">Choose a topic</div>
+  <div class="folder-grid" id="wt2grid"></div>
+</div>
+
+<!-- WRITING TASK 2 — QUESTIONS IN A TOPIC -->
+<div class="selpage" id="writingTopicPage">
+  <div class="ptitle" id="wtpTitle">Topic</div>
+  <div class="psub" id="wtpSub">Writing Task 2 questions</div>
+  <div class="wq-list" id="wtpList"></div>
+</div>
 
 <!-- SPEAKING PRACTICE PAGE -->
 <div class="selpage" id="speakingPracticePage">
