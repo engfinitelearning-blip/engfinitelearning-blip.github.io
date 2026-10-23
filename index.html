@@ -516,6 +516,59 @@ option{background:#fff;color:#1a2e40}
 .wr-modal p{font-size:14px;line-height:1.7;margin:0 0 18px;color:#444}
 .wr-modal button{padding:9px 18px;border-radius:8px;border:1px solid #ccc;background:#f4f6f8;font-size:13px;font-weight:600;cursor:pointer;margin:0 4px;font-family:'Poppins',sans-serif}
 .wr-modal button.pri{background:#1a3a4a;color:#fff;border-color:#1a3a4a}
+.wrp-overlay{position:fixed;inset:0;z-index:3000;background:#e9edf0;display:flex;flex-direction:column;font-family:'Poppins',sans-serif;color:#222}
+.wrp-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 18px;background:#1a3a4a;color:#fff;flex-shrink:0}
+.wrp-bar-t{font-weight:600;font-size:14px}
+.wrp-b{padding:7px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-size:12px;font-weight:600;cursor:pointer;margin-left:6px;font-family:'Poppins',sans-serif}
+.wrp-b.pri{background:#1e8449;border-color:#1e8449}
+.wrp-scroll{flex:1;overflow:auto;padding:18px}
+.wrp-doc{max-width:900px;margin:0 auto;background:#fff;padding:30px 34px;border-radius:8px;box-shadow:0 2px 14px rgba(0,0,0,.12);font-size:13.5px;line-height:1.65;color:#222}
+.wrp-title{text-align:center;font-size:22px;font-weight:700;margin-bottom:18px;color:#1a3a4a}
+.wrp-title span{font-size:15px;font-weight:500;color:#555}
+.wrp-h1{font-size:17px;font-weight:700;color:#fff;background:#1a3a4a;padding:7px 12px;border-radius:5px;margin:26px 0 12px}
+.wrp-h2{font-size:15px;font-weight:700;color:#1a3a4a;margin:18px 0 8px}
+.wrp-box,.wrp-qbox{border:1px solid #c9d3da;background:#f6f9fb;border-radius:6px;padding:10px 14px;margin:10px 0}
+.wrp-box ul{margin:6px 0 0 18px;padding:0}
+.wrp-note{font-size:12px;color:#666;margin:6px 0 10px}
+.wrp-warn{background:#fdecea;border:1px solid #e6a39b;color:#8a2a1f;border-radius:6px;padding:8px 12px;margin:8px 0;font-size:12.5px}
+.wrp-tblwrap{overflow-x:auto}
+.wrp-tbl,.wrp-mt{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0}
+.wrp-tbl th,.wrp-tbl td,.wrp-mt th,.wrp-mt td{border:1px solid #c9d3da;padding:6px 9px;text-align:left;vertical-align:top}
+.wrp-tbl th,.wrp-mt th{background:#eef3f6;font-weight:600}
+.wrp-ov,.wrp-sum td{font-weight:700;background:#f1f8f3}
+.wrp-plabel{font-weight:700;font-size:12px;color:#1a3a4a;margin:12px 0 3px;letter-spacing:.4px}
+.wrp-sn{display:inline-block;font-size:10px;font-weight:700;color:#fff;background:#2a7fb8;border-radius:8px;padding:0 6px;vertical-align:super;line-height:1.5}
+.wrp-sent{border:1px solid #d7dee3;border-radius:6px;padding:10px 12px;margin:10px 0}
+.wrp-shead,.wrp-lab,.wrp-txt,.wrp-h1,.wrp-h2,.wrp-plabel{break-after:avoid}
+.wrp-mt tr,.wrp-fix,.wrp-good{break-inside:avoid}
+.wrp-shead{display:flex;justify-content:space-between;gap:8px;font-weight:700;font-size:12.5px;color:#1a3a4a;border-bottom:1px solid #e3e8ec;padding-bottom:5px;margin-bottom:6px}
+.wrp-cnt{color:#c0392b}.wrp-ok{color:#1e8449}
+.wrp-lab{font-size:11.5px;color:#777;margin-bottom:2px}
+.wrp-txt{margin-bottom:6px}
+.wrp-bad{color:#c0392b;text-decoration:underline;text-decoration-color:#c0392b;text-underline-offset:2px;font-weight:600}
+.wrp-n{color:#c0392b;font-weight:700;font-size:10px;margin-left:1px}
+.wrp-good{background:#f1f8f3;border-left:3px solid #1e8449;padding:5px 9px;margin:6px 0;font-size:12.5px}
+.wrp-fix{background:#eaf6ee;border:1px solid #bfe0c9;border-radius:5px;padding:7px 10px;margin-top:8px;font-size:13px}
+.wrp-ty{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:1px 6px;margin:0 2px 2px 0;white-space:nowrap;background:#eef3f6;color:#1a3a4a}
+.wrp-ty-TR{background:#fdecea;color:#a93226}.wrp-ty-CC{background:#fff4de;color:#8a5a00}.wrp-ty-LR{background:#e6f0fb;color:#1f5f99}.wrp-ty-GRA{background:#efe8f8;color:#5b3a8c}
+.wrp-crit{border:1px solid #d7dee3;border-radius:6px;padding:10px 12px;margin:10px 0}
+.wrp-chead{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:700;color:#1a3a4a;border-bottom:1px solid #e3e8ec;padding-bottom:5px;margin-bottom:6px}
+.wrp-li{margin:4px 0}.wrp-yes{color:#1e6b40}.wrp-no{color:#8a2a1f}
+.wrp-corr p{margin:0 0 10px}
+.wrp-prio{border:1px solid #d7dee3;border-radius:6px;padding:9px 12px;margin:8px 0;break-inside:avoid}
+.wrp-pt{font-weight:700;color:#1a3a4a;margin-bottom:3px}
+.wrp-ex{margin-top:4px;color:#1e6b40}
+@media(max-width:700px){.wrp-doc{padding:16px 14px}.wrp-scroll{padding:8px}.wrp-shead,.wrp-chead{flex-direction:column}}
+@media print{
+ body.wrp-printing>*:not(#wrpOverlay){display:none!important}
+ body.wrp-printing #wrpOverlay{position:static!important;background:#fff!important;display:block!important;overflow:visible!important;height:auto!important}
+ body.wrp-printing .wrp-bar{display:none!important}
+ body.wrp-printing .wrp-scroll{overflow:visible!important;height:auto!important;padding:0!important}
+ body.wrp-printing .wrp-doc{box-shadow:none!important;max-width:none!important;padding:0!important;border-radius:0!important}
+ body.wrp-printing,html:has(body.wrp-printing){background:#fff!important}
+ body.wrp-printing *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ @page{margin:14mm}
+}
 @media(max-width:760px){.wr-body{flex-direction:column}.wr-qpane{width:100%;max-width:none;max-height:38vh;border-right:none;border-bottom:2px solid #d5dbe0;padding:14px 16px}.wr-wpane{padding:10px}}
 .folder-name{font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
 .folder-sub{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}
@@ -2856,6 +2909,7 @@ function renderWritingTopic(){
 // ── WRITING TASK 2: one question, ideas, editor ───
 let curWritingQ=null,curWritingMode=null;
 let __wrTimer=null,__wrStart=0;
+let __wrBusy=false,__wrPollTimer=null,__wrPollStop=false;
 function wrCurQuestion(){
   const topics=(WRITING_DATA.task2&&WRITING_DATA.task2.topics)||{};
   const t=topics[curWritingTopic];
@@ -2895,7 +2949,11 @@ function renderWritingIdeas(){
   document.getElementById("wipBody").innerHTML=html;
 }
 function wrDraftKey(){ return "wrdraft_t2_"+curWritingTopic+"_"+curWritingQ; }
-function wrClearTimer(){ if(__wrTimer){ clearInterval(__wrTimer); __wrTimer=null; } }
+function wrClearTimer(){
+  if(__wrTimer){ clearInterval(__wrTimer); __wrTimer=null; }
+  __wrPollStop=true; __wrBusy=false;
+  if(__wrPollTimer){ clearTimeout(__wrPollTimer); __wrPollTimer=null; }
+}
 function wrFmt(sec){
   const m=Math.floor(sec/60), s=sec%60;
   return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
@@ -2942,15 +3000,201 @@ function wrToggleQuestion(){
   p.style.display=hidden?"":"none";
   document.getElementById("wrToggleQ").textContent=hidden?"Hide question":"Show question";
 }
-function wrSubmit(){
-  const n=wrCountWords(document.getElementById("wrText").value);
+function wrSetModal(title,text,showBtns){
+  document.getElementById("wrModalTitle").textContent=title;
+  document.getElementById("wrModalText").textContent=text;
+  document.getElementById("wrModalBtns").style.display=showBtns?"":"none";
+  document.getElementById("wrOverlay").style.display="flex";
+}
+async function wrSubmit(){
+  if(__wrBusy) return;
+  const text=document.getElementById("wrText").value;
+  const n=wrCountWords(text);
   const el=Math.floor((Date.now()-__wrStart)/1000);
   const mins=Math.floor(el/60);
-  let msg="You wrote "+n+" word"+(n===1?"":"s")+" in "+mins+" minute"+(mins===1?"":"s")+". ";
-  if(n<250) msg+="IELTS Task 2 needs at least 250 words. ";
-  msg+="Your essay is saved on this device. AI feedback is coming soon.";
-  document.getElementById("wrModalText").textContent=msg;
-  document.getElementById("wrOverlay").style.display="flex";
+  let fallback="You wrote "+n+" word"+(n===1?"":"s")+" in "+mins+" minute"+(mins===1?"":"s")+". ";
+  if(n<250) fallback+="IELTS Task 2 needs at least 250 words. ";
+  fallback+="Your essay is saved on this device. AI feedback is coming soon.";
+  const soon=()=>wrSetModal("Essay saved",fallback,true);
+  let session=null;
+  try{ const r=await sb.auth.getSession(); session=r&&r.data&&r.data.session; }catch(e){}
+  const q=wrCurQuestion();
+  if(!session||!q){ soon(); return; }
+  __wrBusy=true; __wrPollStop=false;
+  wrSetModal("Sending your essay…","Please wait a moment.",false);
+  try{
+    const res=await fetch(SUPABASE_URL+"/functions/v1/mark-writing",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_ANON_KEY},
+      body:JSON.stringify({essay:text,question:(q.lines||[]).join("\n"),topic:curWritingTopic,q:Number(q.n)})
+    });
+    let data={}; try{ data=await res.json(); }catch(e){}
+    if(res.status===202&&data.id){ wrPoll(data.id); return; }
+    __wrBusy=false;
+    if(data.code==="not_open"||data.code==="not_approved"){ soon(); return; }
+    if(res.status===401){ wrSetModal("Please log in again","Your login has expired. Your essay is saved on this device.",true); return; }
+    if(data.error&&["limit","busy","too_short","too_long","bad_question"].indexOf(data.code)>=0){
+      wrSetModal(data.code==="limit"?"Daily limit reached":"Cannot mark this essay",
+        data.error+(data.next_slot?" You can send another essay after "+new Date(data.next_slot).toLocaleString()+".":"")+" Your essay is saved on this device.",true);
+      return;
+    }
+    wrSetModal("AI marking is not available right now","Your essay is saved on this device. Please try again later.",true);
+  }catch(e){
+    __wrBusy=false; console.error(e);
+    wrSetModal("AI marking is not available right now","Your essay is saved on this device. Please check your internet and try again.",true);
+  }
+}
+function wrPoll(id){
+  wrSetModal("Marking your essay…","This takes about 1 to 2 minutes. Please keep this page open.",false);
+  const t0=Date.now();
+  const tick=async()=>{
+    if(__wrPollStop){ __wrBusy=false; return; }
+    let row=null;
+    try{ const r=await sb.from("writing_submissions").select("status,error,result").eq("id",id).single(); row=r&&r.data; }catch(e){}
+    if(__wrPollStop){ __wrBusy=false; return; }
+    if(row&&row.status==="done"&&row.result){
+      __wrBusy=false; document.getElementById("wrOverlay").style.display="none"; wrShowReport(row.result); return;
+    }
+    if(row&&row.status==="failed"){
+      __wrBusy=false;
+      wrSetModal("Sorry, marking failed","Something went wrong while marking. This did not use up one of your daily essays. Your essay is saved on this device. Please try again.",true);
+      return;
+    }
+    if(Date.now()-t0>5*60*1000){
+      __wrBusy=false;
+      wrSetModal("This is taking too long","Marking did not finish. Please try again in a few minutes. Your essay is saved on this device.",true);
+      return;
+    }
+    __wrPollTimer=setTimeout(tick,4000);
+  };
+  __wrPollTimer=setTimeout(tick,5000);
+}
+
+// ── WRITING: FEEDBACK REPORT (built from the marked result) ───
+const WR_TYPE_LABEL={TR:"Ideas (TR)",CC:"Linking (CC)",LR:"Vocabulary (LR)",GRA:"Grammar (GRA)"};
+const WR_CRIT_NAME={TR:"Task Response (TR) = Ideas",CC:"Coherence & Cohesion (CC) = Linking",LR:"Lexical Resource (LR) = Vocabulary",GRA:"Grammatical Range & Accuracy (GRA) = Grammar"};
+function wrBandStr(b){ b=Number(b); return (b%1===0)?b.toFixed(1):String(b); }
+function wrNq(t){ return String(t).replace(/[‘’]/g,"'").replace(/[“”]/g,'"'); }
+function wrHighlight(text,mistakes){
+  const hay=wrNq(text), used=[];
+  mistakes.forEach((m,i)=>{
+    m._i=i+1; m._pos=-1;
+    if(m.span==="*") return;
+    const needle=wrNq(m.span);
+    let from=0,pos=-1;
+    for(;;){
+      pos=hay.indexOf(needle,from);
+      if(pos<0) break;
+      const end=pos+needle.length;
+      if(!used.some(u=>pos<u[1]&&end>u[0])) break;
+      from=pos+1;
+    }
+    if(pos>=0){ m._pos=pos; m._len=needle.length; used.push([pos,pos+needle.length]); }
+  });
+  const marks=mistakes.filter(m=>m._pos>=0).sort((a,b)=>a._pos-b._pos);
+  let out="",cur=0;
+  marks.forEach(m=>{
+    out+=wEsc(text.slice(cur,m._pos))+'<span class="wrp-bad">'+wEsc(text.slice(m._pos,m._pos+m._len))+'</span><sup class="wrp-n">'+m._i+'</sup>';
+    cur=m._pos+m._len;
+  });
+  out+=wEsc(text.slice(cur));
+  mistakes.filter(m=>m._pos<0).forEach(m=>{ out+='<sup class="wrp-n">'+m._i+'</sup>'; });
+  return out;
+}
+function wrBuildReport(r){
+  const C=r.criteria||{}, S=r.sentences||[];
+  let h='';
+  h+='<div class="wrp-title">IELTS Writing Task 2<br><span>Full Feedback: Every Mistake Explained</span></div>';
+  h+='<div class="wrp-box"><b>How to use this report</b><ul>'
+    +'<li><b>Part A:</b> your essay, exactly as you wrote it, with sentence numbers.</li>'
+    +'<li><b>Part B:</b> every sentence checked one by one. Each mistake is underlined in red, explained simply, and corrected.</li>'
+    +'<li><b>Part C:</b> bigger problems in the whole essay, plus your estimated band for each criterion.</li>'
+    +'<li><b>Part D:</b> your full essay, corrected, so you can compare.</li>'
+    +'<li><b>Last page:</b> the most important things to practise.</li></ul></div>';
+  h+='<div class="wrp-h2">Results at a glance</div>';
+  h+='<div class="wrp-qbox"><b>Question</b><br>'+wEsc(r.question||"").replace(/\n/g,"<br>")+'</div>';
+  h+='<div class="wrp-tblwrap"><table class="wrp-tbl"><tr><th>Words</th><th>Mistakes</th><th>TR</th><th>CC</th><th>LR</th><th>GRA</th><th>Overall</th></tr>'
+    +'<tr><td>'+wEsc(r.word_count)+'</td><td>'+wEsc(r.total_mistakes)+'</td>'
+    +['TR','CC','LR','GRA'].map(k=>'<td>'+wrBandStr((C[k]||{}).band)+'</td>').join('')
+    +'<td class="wrp-ov">'+wrBandStr(r.overall)+'</td></tr></table></div>';
+  if(r.word_count<250) h+='<div class="wrp-warn">Word count: '+wEsc(r.word_count)+' words. The minimum is 250 words, so this is too short. In the real exam you have about 40 minutes for Task 2.</div>';
+  h+='<div class="wrp-note">'+wEsc(r.disclaimer||"Bands are estimates, not official results.")+'</div>';
+
+  // Part A
+  h+='<div class="wrp-h1">A. Your essay (sentence numbers added)</div>';
+  let last="";
+  S.forEach(s=>{
+    if(s.paragraph!==last){ h+='<div class="wrp-plabel">'+wEsc(String(s.paragraph).toUpperCase())+'</div>'; last=s.paragraph; }
+    h+='<span class="wrp-sn">'+s.n+'</span> '+wEsc(s.text)+' ';
+  });
+
+  // Part B
+  h+='<div class="wrp-h1">B. Every mistake, sentence by sentence</div>';
+  h+='<div class="wrp-note">Red underlined words are mistakes. The small red number matches the row in the table under it. The green box shows the correct sentence.</div>';
+  S.forEach(s=>{
+    const ms=(s.mistakes||[]).map(m=>Object.assign({},m));
+    const cnt=ms.length;
+    h+='<div class="wrp-sent"><div class="wrp-shead"><span>Sentence '+s.n+' · '+wEsc(s.paragraph)+'</span><span class="'+(cnt?'wrp-cnt':'wrp-ok')+'">'+(cnt?cnt+(cnt===1?' mistake':' mistakes'):'No mistakes')+'</span></div>';
+    h+='<div class="wrp-lab">What you wrote:</div><div class="wrp-txt">'+wrHighlight(s.text,ms)+'</div>';
+    if(s.good) h+='<div class="wrp-good">✓ <b>Good:</b> '+wEsc(s.good)+'</div>';
+    if(cnt){
+      h+='<div class="wrp-tblwrap"><table class="wrp-mt"><tr><th>#</th><th>Type</th><th>Mistake</th><th>Why it is wrong (simple)</th><th>Correct it like this</th></tr>';
+      ms.forEach(m=>{
+        h+='<tr><td>'+m._i+'</td><td>'+(m.types||[]).map(t=>'<span class="wrp-ty wrp-ty-'+wEsc(t)+'">'+wEsc(WR_TYPE_LABEL[t]||t)+'</span>').join(' ')+'</td>'
+          +'<td>'+(m.span==="*"?'<i>(the whole sentence / idea)</i>':wEsc(m.span))+'</td><td>'+wEsc(m.why)+'</td><td>'+wEsc(m.fix)+'</td></tr>';
+      });
+      h+='</table></div>';
+      h+='<div class="wrp-fix"><b>✓ Correct version:</b><br>'+wEsc(s.corrected)+'</div>';
+    }
+    h+='</div>';
+  });
+
+  // Part C
+  h+='<div class="wrp-h1">C. The whole essay, criterion by criterion</div>';
+  ['TR','CC','LR','GRA'].forEach(k=>{
+    const c=C[k]||{};
+    h+='<div class="wrp-crit"><div class="wrp-chead"><span>'+wEsc(WR_CRIT_NAME[k])+'</span><span>Estimated band: '+wrBandStr(c.band)+' · '+wEsc(c.mistakes||0)+' mistakes found</span></div>';
+    (c.good||[]).forEach(g=>{ h+='<div class="wrp-li wrp-yes">✓ '+wEsc(g)+'</div>'; });
+    (c.problems||[]).forEach(g=>{ h+='<div class="wrp-li wrp-no">✗ '+wEsc(g)+'</div>'; });
+    if(k==="LR"&&c.repeated_words&&c.repeated_words.length){
+      h+='<div class="wrp-li wrp-no">✗ Words you repeat too much: '+c.repeated_words.map(w=>wEsc(w.word)+' ×'+wEsc(w.count)).join(', ')+'. Use synonyms to improve Vocabulary.</div>';
+    }
+    h+='</div>';
+  });
+  h+='<div class="wrp-h2">Score summary</div><div class="wrp-tblwrap"><table class="wrp-tbl"><tr><th>Criterion</th><th>Mistakes found</th><th>Estimated band</th></tr>'
+    +['TR','CC','LR','GRA'].map(k=>'<tr><td>'+wEsc(WR_CRIT_NAME[k].split(' = ')[0])+'</td><td>'+wEsc((C[k]||{}).mistakes||0)+'</td><td>'+wrBandStr((C[k]||{}).band)+'</td></tr>').join('')
+    +'<tr class="wrp-sum"><td>Overall</td><td>'+wEsc(r.total_mistakes)+' in total</td><td>'+wrBandStr(r.overall)+'</td></tr></table></div>';
+  h+='<div class="wrp-note">Some mistakes count for two criteria, so the criterion numbers can add up to more than the total.</div>';
+
+  // Part D
+  h+='<div class="wrp-h1">D. Your essay, corrected</div><div class="wrp-note">Same ideas as yours, with the mistakes above fixed. Read it next to Part A to see the changes.</div><div class="wrp-corr">';
+  String(r.corrected_essay||"").split(/\n\n/).forEach(p=>{ if(p.trim()) h+='<p>'+wEsc(p)+'</p>'; });
+  h+='</div>';
+
+  // Practice
+  if((r.practice_priorities||[]).length){
+    h+='<div class="wrp-h1">What to practise first</div>';
+    r.practice_priorities.forEach((p,i)=>{
+      h+='<div class="wrp-prio"><div class="wrp-pt">'+(i+1)+'. '+wEsc(p.title)+'</div><div>'+wEsc(p.why)+'</div><div class="wrp-ex"><b>Try this:</b> '+wEsc(p.exercise)+'</div></div>';
+    });
+  }
+  h+='<div class="wrp-note" style="margin-top:22px">'+wEsc(r.disclaimer||"")+'</div>';
+  return h;
+}
+function wrShowReport(result){
+  wrpClose();
+  const o=document.createElement("div");
+  o.id="wrpOverlay"; o.className="wrp-overlay";
+  o.innerHTML='<div class="wrp-bar"><div class="wrp-bar-t">📄 Your feedback report</div><div><button class="wrp-b pri" onclick="wrpPrint()">⬇ Download PDF</button><button class="wrp-b" onclick="wrpClose()">✕ Close</button></div></div>'
+    +'<div class="wrp-scroll"><div class="wrp-doc">'+wrBuildReport(result)+'</div></div>';
+  document.body.appendChild(o);
+}
+function wrpClose(){ const o=document.getElementById("wrpOverlay"); if(o) o.remove(); document.body.classList.remove("wrp-printing"); }
+function wrpPrint(){
+  document.body.classList.add("wrp-printing");
+  const done=()=>{ document.body.classList.remove("wrp-printing"); window.removeEventListener("afterprint",done); };
+  window.addEventListener("afterprint",done);
+  window.print();
 }
 function wrCloseModal(){ document.getElementById("wrOverlay").style.display="none"; }
 function wrExit(){
@@ -8135,10 +8379,10 @@ function spPrint(){
   </div>
   <div class="wr-overlay" id="wrOverlay">
     <div class="wr-modal">
-      <h3>Essay saved</h3>
+      <h3 id="wrModalTitle">Essay saved</h3>
       <p id="wrModalText"></p>
-      <button onclick="wrCloseModal()">Keep writing</button>
-      <button class="pri" onclick="wrExit()">Finish &amp; exit</button>
+      <div id="wrModalBtns"><button onclick="wrCloseModal()">Keep writing</button>
+      <button class="pri" onclick="wrExit()">Finish &amp; exit</button></div>
     </div>
   </div>
 </div>
