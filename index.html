@@ -5438,7 +5438,7 @@ function updateHomeStats(){
   const ps=document.getElementById("personalStats");
   if(!ps) return;
   if(!currentUser){ ps.style.display="none"; return; }
-  ps.style.display="block";
+  ps.style.display="none"; // progress box on the home page is hidden on purpose (owner's request)
   const stats=currentUser.stats||{hours:0,tests:0,completed:[]};
   const h=Math.floor(stats.hours||0);
   const m=Math.round(((stats.hours||0)-h)*60);
