@@ -207,6 +207,7 @@ Object.assign(LISTENING_DATA, {
             blocks: [
               {
                 type: "notes",
+                tblStyle: "official",
                 qlabel: "Questions 31\u201340",
                 inst: "Complete the notes below.<br>Write <b>ONE WORD ONLY</b> for each answer.",
                 notesTitle: "Reclaiming urban rivers",
@@ -266,6 +267,7 @@ Object.assign(LISTENING_DATA, {
             blocks: [
               {
                 type: "notes",
+                tblStyle: "official",
                 qlabel: "Questions 1\u201310",
                 inst: "Complete the notes below.<br>Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
                 notesTitle: "Help for carers",
@@ -285,15 +287,15 @@ Object.assign(LISTENING_DATA, {
                       {n:null, before:"This may include discussion of:", input:null, after:""},
                       {n:2, before:"how much", input:2, after:"the caring involves", indent:true},
                       {n:null, before:"what types of tasks are involved, e.g.", input:null, after:"", indent:true},
-                      {n:null, before:"help with dressing", input:null, after:"", indent:true},
-                      {n:3, before:"helping her have a", input:3, after:"", indent:true},
-                      {n:null, before:"shopping", input:null, after:"", indent:true},
-                      {n:null, before:"helping with meals", input:null, after:"", indent:true},
-                      {n:4, before:"dealing with", input:4, after:"", indent:true},
+                      {n:null, before:"help with dressing", input:null, after:"", indent:2},
+                      {n:3, before:"helping her have a", input:3, after:"", indent:2},
+                      {n:null, before:"shopping", input:null, after:"", indent:2},
+                      {n:null, before:"helping with meals", input:null, after:"", indent:2},
+                      {n:4, before:"dealing with", input:4, after:"", indent:2},
                       {n:null, before:"any aspects of caring that are especially difficult, e.g.", input:null, after:"", indent:true},
-                      {n:5, before:"loss of", input:5, after:"", indent:true},
-                      {n:6, before:"", input:6, after:"her", indent:true},
-                      {n:7, before:"preventing a", input:7, after:"", indent:true}
+                      {n:5, before:"loss of", input:5, after:"", indent:2},
+                      {n:6, before:"", input:6, after:"her", indent:2},
+                      {n:7, before:"preventing a", input:7, after:"", indent:2}
                     ]
                   },
                   {
@@ -443,6 +445,7 @@ Object.assign(LISTENING_DATA, {
             blocks: [
               {
                 type: "notes",
+                tblStyle: "official",
                 qlabel: "Questions 31\u201340",
                 inst: "Complete the notes below.<br>Write <b>ONE WORD ONLY</b> for each answer.",
                 notesTitle: "Developing food trends",
@@ -668,6 +671,7 @@ Object.assign(LISTENING_DATA, {
             blocks: [
               {
                 type: "notes",
+                tblStyle: "official",
                 qlabel: "Questions 31\u201340",
                 inst: "Complete the notes below.<br>Write <b>ONE WORD ONLY</b> for each answer.",
                 notesTitle: "Inclusive design",
@@ -729,6 +733,7 @@ Object.assign(LISTENING_DATA, {
             blocks: [
               {
                 type: "notes",
+                tblStyle: "official",
                 qlabel: "Questions 1–10",
                 inst: "Complete the notes below.<br>Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
                 notesTitle: "Advice on family visit",
@@ -923,6 +928,7 @@ Object.assign(LISTENING_DATA, {
             blocks: [
               {
                 type: "notes",
+                tblStyle: "official",
                 qlabel: "Questions 31–40",
                 inst: "Complete the notes below.<br>Write <b>ONE WORD ONLY</b> for each answer.",
                 notesTitle: "Research in the area around the Chembe Bird Sanctuary",
