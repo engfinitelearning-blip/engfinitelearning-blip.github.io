@@ -2565,6 +2565,9 @@ makeChain("/writing-practice/task-2/own","writingOwn",[
 // ---- Ideas page for the student's own question ----
 registerFlat("/writing-practice/task-2/own/ideas","writingOwnIdeas");
 
+// ---- Writing Task 2: list of topics (the topic pages keep their old addresses) ----
+registerFlat("/writing-practice/task-2/questions-by-topic","writingBank");
+
 // ---- Materials: flat pages, some nested under /materials/ielts/ ----
 // matSpeaking listed first under its canonical URL so computePath prefers it;
 // the /materials/ielts/speaking URL still resolves correctly on incoming links.
@@ -2621,6 +2624,8 @@ function __updateTitle(p){
       title=LISTENING_DATA[lsCurBook].tests[lsCurTest].title+" | "+base;
     } else if(p==="writingTask2"){
       title="IELTS Writing Task 2 Topics | "+base;
+    } else if(p==="writingBank"){
+      title="IELTS Writing Task 2 Questions by Topic | "+base;
     } else if(p==="writingTopic" && curWritingTopic && WRITING_DATA.task2 && WRITING_DATA.task2.topics[curWritingTopic]){
       title="IELTS Writing Task 2 \u2014 "+WRITING_DATA.task2.topics[curWritingTopic].name+" | "+base;
     } else if(p==="writingWork"){
@@ -2764,7 +2769,7 @@ window.addEventListener("popstate",(event)=>{
 });
 function _renderPage(p){
   if(p!=="typingPractice" && typeof tpCleanup==="function") tpCleanup();
-  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
+  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingBankPage","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.cssText="display:none";
   });
@@ -2838,6 +2843,7 @@ function _renderPage(p){
       "writingPractice":"writingPracticePage",
       "writingTask2":"writingTask2Page",
       "writingOwn":"writingOwnPage",
+      "writingBank":"writingBankPage",
       "writingOwnIdeas":"writingOwnIdeasPage",
       "writingTopic":"writingTopicPage",
       "speakingPractice":"speakingPracticePage",
@@ -2847,6 +2853,7 @@ function _renderPage(p){
       const el=document.getElementById(pageMap[p]);
       if(el) el.style.cssText="display:block;position:relative;z-index:1;padding:40px 24px 60px;max-width:920px;margin:0 auto;min-height:60vh";
       if(p==="writingTask2") buildWritingTopics();
+      if(p==="writingBank") buildWritingTopics();
       if(p==="writingOwn") renderWritingOwn();
       if(p==="writingOwnIdeas") renderWritingOwnIdeas();
       if(p==="writingTopic") renderWritingTopic();
@@ -2942,6 +2949,9 @@ function buildWritingTopics(){
   g.innerHTML="";
   const topics=(WRITING_DATA.task2&&WRITING_DATA.task2.topics)||{};
   const keys=Object.keys(topics);
+  const sub=document.getElementById("wt2bankSub");
+  if(sub){ let tot=0; keys.forEach(k=>{ tot+=(topics[k].questions||[]).length; }); sub.textContent=tot?(tot+(tot===1?" question":" questions")+" in "+keys.length+(keys.length===1?" topic":" topics")):"Practise ready-made questions"; }
+  if(!g) return;
   if(!keys.length){
     g.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px 0">Topics are being added. Check back soon!</div>';
     return;
@@ -8770,8 +8780,17 @@ function spPrint(){
 <!-- WRITING TASK 2 — TOPICS -->
 <div class="selpage" id="writingTask2Page">
   <div class="ptitle">📝 Writing Task 2</div>
+  <div class="psub">Choose how you want to practise</div>
+  <div class="folder-grid">
+    <div class="folder-card" onclick="wrOwnOpen()"><div class="folder-ico">✍️</div><div class="folder-name">Write your own question</div><div class="folder-sub">Type your own question and get AI feedback</div></div>
+    <div class="folder-card" onclick="showPage('writingBank')"><div class="folder-ico">📚</div><div class="folder-name">Questions by topic</div><div class="folder-sub" id="wt2bankSub">Practise ready-made questions</div></div>
+  </div>
+</div>
+
+<!-- WRITING TASK 2 — QUESTIONS BY TOPIC -->
+<div class="selpage" id="writingBankPage">
+  <div class="ptitle">📚 Questions by topic</div>
   <div class="psub">Choose a topic</div>
-  <div class="folder-grid" style="margin-bottom:18px"><div class="folder-card" onclick="wrOwnOpen()"><div class="folder-ico">✍️</div><div class="folder-name">Write your own question</div><div class="folder-sub">Type your own question and get AI feedback</div></div></div>
   <div class="folder-grid" id="wt2grid"></div>
 </div>
 
