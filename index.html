@@ -561,6 +561,16 @@ option{background:#fff;color:#1a2e40}
 .wi-more b{color:#00aeef}
 .wi-grp{font-size:12px;font-weight:700;color:#9fb3c8;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 2px}
 .wi-chk li{list-style:none;margin-left:-20px}
+.wi-gl .wi-pn{border-left:3px solid #00aeef;background:rgba(0,174,239,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin-top:14px;font-weight:600;color:#fff}
+.wi-sn{margin-top:4px;padding:12px 16px;border-radius:10px;background:rgba(57,181,74,.08);border:1px solid rgba(57,181,74,.25);font-size:14px;line-height:1.7;color:#e8eef5}
+.wi-sn b{color:#39b54a}
+.wi-rem{margin-top:12px;font-size:13px;line-height:1.6;color:#9fb3c8;text-align:center}
+.wi-gl p{margin:0 0 12px;font-size:14.5px;line-height:1.75;color:#e8eef5}
+.wi-gl p:last-child{margin-bottom:0}
+.wi-gl .wi-gl-t{font-weight:700;color:#fff;margin-bottom:6px}
+.wi-gl-o{margin:0 0 12px;padding-left:20px}
+.wi-gl-o li{font-size:14.5px;line-height:1.7;color:#e8eef5;margin-bottom:6px}
+.wi-gl-o b{color:#00aeef}
 .wi-idea{padding:10px 0;border-top:1px solid var(--bor)}
 .wi-idea:first-of-type{border-top:none}
 .wi-idea b{color:#fff;font-size:14.5px}
@@ -2643,7 +2653,7 @@ function __updateTitle(p){
     } else if(p==="writingOwnWork"){
       title="IELTS Writing Task 2 \u2014 Your Own Question | "+base;
     } else if(p==="writingOwnIdeas"){
-      title="Ideas & Vocabulary \u2014 Your Own Question | "+base;
+      title="Essay Plan & Ideas \u2014 Your Own Question | "+base;
     } else if(p==="materialsIELTS"){
       title="IELTS Study Materials | "+base;
     } else if(p==="materialsGrammar"){
@@ -3437,7 +3447,7 @@ async function wrOwnIdeas(){
   if(!currentUser||!session){ wrDialog("Please log in","Please log in to get ideas and vocabulary.","OK"); return; }
   const ok=await wrCheckOpen();
   if(!ok){ wrBlockedDialog(); return; }
-  wrDialog("Preparing your ideas…","This takes about 20 to 40 seconds. Please wait here.",null);
+  wrDialog("Preparing your essay plan…","This takes about 20 to 40 seconds. Please wait here.",null);
   try{
     const res=await fetch(SUPABASE_URL+"/functions/v1/mark-writing",{
       method:"POST",
@@ -3467,7 +3477,7 @@ function wrIdeasPoll(id){
     let row=null;
     try{ const r=await sb.from("writing_ideas").select("status,error").eq("id",id).single(); row=r&&r.data; }catch(e){}
     if(row&&row.status==="done"){ wrOpenIdeasPage(id); return; }
-    if(row&&row.status==="failed"){ wrDialog("Sorry, the ideas could not be made","Something went wrong. This did not use one of your daily tries. Please try again.","OK"); return; }
+    if(row&&row.status==="failed"){ wrDialog("Sorry, the essay plan could not be made","Something went wrong. This did not use one of your daily tries. Please try again.","OK"); return; }
     if(Date.now()-t0>3*60*1000){ wrDialog("This is taking too long","Please try again in a few minutes.","OK"); return; }
     setTimeout(tick,3000);
   };
@@ -3490,7 +3500,7 @@ async function renderWritingOwnIdeas(){
   curOwnQuestion=row.question_text;
   qb.innerHTML='<div class="wq-text">'+String(row.question_text||"").split(/\n+/).filter(Boolean).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>';
   const c=row.content; let h="";
-  if(c.version===2||c.version===3){ body.innerHTML=wrIdeasV2Html(c); window.scrollTo({top:0}); return; }
+  if(c.version>=2&&c.version<=6){ body.innerHTML=wrIdeasV2Html(c); window.scrollTo({top:0}); return; }
   if(c.question_type) h+='<div class="wi-sec"><span class="wi-kind">'+wEsc(c.question_type)+'</span></div>';
   h+='<div class="wi-sec"><div class="wi-h">🧠 What this question is asking</div><div class="wi-card"><p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#e8eef5">'+wEsc(c.simple_explanation)+'</p>'
     +((c.key_parts&&c.key_parts.length)?'<div class="wi-card-t">You must answer:</div><ul>'+c.key_parts.map(k=>'<li><b>'+wEsc(k.part)+'</b> — '+wEsc(k.meaning)+'</li>').join("")+'</ul>':'')+'</div></div>';
@@ -3509,11 +3519,25 @@ function wrIdeasV2Html(c){
   const E=wEsc; let h="", n=0;
   const H=(icon,t)=>'<div class="wi-h">'+icon+' '+(++n)+'. '+t+'</div>';
   if(c.question_type) h+='<div class="wi-sec"><span class="wi-kind">'+E(c.question_type)+'</span></div>';
-  h+='<div class="wi-sec">'+H("🧠","The question at a glance")+'<div class="wi-card"><p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#e8eef5">'+E(c.asks_summary)+'</p>'
-    +((c.must_answer&&c.must_answer.length)?'<div class="wi-card-t">You must answer:</div><ul>'+c.must_answer.map(k=>'<li><b>'+E(k.part)+'</b> — '+E(k.meaning)+'</li>').join("")+'</ul>':'')+'</div>'
+  const g=c.glance;
+  let gl;
+  if(g){
+    gl='<div class="wi-card wi-gl">'
+      +(g.topic?'<p>'+E(g.topic)+'</p>':'')
+      +(g.statement?'<p><b>'+E(g.statement_label||"The question says")+':</b> '+E(g.statement)+'</p>':'')
+      +(g.asks?'<p>'+E(g.asks)+'</p>':'')
+      +(g.meaning?'<p>'+E(g.meaning)+'</p>':'')
+      +((g.options&&g.options.length)?'<p class="wi-gl-t">'+E(g.options_title||"You can write:")+'</p><ul class="wi-gl-o">'+g.options.map(o=>'<li><b>'+E(o.label)+':</b> “'+E(o.say)+'”</li>').join("")+'</ul>':'')
+      +(g.finish?'<p>'+E(g.finish)+'</p>':'')
+      +(g.plural_note?'<p class="wi-pn">'+E(g.plural_note)+'</p>':'')+'</div>';
+  } else {
+    gl='<div class="wi-card"><p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#e8eef5">'+E(c.asks_summary)+'</p>'
+      +((c.must_answer&&c.must_answer.length)?'<div class="wi-card-t">You must answer:</div><ul>'+c.must_answer.map(k=>'<li><b>'+E(k.part)+'</b> — '+E(k.meaning)+'</li>').join("")+'</ul>':'')+'</div>';
+  }
+  h+='<div class="wi-sec">'+H("🧠","Understand the question")+gl
     +((c.wording_clues&&c.wording_clues.length)?'<div class="wi-card"><div class="wi-card-t">🔎 Watch the words in your question</div><ul>'+c.wording_clues.map(w=>'<li><b>“'+E(w.words)+'”</b> — '+E(w.meaning)+'</li>').join("")+'</ul></div>':'')
     +'</div>';
-  h+='<div class="wi-sec">'+H("🧭","Essay structure, paragraph by paragraph");
+  h+='<div class="wi-sec">'+H("🧭","Essay structure you can use");
   (c.plan||[]).forEach(g=>{
     let k=0;
     h+='<div class="wi-par"><div class="wi-par-t">'+E(g.title)+'</div>'+(g.goal?'<div class="wi-par-g">'+E(g.goal)+'</div>':'');
@@ -3526,6 +3550,8 @@ function wrIdeasV2Html(c){
     if(g.more_ideas&&g.more_ideas.length) h+='<div class="wi-more"><b>💡 Other ideas you can use here:</b><ul style="margin:4px 0 0;padding-left:20px">'+g.more_ideas.map(m=>'<li><b style="color:#fff">'+E(m.title)+'</b> — '+E(m.point)+'</li>').join("")+'</ul></div>';
     h+='</div>';
   });
+  if(c.special_note) h+='<div class="wi-sn"><b>Special note:</b> '+E(c.special_note)+'</div>';
+  if(c.version>=6) h+='<div class="wi-rem">Check the instruction words, singular/plural words, and the people or things mentioned. Answer every part, and explain each point.</div>';
   h+='</div>';
   if(c.ideas&&c.ideas.length){
     h+='<div class="wi-sec">'+H("💡","Ideas you can use for this question");
@@ -3599,11 +3625,11 @@ async function wrLoadOwnIdeasList(){
   const now=Date.now();
   rows=rows.filter(x=>!(x.status==="pending"&&now-new Date(x.created_at).getTime()>10*60*1000));
   if(!rows.length){ box.innerHTML=""; return; }
-  box.innerHTML='<div class="wo-list-t">Your ideas pages (open for free)</div>'+rows.map(x=>{
+  box.innerHTML='<div class="wo-list-t">Your essay plans (open for free)</div>'+rows.map(x=>{
     const when=new Date(x.created_at).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
     const qt=String(x.question_text||""); const snip=qt.length>110?qt.slice(0,110)+"…":qt;
     return '<div class="wo-item"><div class="wo-q">'+wEsc(snip)+'</div><div class="wo-meta"><span>'+wEsc(when)+(x.status==="pending"?' · ⏳ Preparing…':'')+'</span>'
-      +(x.status==="pending"?'':'<button data-o="'+wEsc(x.id)+'">Open ideas</button>')+'</div></div>';
+      +(x.status==="pending"?'':'<button data-o="'+wEsc(x.id)+'">Open plan</button>')+'</div></div>';
   }).join("");
   box.querySelectorAll("button[data-o]").forEach(b=>{ b.onclick=()=>wrOpenIdeasPage(b.getAttribute("data-o")); });
 }
@@ -8806,7 +8832,7 @@ function spPrint(){
     <div class="wq-num">Your question</div>
     <textarea class="wo-ta" id="woQ" maxlength="1500" placeholder="Paste or type your Writing Task 2 question here…" spellcheck="false"></textarea>
     <div class="wo-hint">Only real IELTS Writing Task 2 (essay) questions can be marked. Task 1 questions are not supported yet.</div>
-    <div class="wq-actions" style="display:flex"><button class="wq-btn" onclick="wrOwnIdeas()">💡 Generate ideas &amp; vocabulary</button><button class="wq-btn pri" onclick="wrOwnStart()">✍️ Start writing</button></div>
+    <div class="wq-actions" style="display:flex"><button class="wq-btn" onclick="wrOwnIdeas()">💡 Plan the essay first</button><button class="wq-btn pri" onclick="wrOwnStart()">✍️ Write the essay now</button></div>
   </div>
   <div id="woIdeasList"></div>
   <div id="woList"></div>
@@ -8814,7 +8840,7 @@ function spPrint(){
 
 <!-- WRITING TASK 2 — IDEAS & VOCABULARY FOR THE STUDENT'S OWN QUESTION -->
 <div class="selpage" id="writingOwnIdeasPage">
-  <div class="ptitle">💡 Ideas &amp; Vocabulary</div>
+  <div class="ptitle">💡 Essay Plan &amp; Ideas</div>
   <div class="psub">For your own question</div>
   <div class="wq-card" id="woiQuestion" style="cursor:default"></div>
   <div id="woiBody"></div>
