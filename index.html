@@ -544,6 +544,31 @@ option{background:#fff;color:#1a2e40}
 .wo-voc .m{font-size:14px;color:#e8eef5;margin-top:2px}
 .wo-voc .e{font-size:13px;color:#9fb3c8;font-style:italic;margin-top:2px;line-height:1.6}
 .wi-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wi-par{background:var(--sur);border:1px solid var(--bor);border-radius:14px;padding:16px 20px;margin-bottom:14px}
+.wi-par-t{font-size:15px;font-weight:700;color:#fff}
+.wi-par-g{font-size:13px;color:#9fb3c8;margin:2px 0 12px;line-height:1.6}
+.wi-step{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--bor)}
+.wi-step:first-of-type{border-top:none}
+.wi-num{flex:0 0 26px;height:26px;border-radius:50%;background:rgba(0,174,239,.15);color:#00aeef;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.wi-step.wi-o .wi-num{background:transparent;border:1px dashed rgba(255,255,255,.35);color:#9fb3c8}
+.wi-lab{font-size:13.5px;font-weight:700;color:#fff}
+.wi-opt{font-size:11px;font-weight:600;color:#9fb3c8;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:1px 8px;margin-left:8px;vertical-align:1px}
+.wi-what{font-size:13.5px;line-height:1.6;color:#e8eef5;margin-top:2px}
+.wi-smp{font-size:13px;line-height:1.6;color:#9fb3c8;font-style:italic;margin-top:4px}
+.wi-tips{margin:10px 0 0;padding:10px 14px;border-radius:10px;background:rgba(57,181,74,.08);font-size:13px;line-height:1.6;color:#e8eef5}
+.wi-tips b{color:#39b54a}
+.wi-more{margin-top:10px;font-size:13px;line-height:1.6;color:#e8eef5}
+.wi-more b{color:#00aeef}
+.wi-grp{font-size:12px;font-weight:700;color:#9fb3c8;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 2px}
+.wi-chk li{list-style:none;margin-left:-20px}
+.wi-idea{padding:10px 0;border-top:1px solid var(--bor)}
+.wi-idea:first-of-type{border-top:none}
+.wi-idea b{color:#fff;font-size:14.5px}
+.wi-idea .m{font-size:14px;line-height:1.6;color:#e8eef5;margin-top:2px}
+.wi-mis{padding:10px 0;border-top:1px solid var(--bor)}
+.wi-mis:first-child{border-top:none}
+.wi-mt{font-size:14px;line-height:1.6;color:#f08a7b;font-weight:600}
+.wi-mf{font-size:14px;line-height:1.6;color:#8fdc9a;margin-top:3px}
 @media(max-width:640px){.wi-two{grid-template-columns:1fr}}
 #wrBlockedDlg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:3500;padding:20px}
 #wrBlockedDlg .bx{background:#fff;border-radius:12px;padding:26px 28px;max-width:420px;width:100%;color:#222;text-align:center;font-family:'Poppins',sans-serif}
@@ -3451,6 +3476,7 @@ async function renderWritingOwnIdeas(){
   curOwnQuestion=row.question_text;
   qb.innerHTML='<div class="wq-text">'+String(row.question_text||"").split(/\n+/).filter(Boolean).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>';
   const c=row.content; let h="";
+  if(c.version===2||c.version===3){ body.innerHTML=wrIdeasV2Html(c); window.scrollTo({top:0}); return; }
   if(c.question_type) h+='<div class="wi-sec"><span class="wi-kind">'+wEsc(c.question_type)+'</span></div>';
   h+='<div class="wi-sec"><div class="wi-h">🧠 What this question is asking</div><div class="wi-card"><p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#e8eef5">'+wEsc(c.simple_explanation)+'</p>'
     +((c.key_parts&&c.key_parts.length)?'<div class="wi-card-t">You must answer:</div><ul>'+c.key_parts.map(k=>'<li><b>'+wEsc(k.part)+'</b> — '+wEsc(k.meaning)+'</li>').join("")+'</ul>':'')+'</div></div>';
@@ -3464,6 +3490,52 @@ async function renderWritingOwnIdeas(){
   if(c.vocabulary&&c.vocabulary.length) h+='<div class="wi-sec"><div class="wi-h">📚 Useful vocabulary</div><div class="wi-card">'+c.vocabulary.map(v=>'<div class="wo-voc"><b>'+wEsc(v.word)+'</b><div class="m">'+wEsc(v.meaning)+'</div>'+(v.example?'<div class="e">“'+wEsc(v.example)+'”</div>':'')+'</div>').join("")+'</div></div>';
   body.innerHTML=h;
   window.scrollTo({top:0});
+}
+function wrIdeasV2Html(c){
+  const E=wEsc; let h="", n=0;
+  const H=(icon,t)=>'<div class="wi-h">'+icon+' '+(++n)+'. '+t+'</div>';
+  if(c.question_type) h+='<div class="wi-sec"><span class="wi-kind">'+E(c.question_type)+'</span></div>';
+  h+='<div class="wi-sec">'+H("🧠","The question at a glance")+'<div class="wi-card"><p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#e8eef5">'+E(c.asks_summary)+'</p>'
+    +((c.must_answer&&c.must_answer.length)?'<div class="wi-card-t">You must answer:</div><ul>'+c.must_answer.map(k=>'<li><b>'+E(k.part)+'</b> — '+E(k.meaning)+'</li>').join("")+'</ul>':'')+'</div>'
+    +((c.wording_clues&&c.wording_clues.length)?'<div class="wi-card"><div class="wi-card-t">🔎 Watch the words in your question</div><ul>'+c.wording_clues.map(w=>'<li><b>“'+E(w.words)+'”</b> — '+E(w.meaning)+'</li>').join("")+'</ul></div>':'')
+    +'</div>';
+  h+='<div class="wi-sec">'+H("🧭","Essay structure, paragraph by paragraph");
+  (c.plan||[]).forEach(g=>{
+    let k=0;
+    h+='<div class="wi-par"><div class="wi-par-t">'+E(g.title)+'</div>'+(g.goal?'<div class="wi-par-g">'+E(g.goal)+'</div>':'');
+    (g.parts||[]).forEach(x=>{
+      if(!x.optional) k++;
+      h+='<div class="wi-step'+(x.optional?' wi-o':'')+'"><div class="wi-num">'+(x.optional?'+':k)+'</div><div><div class="wi-lab">'+E(x.label)+(x.optional?'<span class="wi-opt">optional</span>':'')+'</div>'
+        +(x.what?'<div class="wi-what">'+E(x.what)+'</div>':'')+(x.sample?'<div class="wi-smp">Example: “'+E(x.sample)+'”</div>':'')+'</div></div>';
+    });
+    if(g.tips&&g.tips.length) h+='<div class="wi-tips"><b>Tips:</b> '+g.tips.map(E).join(" · ")+'</div>';
+    if(g.more_ideas&&g.more_ideas.length) h+='<div class="wi-more"><b>💡 Other ideas you can use here:</b><ul style="margin:4px 0 0;padding-left:20px">'+g.more_ideas.map(m=>'<li><b style="color:#fff">'+E(m.title)+'</b> — '+E(m.point)+'</li>').join("")+'</ul></div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  if(c.ideas&&c.ideas.length){
+    h+='<div class="wi-sec">'+H("💡","Ideas you can use for this question");
+    c.ideas.forEach(g=>{
+      h+='<div class="wi-card"><div class="wi-card-t">'+E(g.paragraph)+'</div>'
+        +g.items.map(i=>'<div class="wi-idea"><b>'+E(i.title)+'</b><div class="m">'+E(i.point)+'</div>'+(i.example?'<div class="wi-ex">Example: '+E(i.example)+'</div>':'')+'</div>').join("")+'</div>';
+    });
+    h+='</div>';
+  }
+  if(c.avoid&&c.avoid.length) h+='<div class="wi-sec">'+H("❌","Mistakes students often make with this question")+'<div class="wi-card">'
+    +c.avoid.map(m=>(typeof m==="string")?'<div class="wi-mis"><div class="wi-mt">'+E(m)+'</div></div>'
+      :'<div class="wi-mis"><div class="wi-mt">✗ '+E(m.mistake)+'</div>'+(m.fix?'<div class="wi-mf">✓ '+E(m.fix)+'</div>':'')+'</div>').join("")+'</div></div>';
+  if(c.vocabulary&&c.vocabulary.length){
+    h+='<div class="wi-sec">'+H("📚","Useful vocabulary")+'<div class="wi-card">';
+    let last=null;
+    c.vocabulary.forEach(v=>{
+      const g=v.group||"Useful words";
+      if(g!==last){ h+='<div class="wi-grp">'+E(g)+'</div>'; last=g; }
+      h+='<div class="wo-voc"><b>'+E(v.word)+'</b><div class="m">'+E(v.meaning)+'</div>'+(v.example?'<div class="e">“'+E(v.example)+'”</div>':'')+'</div>';
+    });
+    h+='</div></div>';
+  }
+  if(c.checklist&&c.checklist.length) h+='<div class="wi-sec">'+H("✅","Check before you submit")+'<div class="wi-card"><ul class="wi-chk">'+c.checklist.map(x=>'<li>☐ '+E(x)+'</li>').join("")+'</ul></div></div>';
+  return h;
 }
 function wrOwnWriteFromIdeas(){
   if(!curOwnQuestion){ showToast("Please go back and open your ideas page again."); return; }
