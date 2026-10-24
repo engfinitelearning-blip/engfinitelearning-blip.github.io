@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>EngFinite Learning</title>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -589,6 +589,14 @@ option{background:#fff;color:#1a2e40}
 .wrp-box,.wrp-qbox{border:1px solid #c9d3da;background:#f6f9fb;border-radius:6px;padding:10px 14px;margin:10px 0}
 .wrp-box ul{margin:6px 0 0 18px;padding:0}
 .wrp-note{font-size:12px;color:#666;margin:6px 0 10px}
+.wrp-imp{margin-top:8px;padding:8px 12px;border:1px solid #9cc3e6;background:#eef6fd;border-radius:6px;font-size:13px;line-height:1.6;color:#123a5c;break-inside:avoid}
+.wrp-imp-i{margin-top:4px}
+.wrp-imp-a{background:#dbe9f6;border-radius:3px;padding:0 3px}
+.wrp-imp-b{font-weight:700;color:#0b4f8a}
+.wrp-imp-k{color:#5a7790;font-size:12px}
+.wrp-ai{border:2px solid #d99a00;background:#fff6dc;border-radius:8px;padding:14px 18px;margin:0 0 18px;font-family:'Noto Sans Bengali','Poppins',sans-serif;font-size:15px;line-height:1.8;color:#3d2e00;break-inside:avoid}
+.wrp-ai p{margin:0 0 8px}.wrp-ai p:last-child{margin:0}
+.wrp-ai b{font-weight:700;color:#000}
 .wrp-warn{background:#fdecea;border:1px solid #e6a39b;color:#8a2a1f;border-radius:6px;padding:8px 12px;margin:8px 0;font-size:12.5px}
 .wrp-tblwrap{overflow-x:auto}
 .wrp-tbl,.wrp-mt{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0}
@@ -3212,12 +3220,8 @@ function wrBuildReport(r){
   const C=r.criteria||{}, S=r.sentences||[];
   let h='';
   h+='<div class="wrp-title">IELTS Writing Task 2<br><span>Full Feedback: Every Mistake Explained</span></div>';
-  h+='<div class="wrp-box"><b>How to use this report</b><ul>'
-    +'<li><b>Part A:</b> your essay, exactly as you wrote it, with sentence numbers.</li>'
-    +'<li><b>Part B:</b> every sentence checked one by one. Each mistake is underlined in red, explained simply, and corrected.</li>'
-    +'<li><b>Part C:</b> bigger problems in the whole essay, plus your estimated band for each criterion.</li>'
-    +'<li><b>Part D:</b> your full essay, corrected, so you can compare.</li>'
-    +'<li><b>Last page:</b> the most important things to practise.</li></ul></div>';
+  h+='<div class="wrp-ai"><p>এই Feedback-টা <b>AI দিয়ে Generate করা হয়েছে, কোনো Human Examiner দিয়ে না।</b> তাই এই <b>Band Score-টা খুব বেশি Seriously নেওয়ার দরকার নেই।</b> AI-এর দেওয়া Score আপনার Actual IELTS Score-এর চেয়ে কম বা বেশিও হতে পারে।</p>'
+    +'<p>তাই Score-এর উপর Focus না করে <b>Mistakes গুলোর উপর Focus করুন।</b> কোথায় কোথায় ভুল হয়েছে, সেগুলো দেখুন, Correct করুন, তারপর আবার নতুন করে লিখুন।</p></div>';
   h+='<div class="wrp-h2">Results at a glance</div>';
   h+='<div class="wrp-qbox"><b>Question</b><br>'+wEsc(r.question||"").replace(/\n/g,"<br>")+'</div>';
   h+='<div class="wrp-tblwrap"><table class="wrp-tbl"><tr><th>Words</th><th>Mistakes</th><th>TR</th><th>CC</th><th>LR</th><th>GRA</th><th>Overall</th></tr>'
@@ -3237,7 +3241,7 @@ function wrBuildReport(r){
 
   // Part B
   h+='<div class="wrp-h1">B. Every mistake, sentence by sentence</div>';
-  h+='<div class="wrp-note">Red underlined words are mistakes. The small red number matches the row in the table under it. The green box shows the correct sentence.</div>';
+  h+='<div class="wrp-note">Red underlined words are mistakes. The small red number matches the row in the table under it. The green box shows the correct sentence. A blue box is not a mistake: it is an idea to make a correct sentence even stronger.</div>';
   S.forEach(s=>{
     const ms=(s.mistakes||[]).map(m=>Object.assign({},m));
     const cnt=ms.length;
@@ -3245,13 +3249,16 @@ function wrBuildReport(r){
     h+='<div class="wrp-lab">What you wrote:</div><div class="wrp-txt">'+wrHighlight(s.text,ms)+'</div>';
     if(s.good) h+='<div class="wrp-good">✓ <b>Good:</b> '+wEsc(s.good)+'</div>';
     if(cnt){
-      h+='<div class="wrp-tblwrap"><table class="wrp-mt"><tr><th>#</th><th>Type</th><th>Mistake</th><th>Why it is wrong (simple)</th><th>Correct it like this</th></tr>';
+      h+='<div class="wrp-tblwrap"><table class="wrp-mt"><tr><th>#</th><th>Type</th><th>Mistake</th><th>Why it is wrong</th><th>Correct it like this</th></tr>';
       ms.forEach(m=>{
         h+='<tr><td>'+m._i+'</td><td>'+(m.types||[]).map(t=>'<span class="wrp-ty wrp-ty-'+wEsc(t)+'">'+wEsc(WR_TYPE_LABEL[t]||t)+'</span>').join(' ')+'</td>'
           +'<td>'+(m.span==="*"?'<i>(the whole sentence / idea)</i>':wEsc(m.span))+'</td><td>'+wEsc(m.why)+'</td><td>'+wEsc(m.fix)+'</td></tr>';
       });
       h+='</table></div>';
       h+='<div class="wrp-fix"><b>✓ Correct version:</b><br>'+wEsc(s.corrected)+'</div>';
+    }
+    if((s.improvements||[]).length){
+      h+='<div class="wrp-imp"><b>💡 Not a mistake, but you can make it better:</b>'+s.improvements.map(m=>'<div class="wrp-imp-i">Instead of <span class="wrp-imp-a">'+wEsc(m.span)+'</span> you can write <span class="wrp-imp-b">'+wEsc(m.better)+'</span>. '+wEsc(m.why)+' <span class="wrp-imp-k">('+(m.kind==="GRA"?'Grammar':'Vocabulary')+')</span></div>').join('')+'</div>';
     }
     h+='</div>';
   });
@@ -3268,9 +3275,6 @@ function wrBuildReport(r){
     }
     h+='</div>';
   });
-  h+='<div class="wrp-h2">Score summary</div><div class="wrp-tblwrap"><table class="wrp-tbl"><tr><th>Criterion</th><th>Mistakes found</th><th>Estimated band</th></tr>'
-    +['TR','CC','LR','GRA'].map(k=>'<tr><td>'+wEsc(WR_CRIT_NAME[k].split(' = ')[0])+'</td><td>'+wEsc((C[k]||{}).mistakes||0)+'</td><td>'+wrBandStr((C[k]||{}).band)+'</td></tr>').join('')
-    +'<tr class="wrp-sum"><td>Overall</td><td>'+wEsc(r.total_mistakes)+' in total</td><td>'+wrBandStr(r.overall)+'</td></tr></table></div>';
   h+='<div class="wrp-note">Some mistakes count for two criteria, so the criterion numbers can add up to more than the total.</div>';
 
   // Part D
