@@ -2988,6 +2988,29 @@ function buildWritingTopics(){
     g.appendChild(d);
   });
 }
+let __wrPlanMap={};
+function wrNormQ(t){ return String(t||"").replace(/\r\n/g,"\n").split("\n").map(x=>x.trim()).filter(Boolean).join("\n"); }
+async function wrLoadPlanMap(){
+  __wrPlanMap={};
+  if(!currentUser) return;
+  try{
+    const r=await sb.from("writing_ideas").select("id,question_text,created_at").eq("status","done").order("created_at",{ascending:false}).limit(1000);
+    ((r&&r.data)||[]).forEach(x=>{ const k=wrNormQ(x.question_text); if(k&&!__wrPlanMap[k]) __wrPlanMap[k]=x.id; });
+  }catch(e){}
+}
+function wrApplyPlanButtons(root){
+  if(!root) return;
+  root.querySelectorAll(".wq-btn[data-qk]").forEach(b=>{
+    const id=__wrPlanMap[b.getAttribute("data-qk")];
+    if(id){ b.dataset.pid=id; b.textContent="📂 Open plan"; }
+    else { delete b.dataset.pid; b.textContent="💡 Plan the essay first"; }
+  });
+}
+function wrPlanClick(b,text){
+  if(b.dataset.pid){ wrOpenIdeasPage(b.dataset.pid); return; }
+  const ta=document.getElementById("woQ"); if(ta) ta.value=text;
+  wrOwnIdeas();
+}
 function wrecAll(){
   const out=[];
   (Array.isArray(WRITING_RECENT)?WRITING_RECENT:[]).forEach(g=>{
@@ -3016,14 +3039,17 @@ function renderWritingRecent(){
       +'<div class="wq-actions"><button class="wq-btn" data-m="ideas">💡 Plan the essay first</button><button class="wq-btn pri" data-m="write">✍️ Write the essay now</button></div>';
     d.onclick=()=>{ const was=d.classList.contains("open"); list.querySelectorAll(".wq-card.open").forEach(x=>x.classList.remove("open")); if(!was) d.classList.add("open"); };
     d.querySelectorAll(".wq-btn").forEach(b=>{
+      if(b.getAttribute("data-m")==="ideas") b.setAttribute("data-qk",wrNormQ(q.text));
       b.onclick=(ev)=>{
         ev.stopPropagation();
+        if(b.getAttribute("data-m")==="ideas"){ wrPlanClick(b,q.text); return; }
         const ta=document.getElementById("woQ"); if(ta) ta.value=q.text;
-        if(b.getAttribute("data-m")==="ideas") wrOwnIdeas(); else wrOwnStart();
+        wrOwnStart();
       };
     });
     list.appendChild(d);
   });
+  wrLoadPlanMap().then(()=>wrApplyPlanButtons(list));
 }
 function selectWritingTopic(key){
   curWritingTopic=key;
@@ -3053,12 +3079,14 @@ function renderWritingTopic(){
     d.querySelectorAll(".wq-btn").forEach(b=>{
       b.onclick=(ev)=>{ ev.stopPropagation();
         if(b.getAttribute("data-m")==="write") wrStartWrite(q.n);
-        else if(!(q.ideas&&q.ideas.length)){ const ta=document.getElementById("woQ"); if(ta) ta.value=(q.lines||[]).join("\n"); wrOwnIdeas(); }
+        else if(!(q.ideas&&q.ideas.length)){ wrPlanClick(b,(q.lines||[]).join("\n")); }
         else openWriting(q.n,b.getAttribute("data-m")); };
     });
+    if(!(q.ideas&&q.ideas.length)){ const ib=d.querySelector('.wq-btn[data-m="ideas"]'); if(ib) ib.setAttribute("data-qk",wrNormQ((q.lines||[]).join("\n"))); }
     const hs=d.querySelector(".wq-hist"); if(hs) hs.onclick=(ev)=>ev.stopPropagation();
     list.appendChild(d);
   });
+  wrLoadPlanMap().then(()=>wrApplyPlanButtons(list));
   wrLoadAttempts();
 }
 
