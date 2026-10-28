@@ -3043,7 +3043,7 @@ function renderWritingTopic(){
     const d=document.createElement("div");
     d.className="wq-card wq-link"+(String(curWritingQ)===String(q.n)?" open":"");
     d.innerHTML='<div class="wq-num">Question '+wEsc(q.n)+'<span class="wq-badge" id="wqb_'+wEsc(q.n)+'" style="display:none"></span></div><div class="wq-go">▾</div><div class="wq-text">'+(q.lines||[]).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>'
-      +'<div class="wq-actions"><button class="wq-btn" data-m="ideas">💡 See Ideas &amp; Vocabulary</button><button class="wq-btn pri" data-m="write">✍️ Write This Essay</button></div>'
+      +'<div class="wq-actions"><button class="wq-btn" data-m="ideas">'+((q.ideas&&q.ideas.length)?'💡 See Ideas &amp; Vocabulary':'💡 Plan the essay first')+'</button><button class="wq-btn pri" data-m="write">✍️ Write This Essay</button></div>'
       +'<div class="wq-hist" id="wqh_'+wEsc(q.n)+'"></div>';
     d.onclick=()=>{
       const was=d.classList.contains("open");
@@ -3051,7 +3051,10 @@ function renderWritingTopic(){
       if(!was) d.classList.add("open");
     };
     d.querySelectorAll(".wq-btn").forEach(b=>{
-      b.onclick=(ev)=>{ ev.stopPropagation(); if(b.getAttribute("data-m")==="write") wrStartWrite(q.n); else openWriting(q.n,b.getAttribute("data-m")); };
+      b.onclick=(ev)=>{ ev.stopPropagation();
+        if(b.getAttribute("data-m")==="write") wrStartWrite(q.n);
+        else if(!(q.ideas&&q.ideas.length)){ const ta=document.getElementById("woQ"); if(ta) ta.value=(q.lines||[]).join("\n"); wrOwnIdeas(); }
+        else openWriting(q.n,b.getAttribute("data-m")); };
     });
     const hs=d.querySelector(".wq-hist"); if(hs) hs.onclick=(ev)=>ev.stopPropagation();
     list.appendChild(d);
@@ -7287,7 +7290,7 @@ function _hmStillUsed(bankId, val, excludeQn){
 <script src="/data-listening-cam19.js?v=20260733e"></script>
 <script src="/data-listening-cam20.js?v=20260733e"></script>
 <script src="/data-listening-cam21.js?v=20260733e"></script>
-<script src="/data-writing.js?v=20260733e"></script>
+<script src="/data-writing.js?v=20261027c"></script>
 <script src="/data-recent.js?v=20261027b"></script>
 
 <script>
