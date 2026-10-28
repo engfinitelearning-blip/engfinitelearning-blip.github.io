@@ -3567,9 +3567,7 @@ function wrIdeasV2Html(c){
       +(g.topic?'<p>'+E(g.topic)+'</p>':'')
       +(g.statement?'<p><b>'+E(g.statement_label||"The question says")+':</b> '+E(g.statement)+'</p>':'')
       +(g.asks?'<p>'+E(g.asks)+'</p>':'')
-      +(g.meaning?'<p>'+E(g.meaning)+'</p>':'')
       +((g.options&&g.options.length)?'<p class="wi-gl-t">'+E(g.options_title||"You can write:")+'</p><ul class="wi-gl-o">'+g.options.map(o=>'<li><b>'+E(o.label)+':</b> “'+E(o.say)+'”</li>').join("")+'</ul>':'')
-      +(g.finish?'<p>'+E(g.finish)+'</p>':'')
       +(g.plural_note?'<p class="wi-pn">'+E(g.plural_note)+'</p>':'')+'</div>';
   } else {
     gl='<div class="wi-card"><p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#e8eef5">'+E(c.asks_summary)+'</p>'
