@@ -2415,6 +2415,7 @@ const DATA = {};
 
 const LISTENING_DATA = {}; // Loaded from data-listening-cam11.js ... data-listening-cam21.js
 const WRITING_DATA = {}; // Loaded from data-writing.js
+let WRITING_RECENT = []; // Loaded from data-recent.js
 
 // ── STATE ──────────────────────────────────────────
 let curBook=null,curTest=null,curMode=null,curPassIdx=0;
@@ -2585,6 +2586,7 @@ registerFlat("/writing-practice/task-2/own/ideas","writingOwnIdeas");
 
 // ---- Writing Task 2: list of topics (the topic pages keep their old addresses) ----
 registerFlat("/writing-practice/task-2/questions-by-topic","writingBank");
+registerFlat("/writing-practice/task-2/recent-questions","writingRecent");
 
 // ---- Materials: flat pages, some nested under /materials/ielts/ ----
 // matSpeaking listed first under its canonical URL so computePath prefers it;
@@ -2787,7 +2789,7 @@ window.addEventListener("popstate",(event)=>{
 });
 function _renderPage(p){
   if(p!=="typingPractice" && typeof tpCleanup==="function") tpCleanup();
-  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingBankPage","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
+  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingBankPage","writingRecentPage","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.cssText="display:none";
   });
@@ -2862,6 +2864,7 @@ function _renderPage(p){
       "writingTask2":"writingTask2Page",
       "writingOwn":"writingOwnPage",
       "writingBank":"writingBankPage",
+      "writingRecent":"writingRecentPage",
       "writingOwnIdeas":"writingOwnIdeasPage",
       "writingTopic":"writingTopicPage",
       "speakingPractice":"speakingPracticePage",
@@ -2872,6 +2875,7 @@ function _renderPage(p){
       if(el) el.style.cssText="display:block;position:relative;z-index:1;padding:40px 24px 60px;max-width:920px;margin:0 auto;min-height:60vh";
       if(p==="writingTask2") buildWritingTopics();
       if(p==="writingBank") buildWritingTopics();
+      if(p==="writingRecent"||p==="writingTask2") renderWritingRecent();
       if(p==="writingOwn") renderWritingOwn();
       if(p==="writingOwnIdeas") renderWritingOwnIdeas();
       if(p==="writingTopic") renderWritingTopic();
@@ -2982,6 +2986,43 @@ function buildWritingTopics(){
     d.innerHTML='<div class="folder-ico">'+wEsc(t.icon||"📝")+'</div><div class="folder-name">'+wEsc(t.name)+'</div><div class="folder-sub">'+n+(n===1?" question":" questions")+'</div>';
     d.onclick=()=>selectWritingTopic(k);
     g.appendChild(d);
+  });
+}
+function wrecAll(){
+  const out=[];
+  (Array.isArray(WRITING_RECENT)?WRITING_RECENT:[]).forEach(g=>{
+    const qs=(g&&g.questions)||[];
+    qs.forEach(q=>{ const t=String((q&&q.text!==undefined)?q.text:q||"").trim(); if(t) out.push({when:String(g.when||""),text:t,title:String((q&&q.title)||"")}); });
+  });
+  return out;
+}
+function renderWritingRecent(){
+  const all=wrecAll();
+  const sub=document.getElementById("wt2recentSub");
+  if(sub) sub.textContent=all.length?(all.length+(all.length===1?" question":" questions")+" from recent exams"):"Questions from recent IELTS exams";
+  const list=document.getElementById("wrecList"); if(!list) return;
+  list.innerHTML="";
+  if(!all.length){ list.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px 0">Recent questions are being added. Check back soon!</div>'; return; }
+  let lastWhen=null,n=0;
+  all.forEach((q,idx)=>{
+    if(q.when!==lastWhen){
+      lastWhen=q.when;
+      if(q.when){ const h=document.createElement("div"); h.style.cssText="font-weight:700;margin:22px 0 10px;color:var(--text)"; h.textContent=q.when; list.appendChild(h); }
+    }
+    n++;
+    const d=document.createElement("div");
+    d.className="wq-card wq-link";
+    d.innerHTML='<div class="wq-num">Question '+n+(q.title?' · '+wEsc(q.title):'')+'</div><div class="wq-go">▾</div><div class="wq-text">'+q.text.split("\n").map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>'
+      +'<div class="wq-actions"><button class="wq-btn" data-m="ideas">💡 Plan the essay first</button><button class="wq-btn pri" data-m="write">✍️ Write the essay now</button></div>';
+    d.onclick=()=>{ const was=d.classList.contains("open"); list.querySelectorAll(".wq-card.open").forEach(x=>x.classList.remove("open")); if(!was) d.classList.add("open"); };
+    d.querySelectorAll(".wq-btn").forEach(b=>{
+      b.onclick=(ev)=>{
+        ev.stopPropagation();
+        const ta=document.getElementById("woQ"); if(ta) ta.value=q.text;
+        if(b.getAttribute("data-m")==="ideas") wrOwnIdeas(); else wrOwnStart();
+      };
+    });
+    list.appendChild(d);
   });
 }
 function selectWritingTopic(key){
@@ -7249,6 +7290,7 @@ function _hmStillUsed(bankId, val, excludeQn){
 <script src="/data-listening-cam20.js?v=20260733e"></script>
 <script src="/data-listening-cam21.js?v=20260733e"></script>
 <script src="/data-writing.js?v=20260733e"></script>
+<script src="/data-recent.js?v=1"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -8814,6 +8856,7 @@ function spPrint(){
   <div class="folder-grid">
     <div class="folder-card" onclick="wrOwnOpen()"><div class="folder-ico">✍️</div><div class="folder-name">Write your own question</div><div class="folder-sub">Type your own question and get AI feedback</div></div>
     <div class="folder-card" onclick="showPage('writingBank')"><div class="folder-ico">📚</div><div class="folder-name">Questions by topic</div><div class="folder-sub" id="wt2bankSub">Practise ready-made questions</div></div>
+    <div class="folder-card" onclick="showPage('writingRecent')"><div class="folder-ico">🆕</div><div class="folder-name">Recent questions</div><div class="folder-sub" id="wt2recentSub">Questions from recent IELTS exams</div></div>
   </div>
 </div>
 
@@ -8822,6 +8865,13 @@ function spPrint(){
   <div class="ptitle">📚 Questions by topic</div>
   <div class="psub">Choose a topic</div>
   <div class="folder-grid" id="wt2grid"></div>
+</div>
+
+<!-- WRITING TASK 2 — RECENT QUESTIONS -->
+<div class="selpage" id="writingRecentPage">
+  <div class="ptitle">🆕 Recent questions</div>
+  <div class="psub">Writing Task 2 questions from recent IELTS exams. Tap a question to plan or write the essay.</div>
+  <div id="wrecList"></div>
 </div>
 
 <!-- WRITING TASK 2 — YOUR OWN QUESTION -->
