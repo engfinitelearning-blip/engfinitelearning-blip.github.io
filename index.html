@@ -476,6 +476,16 @@ option{background:#fff;color:#1a2e40}
 .wq-card.open .t1-cw{display:block;margin-top:10px}
 .t1-prev img{max-width:100%;max-height:260px;border-radius:10px;margin-top:10px;background:#fff}
 .t1-facts{font-size:13px;line-height:1.6;white-space:pre-wrap;color:#333}
+.t1-chk{margin-top:14px;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);font-size:14px;line-height:1.6}
+.t1-chk.err{border-color:rgba(255,107,107,.55);background:rgba(255,107,107,.08)}
+.t1-chk.ok{border-color:rgba(46,204,113,.55);background:rgba(46,204,113,.07)}
+.t1-chk.warn{border-color:rgba(255,193,7,.55);background:rgba(255,193,7,.08)}
+.t1-chk h4{margin:0 0 6px;font-size:15px}
+.t1-chk ul{margin:6px 0 6px 18px;padding:0}
+.t1-chk .t1-read{max-height:220px;overflow:auto;background:#fff;color:#222;border-radius:8px;padding:10px 12px;margin:8px 0}
+.t1-chk .t1-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.t1-spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:t1spin .8s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes t1spin{to{transform:rotate(360deg)}}
 .wq-link{cursor:pointer;position:relative;transition:transform .2s,border-color .2s,background .2s}
 .wq-link:hover{transform:translateY(-3px);background:rgba(0,174,239,0.06);border-color:rgba(0,174,239,0.28)}
 .wq-go{position:absolute;top:16px;right:22px;font-size:16px;font-weight:700;color:#00aeef;transition:transform .2s}
@@ -3279,7 +3289,7 @@ async function wrSubmit(){
       headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_ANON_KEY},
       body:JSON.stringify(curWTask===1
         ?Object.assign({task:1,essay:text,question:(q.lines||[]).join("\n"),topic:curT1.topic,q:Number(q.n)||0},
-           curT1.facts?{facts:curT1.facts}:(curT1.image?{image:{media_type:curT1.image.media_type,data:curT1.image.data}}:{}))
+           curT1.check_token?{facts:curT1.facts,check_token:curT1.check_token}:(curT1.facts?{facts:curT1.facts}:(curT1.image?{image:{media_type:curT1.image.media_type,data:curT1.image.data}}:{})))
         :{essay:text,question:(q.lines||[]).join("\n"),topic:curWritingTopic,q:Number(q.n)})
     });
     let data={}; try{ data=await res.json(); }catch(e){}
@@ -3287,8 +3297,8 @@ async function wrSubmit(){
     __wrBusy=false;
     if(data.code==="not_open"||data.code==="not_approved"){ soon(); return; }
     if(res.status===401){ wrSetModal("Please log in again","Your login has expired. Your essay is still on this page. Press Save to keep it on this device.",true); return; }
-    if(data.error&&["limit","busy","too_short","too_long","bad_question","off_topic","not_essay"].indexOf(data.code)>=0){
-      wrSetModal(data.code==="limit"?"Daily limit reached":"Cannot mark this essay",
+    if(data.error&&["limit","busy","too_short","too_long","bad_question","off_topic","not_essay","picture_mismatch","recheck","failed"].indexOf(data.code)>=0){
+      wrSetModal(data.code==="limit"?"Daily limit reached":(data.code==="recheck"?"Please check your picture again":(data.code==="picture_mismatch"?"Question and picture do not match":(data.code==="failed"?"Please try again":"Cannot mark this essay"))),
         data.error+(data.next_slot?" You can send another essay after "+new Date(data.next_slot).toLocaleString()+".":"")+" Your essay is still on this page. Press Save to keep it on this device.",true);
       return;
     }
@@ -3626,19 +3636,22 @@ function t1PiesHtml(c){
   pies.forEach(p=>(p.slices||[]).forEach(s=>{ if(names.indexOf(s.name)<0) names.push(s.name); }));
   let h='<div class="t1-chart">'+(c.title?'<div style="font-weight:700;margin-bottom:6px;color:#222">'+E(c.title)+'</div>':'')+'<div class="t1-pies">';
   pies.forEach(p=>{
-    const tot=(p.slices||[]).reduce((a,s)=>a+(Number(s.value)||0),0)||1; let a0=-Math.PI/2;
-    let g='<svg viewBox="0 0 260 215" width="260" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif">';
+    const tot=(p.slices||[]).reduce((a,s)=>a+(Number(s.value)||0),0)||1; let a0=-Math.PI/2; const tiny=[];
+    let g='<svg viewBox="0 0 260 232" width="260" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif">';
     (p.slices||[]).forEach(s=>{
       const v=Number(s.value)||0, a1=a0+2*Math.PI*v/tot, col=T1_COLORS[names.indexOf(s.name)%T1_COLORS.length];
-      const x0=130+85*Math.cos(a0), y0=95+85*Math.sin(a0), x1=130+85*Math.cos(a1), y1=95+85*Math.sin(a1);
-      g+=(v/tot>=0.9999)?'<circle cx="130" cy="95" r="85" fill="'+col+'"/>':'<path d="M130 95 L'+x0+' '+y0+' A85 85 0 '+((a1-a0)>Math.PI?1:0)+' 1 '+x1+' '+y1+' Z" fill="'+col+'" stroke="#fff" stroke-width="1.5"/>';
-      if(v/tot>=0.05){ const am=(a0+a1)/2; g+='<text x="'+(130+55*Math.cos(am))+'" y="'+(95+55*Math.sin(am)+4)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">'+t1Num(v)+(c.unit==="%"||!c.unit?"%":"")+'</text>'; }
+      const x0=130+85*Math.cos(a0), y0=105+85*Math.sin(a0), x1=130+85*Math.cos(a1), y1=105+85*Math.sin(a1);
+      g+=(v/tot>=0.9999)?'<circle cx="130" cy="105" r="85" fill="'+col+'"/>':'<path d="M130 105 L'+x0+' '+y0+' A85 85 0 '+((a1-a0)>Math.PI?1:0)+' 1 '+x1+' '+y1+' Z" fill="'+col+'" stroke="#fff" stroke-width="1.5"/>';
+      const am=(a0+a1)/2, vs=t1Num(v)+(c.unit==="%"||!c.unit?"%":"");
+      if(v/tot>=0.07){ g+='<text x="'+(130+55*Math.cos(am))+'" y="'+(105+55*Math.sin(am)+4)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">'+vs+'</text>'; }
+      else if(v/tot>=0.02){ const cx=Math.cos(am); g+='<text x="'+(130+95*cx)+'" y="'+(105+95*Math.sin(am)+4)+'" text-anchor="'+(cx>=0?"start":"end")+'" font-size="11" font-weight="700" fill="#222">'+vs+'</text>'; }
+      else tiny.push(s.name+" "+vs);
       a0=a1;
     });
-    g+='<text x="130" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#222">'+E(p.label||"")+'</text></svg>';
+    g+='<text x="130" y="226" text-anchor="middle" font-size="13" font-weight="700" fill="#222">'+E(p.label||"")+'</text></svg>'+(tiny.length?'<div style="font-size:11px;color:#444;max-width:250px;margin:0 auto 4px">Too small to label: '+E(tiny.join(", "))+'</div>':"");
     if(own){ g+='';
       h+='<div style="text-align:center">'+g+'<div style="font-size:12px;color:#333;text-align:left;display:inline-block;max-width:250px">'+(p.slices||[]).map(s=>'<div><span style="display:inline-block;width:11px;height:11px;background:'+T1_COLORS[names.indexOf(s.name)%T1_COLORS.length]+';margin-right:5px"></span>'+E(s.name)+' — '+t1Num(Number(s.value))+(c.unit&&c.unit!=="%"?" "+E(c.unit):"%")+'</div>').join("")+'</div></div>'; }
-    else h+=g;
+    else h+='<div style="text-align:center">'+g+'</div>';
   });
   h+='</div>'+(own?'':'<div style="margin-top:6px;font-size:12px;color:#333">'+names.map((nm,i)=>'<span style="display:inline-block;margin:0 8px"><span style="display:inline-block;width:11px;height:11px;background:'+T1_COLORS[i%T1_COLORS.length]+';margin-right:4px"></span>'+E(nm)+'</span>').join("")+'</div>')+'</div>';
   return h;
@@ -3801,7 +3814,7 @@ async function t1RequestPlan(it){
   wrDialog("Preparing your plan…","This takes about 20 to 60 seconds. Please wait here.",null);
   try{
     const payload={action:"ideas",task:1,question:it.question};
-    if(it.facts) payload.facts=it.facts; else if(it.image) payload.image={media_type:it.image.media_type,data:it.image.data};
+    if(it.check_token){ payload.facts=it.facts; payload.check_token=it.check_token; } else if(it.facts) payload.facts=it.facts; else if(it.image) payload.image={media_type:it.image.media_type,data:it.image.data};
     const res=await fetch(SUPABASE_URL+"/functions/v1/mark-writing",{
       method:"POST",
       headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_ANON_KEY},
@@ -3814,7 +3827,7 @@ async function t1RequestPlan(it){
     }
     if(data.code==="not_open"||data.code==="not_approved"){ wrBlockedDialog(); return; }
     if(res.status===401){ wrDialog("Please log in again","Your login has expired. Please log in again.","OK"); return; }
-    if(data.error&&["limit","busy","bad_question"].indexOf(data.code)>=0){
+    if(data.error&&["limit","busy","bad_question","picture_mismatch","recheck","failed"].indexOf(data.code)>=0){
       wrDialog(data.code==="limit"?"Daily limit reached":"Cannot make a plan",data.error+(data.next_slot?" You can try again after "+new Date(data.next_slot).toLocaleString()+".":""),"OK"); return;
     }
     wrDialog("The plan is not available right now","Please try again later.","OK");
@@ -3831,7 +3844,9 @@ async function t1OwnOpen(){
   curWTask=1;
   showPage("writingT1Own");
 }
+function t1ChkStale(){ if(__t1Chk){ __t1Chk=null; t1ChkBox("",""); } }
 function t1PickPic(inp){
+  t1ChkStale();
   const f=inp.files&&inp.files[0], prev=document.getElementById("t1Prev");
   if(!f){ __t1Pic=null; if(prev) prev.innerHTML=""; return; }
   if(!/^image\/(png|jpeg|webp)$/.test(f.type)){ showToast("Please choose a PNG or JPG picture."); inp.value=""; __t1Pic=null; if(prev) prev.innerHTML=""; return; }
@@ -3856,7 +3871,64 @@ function t1OwnItem(){
   return {key:"own-"+wrHash(v),topic:"t1:custom",n:0,title:"",lines:v.split("\n"),question:v,chart:{type:"image",src:__t1Pic.dataUrl},facts:"",image:__t1Pic,catName:"Your own question"};
 }
 function t1OwnPlan(){ const it=t1OwnItem(); if(it) t1RequestPlan(it); }
-function t1OwnWrite(){ const it=t1OwnItem(); if(it) t1Go(it); }
+let __t1Chk=null, __t1Busy=false;   // result of the last picture check {key,facts,token,type,warnings}
+function t1ChkKey(it){ const d=it.image?it.image.data:""; return wrHash(it.question+"|"+d.length+":"+d.slice(0,80)+d.slice(-80)); }
+function t1ChkBox(cls,html){ const b=document.getElementById("t1Check"); if(b) b.innerHTML=html?'<div class="t1-chk '+cls+'" role="status">'+html+'</div>':""; }
+function t1ChkErr(title,msg,tips){
+  t1ChkBox("err",'<h4>'+wEsc(title)+'</h4><div>'+wEsc(msg)+'</div>'+(tips&&tips.length?'<ul>'+tips.map(x=>'<li>'+wEsc(x)+'</li>').join("")+'</ul>':""));
+}
+async function t1OwnWrite(){
+  if(__t1Busy) return;
+  const it=t1OwnItem(); if(!it) return;
+  const open=await wrCheckOpen(); if(!open){ wrBlockedDialog(); return; }
+  const key=t1ChkKey(it);
+  if(__t1Chk&&__t1Chk.key===key){ t1ChkShow(__t1Chk); return; }
+  let session=null; try{ const r=await sb.auth.getSession(); session=r&&r.data&&r.data.session; }catch(e){}
+  if(!session){ t1ChkErr("Please log in","Please log in to check your picture and write your answer."); return; }
+  __t1Busy=true; __t1Chk=null;
+  const btn=document.getElementById("t1WriteBtn"); if(btn) btn.disabled=true;
+  t1ChkBox("",'<span class="t1-spin"></span>Checking your picture and your question. This takes about 10 to 20 seconds. Please wait.');
+  try{
+    const res=await fetch(SUPABASE_URL+"/functions/v1/mark-writing",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_ANON_KEY},
+      body:JSON.stringify({action:"check_t1",question:it.question,image:{media_type:it.image.media_type,data:it.image.data}})
+    });
+    let data={}; try{ data=await res.json(); }catch(e){}
+    if(res.ok&&data&&data.ok&&data.check_token){
+      __t1Chk={key:key,facts:String(data.facts||""),token:data.check_token,type:String(data.picture_type||""),warnings:Array.isArray(data.warnings)?data.warnings:[]};
+      t1ChkShow(__t1Chk);
+    } else if(res.status===401){ t1ChkErr("Please log in again","Your login has expired. Please log in again, then try again.");
+    } else if(data&&data.code==="picture_mismatch"){
+      t1ChkErr("Your question and your picture do not match",data.error||"",["Check that you uploaded the picture that belongs to this question.","Check the years, names and numbers in your question.","Or change the picture or the question, then press the button again."]);
+    } else if(data&&data.code==="bad_question"){ t1ChkErr("We could not accept this",data.error||"Please check your question and picture, then try again.");
+    } else if(data&&(data.code==="limit"||data.code==="failed")){ t1ChkErr(data.code==="limit"?"Daily limit reached":"Please try again",data.error||"Please try again in a minute.");
+    } else if(data&&(data.code==="not_open"||data.code==="not_approved")){ wrBlockedDialog();
+    } else { t1ChkErr("Please try again","We could not check your picture right now. Please try again in a minute."); }
+  }catch(e){ console.error(e); t1ChkErr("No connection","We could not reach the server. Please check your internet and try again."); }
+  __t1Busy=false; if(btn) btn.disabled=false;
+}
+function t1ChkShow(c){
+  const warn=c.warnings&&c.warnings.length;
+  t1ChkBox(warn?"warn":"ok",
+    '<h4>'+(warn?'⚠️ Almost there. Please check this first':'✅ Your picture matches your question')+'</h4>'
+    +(warn?'<div>We noticed small differences between your question and your picture:</div><ul>'+c.warnings.map(x=>'<li>'+wEsc(x)+'</li>').join("")+'</ul><div>If your question is correct and this is the right picture, you can continue. Your answer will be marked against the picture.</div>':'')
+    +'<div style="margin-top:8px"><b>Picture type:</b> '+wEsc(c.type||"Task 1 picture")+'</div>'
+    +'<div style="margin-top:6px">This is what we read from your picture. Your answer will be marked against it. If something is wrong or missing, press "Change my picture" and use a clearer picture.</div>'
+    +'<div class="t1-read t1-facts">'+wEsc(c.facts)+'</div>'
+    +'<div class="t1-acts"><button class="wq-btn pri" onclick="t1ChkConfirm()">✔ Yes, this is right. Start writing</button><button class="wq-btn" onclick="t1ChkChange()">Change my picture</button></div>');
+}
+function t1ChkChange(){
+  __t1Chk=null; t1ChkBox("","");
+  const f=document.getElementById("t1Pic"); if(f){ f.value=""; } __t1Pic=null; const pv=document.getElementById("t1Prev"); if(pv) pv.innerHTML="";
+  if(f) f.focus();
+}
+function t1ChkConfirm(){
+  const it=t1OwnItem(); if(!it) return;
+  if(!__t1Chk||__t1Chk.key!==t1ChkKey(it)){ __t1Chk=null; t1ChkBox("",""); showToast("Your question or picture changed. Please press the button again to check it."); return; }
+  it.facts=__t1Chk.facts; it.check_token=__t1Chk.token; it.image=null; it.picType=__t1Chk.type;
+  t1Go(it);
+}
 function renderT1Own(){
   const ta=document.getElementById("t1Q");
   if(ta&&!ta.value&&curT1&&curT1.topic==="t1:custom") ta.value=curT1.question||"";
@@ -9347,12 +9419,13 @@ function spPrint(){
   <div class="psub">Type your question and upload its picture (a graph, chart, table, map or process). Then write your answer and get AI feedback.</div>
   <div class="wq-card" style="cursor:default">
     <div class="wq-num">Your question</div>
-    <textarea class="wo-ta" id="t1Q" maxlength="1500" placeholder="Paste or type your Writing Task 1 question here (for example: The graph below shows…)" spellcheck="false"></textarea>
+    <textarea class="wo-ta" id="t1Q" oninput="t1ChkStale()" maxlength="1500" placeholder="Paste or type your Writing Task 1 question here (for example: The graph below shows…)" spellcheck="false"></textarea>
     <div class="wq-num" style="margin-top:14px">Your picture</div>
     <input type="file" id="t1Pic" accept="image/png,image/jpeg,image/webp" onchange="t1PickPic(this)" style="color:var(--muted);font-size:13px">
     <div id="t1Prev" class="t1-prev"></div>
-    <div class="wo-hint">Only real IELTS Academic Writing Task 1 pictures can be marked. The AI reads the picture, so use a clear one. You can check what it read in your report.</div>
-    <div class="wq-actions" style="display:flex"><button class="wq-btn pri" onclick="t1OwnWrite()">✍️ Write this Task 1</button></div>
+    <div class="wo-hint">Only real IELTS Academic Writing Task 1 pictures can be marked. Use a clear picture of the whole graph, chart, table, map or process. Before you start writing, we read your picture and check that it matches your question. You will see what we read, so you can confirm it is right. This check does not use one of your daily tries.</div>
+    <div class="wq-actions" style="display:flex"><button class="wq-btn pri" id="t1WriteBtn" onclick="t1OwnWrite()">✍️ Write this Task 1</button></div>
+    <div id="t1Check" aria-live="polite"></div>
   </div>
   <div id="t1List"></div>
 </div>
