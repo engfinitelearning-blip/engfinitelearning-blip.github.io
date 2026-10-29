@@ -3564,7 +3564,7 @@ let curWTask=2;          // 2 = Task 2 (default), 1 = Task 1
 let curT1=null;          // the Task 1 question being planned or written
 let curT1Cat=null;       // the category being viewed
 let __t1Pic=null;        // the picture the student uploaded {media_type,data,dataUrl}
-const T1_COLORS=["#2f6fdb","#e8742c","#2fa36b","#c0392b","#8e44ad","#d4a017","#16a2b8","#7f8c8d"];
+const T1_COLORS=["#2f6fdb","#e8742c","#2fa36b","#c0392b","#8e44ad","#d4a017","#17a2b8","#7f8c8d","#e84393","#5d4037","#00796b","#9e9d24"];
 function t1Cats(){ return (WRITING_DATA.task1&&WRITING_DATA.task1.categories)||{}; }
 function t1Num(v){ return String(Math.round(v*100)/100); }
 function t1NiceMax(m){ return t1Scale(m).top; }
@@ -3625,15 +3625,15 @@ function t1PiesHtml(c){
   let h='<div class="t1-chart">'+(c.title?'<div style="font-weight:700;margin-bottom:6px;color:#222">'+E(c.title)+'</div>':'')+'<div class="t1-pies">';
   pies.forEach(p=>{
     const tot=(p.slices||[]).reduce((a,s)=>a+(Number(s.value)||0),0)||1; let a0=-Math.PI/2;
-    let g='<svg viewBox="0 0 200 215" width="200" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif">';
+    let g='<svg viewBox="0 0 260 215" width="260" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif">';
     (p.slices||[]).forEach(s=>{
       const v=Number(s.value)||0, a1=a0+2*Math.PI*v/tot, col=T1_COLORS[names.indexOf(s.name)%T1_COLORS.length];
-      const x0=100+85*Math.cos(a0), y0=95+85*Math.sin(a0), x1=100+85*Math.cos(a1), y1=95+85*Math.sin(a1);
-      g+=(v/tot>=0.9999)?'<circle cx="100" cy="95" r="85" fill="'+col+'"/>':'<path d="M100 95 L'+x0+' '+y0+' A85 85 0 '+((a1-a0)>Math.PI?1:0)+' 1 '+x1+' '+y1+' Z" fill="'+col+'" stroke="#fff" stroke-width="1.5"/>';
-      if(v/tot>=0.05){ const am=(a0+a1)/2; g+='<text x="'+(100+55*Math.cos(am))+'" y="'+(95+55*Math.sin(am)+4)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">'+t1Num(v)+(c.unit==="%"||!c.unit?"%":"")+'</text>'; }
+      const x0=130+85*Math.cos(a0), y0=95+85*Math.sin(a0), x1=130+85*Math.cos(a1), y1=95+85*Math.sin(a1);
+      g+=(v/tot>=0.9999)?'<circle cx="130" cy="95" r="85" fill="'+col+'"/>':'<path d="M130 95 L'+x0+' '+y0+' A85 85 0 '+((a1-a0)>Math.PI?1:0)+' 1 '+x1+' '+y1+' Z" fill="'+col+'" stroke="#fff" stroke-width="1.5"/>';
+      if(v/tot>=0.05){ const am=(a0+a1)/2; g+='<text x="'+(130+55*Math.cos(am))+'" y="'+(95+55*Math.sin(am)+4)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">'+t1Num(v)+(c.unit==="%"||!c.unit?"%":"")+'</text>'; }
       a0=a1;
     });
-    g+='<text x="100" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#222">'+E(p.label||"")+'</text></svg>';
+    g+='<text x="130" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#222">'+E(p.label||"")+'</text></svg>';
     h+=g;
   });
   h+='</div><div style="margin-top:6px;font-size:12px;color:#333">'+names.map((nm,i)=>'<span style="display:inline-block;margin:0 8px"><span style="display:inline-block;width:11px;height:11px;background:'+T1_COLORS[i%T1_COLORS.length]+';margin-right:4px"></span>'+E(nm)+'</span>').join("")+'</div></div>';
@@ -7720,7 +7720,7 @@ function _hmStillUsed(bankId, val, excludeQn){
 <script src="/data-listening-cam20.js?v=20260733e"></script>
 <script src="/data-listening-cam21.js?v=20260733e"></script>
 <script src="/data-writing.js?v=20261028b"></script>
-<script src="/data-writing-task1.js?v=20261029a"></script>
+<script src="/data-writing-task1.js?v=20261029b"></script>
 <script src="/data-recent.js?v=20261028a"></script>
 <script src="/data-recent-task1.js?v=20261028a"></script>
 
