@@ -3700,13 +3700,13 @@ function t1MakeCard(it,label,idPrefix){
   d.innerHTML='<div class="wq-num">'+wEsc(label)+(it.title?' · '+wEsc(it.title):'')+'<span class="wq-badge" id="'+idPrefix+'b_'+it.n+'" style="display:none"></span></div><div class="wq-go">▾</div>'
     +'<div class="wq-text">'+it.lines.map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>'
     +'<div class="t1-cw">'+t1ChartHtml(it.chart)+'</div>'
-    +'<div class="wq-actions"><button class="wq-btn" data-m="ideas" data-qk="'+wEsc(wrNormQ(it.question))+'">💡 Plan the answer first</button><button class="wq-btn pri" data-m="write">✍️ Write the answer now</button></div>'
+    +'<div class="wq-actions"><button class="wq-btn pri" data-m="write">✍️ Write This Task 1</button></div>'
     +'<div class="wq-hist" id="'+idPrefix+'h_'+it.n+'"></div>';
   return d;
 }
 function t1WireCard(d,it,list){
   d.onclick=()=>{ const was=d.classList.contains("open"); list.querySelectorAll(".wq-card.open").forEach(x=>x.classList.remove("open")); if(!was) d.classList.add("open"); };
-  d.querySelectorAll(".wq-btn").forEach(b=>{ b.onclick=(ev)=>{ ev.stopPropagation(); if(b.getAttribute("data-m")==="write") t1Go(it); else t1PlanClick(b,it); }; });
+  d.querySelectorAll(".wq-btn").forEach(b=>{ b.onclick=(ev)=>{ ev.stopPropagation(); t1Go(it); }; });
   const hs=d.querySelector(".wq-hist"); if(hs) hs.onclick=(ev)=>ev.stopPropagation();
 }
 function renderT1Topic(){
@@ -3720,7 +3720,6 @@ function renderT1Topic(){
     const it=t1Item(q,curT1Cat+"-"+(q.n||i+1),"t1:"+curT1Cat,q.n||i+1); it.catName=c.name;
     const d=t1MakeCard(it,"Question "+it.n,"t1"); t1WireCard(d,it,list); list.appendChild(d);
   });
-  wrLoadPlanMap().then(()=>wrApplyPlanButtons(list));
   t1LoadAttempts();
 }
 function renderT1Recent(){
@@ -3734,7 +3733,6 @@ function renderT1Recent(){
     it.catName="Recent questions";
     const d=t1MakeCard(it,"Question "+it.n,"t1r"); t1WireCard(d,it,list); list.appendChild(d);
   });
-  wrLoadPlanMap().then(()=>wrApplyPlanButtons(list));
 }
 let __t1AttTimer=null;
 async function t1LoadAttempts(){
@@ -9333,14 +9331,14 @@ function spPrint(){
 <!-- WRITING TASK 1 — RECENT QUESTIONS -->
 <div class="selpage" id="writingT1RecentPage">
   <div class="ptitle">🆕 Recent Task 1 questions</div>
-  <div class="psub">Task 1 questions from recent IELTS exams. Tap a question to plan or write the answer.</div>
+  <div class="psub">Task 1 questions from recent IELTS exams. Tap a question to write your answer.</div>
   <div id="t1recList"></div>
 </div>
 
 <!-- WRITING TASK 1 — YOUR OWN QUESTION -->
 <div class="selpage" id="writingT1OwnPage">
   <div class="ptitle">✍️ Write your own Task 1 question</div>
-  <div class="psub">Type your question and upload its picture (a graph, chart, table, map or process). Then plan or write your answer and get AI feedback.</div>
+  <div class="psub">Type your question and upload its picture (a graph, chart, table, map or process). Then write your answer and get AI feedback.</div>
   <div class="wq-card" style="cursor:default">
     <div class="wq-num">Your question</div>
     <textarea class="wo-ta" id="t1Q" maxlength="1500" placeholder="Paste or type your Writing Task 1 question here (for example: The graph below shows…)" spellcheck="false"></textarea>
@@ -9348,9 +9346,8 @@ function spPrint(){
     <input type="file" id="t1Pic" accept="image/png,image/jpeg,image/webp" onchange="t1PickPic(this)" style="color:var(--muted);font-size:13px">
     <div id="t1Prev" class="t1-prev"></div>
     <div class="wo-hint">Only real IELTS Academic Writing Task 1 pictures can be marked. The AI reads the picture, so use a clear one. You can check what it read in your report.</div>
-    <div class="wq-actions" style="display:flex"><button class="wq-btn" onclick="t1OwnPlan()">💡 Plan the answer first</button><button class="wq-btn pri" onclick="t1OwnWrite()">✍️ Write the answer now</button></div>
+    <div class="wq-actions" style="display:flex"><button class="wq-btn pri" onclick="t1OwnWrite()">✍️ Write this Task 1</button></div>
   </div>
-  <div id="t1IdeasList"></div>
   <div id="t1List"></div>
 </div>
 
