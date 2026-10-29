@@ -3580,12 +3580,13 @@ function t1ChartHtml(c){
       +'<table><tr>'+(c.columns||[]).map(x=>'<th>'+E(x)+'</th>').join("")+'</tr>'
       +(c.rows||[]).map(r=>'<tr>'+r.map(x=>'<td>'+E(x)+'</td>').join("")+'</tr>').join("")+'</table></div>';
   }
+  if(c.type==="multi") return (c.charts||[]).map(t1ChartHtml).join("");
   if(c.type==="pie") return t1PiesHtml(c);
   if(c.type==="line"||c.type==="bar") return '<div class="t1-chart">'+t1XySvg(c)+'</div>';
   return "";
 }
 function t1XySvg(c){
-  const E=wEsc, W=640, H=400, L=64, R=20, T=46, B=88, pw=W-L-R, ph=H-T-B;
+  const E=wEsc, W=640, H=400, L=64, R=34, T=46, B=88, pw=W-L-R, ph=H-T-B;
   const xs=(c.type==="line"?c.x:c.categories)||[], n=xs.length;
   let mx=0; (c.series||[]).forEach(s=>(s.values||[]).forEach(v=>{ if(typeof v==="number"&&v>mx) mx=v; }));
   const sc=t1Scale(mx), top=sc.top, ticks=sc.n;
@@ -3641,6 +3642,7 @@ function t1PiesHtml(c){
 // The same numbers, as plain text, for the AI (the AI marks against this).
 function t1FactsFromChart(c,extra){
   if(!c) return String(extra||"").trim();
+  if(c.type==="multi"){ const parts=(c.charts||[]).map((x,i)=>"Chart "+(i+1)+" of "+(c.charts||[]).length+":\n"+t1FactsFromChart(x,"")); if(extra&&String(extra).trim()) parts.push(String(extra).trim()); return parts.join("\n\n"); }
   const L=[];
   if(c.title) L.push("Title: "+c.title);
   if(c.unit) L.push("Unit: "+c.unit);
@@ -7718,7 +7720,7 @@ function _hmStillUsed(bankId, val, excludeQn){
 <script src="/data-listening-cam20.js?v=20260733e"></script>
 <script src="/data-listening-cam21.js?v=20260733e"></script>
 <script src="/data-writing.js?v=20261028b"></script>
-<script src="/data-writing-task1.js?v=20261028a"></script>
+<script src="/data-writing-task1.js?v=20261029a"></script>
 <script src="/data-recent.js?v=20261028a"></script>
 <script src="/data-recent-task1.js?v=20261028a"></script>
 
