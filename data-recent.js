@@ -154,3 +154,7 @@ WRITING_RECENT = [
   }
 ] }
 ];
+
+// ---- Recent Writing Task 1 questions. Same idea as above: { when: "October 2026", questions: [ { title, lines: [...], chart: {...} } ] }
+WRITING_RECENT_T1 = [
+];

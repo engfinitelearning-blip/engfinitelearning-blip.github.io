@@ -2094,3 +2094,22 @@ Object.assign(WRITING_DATA.task2.topics, {
   ]
  }
 });
+
+// ---- Writing Task 1 (Academic): categories. Add questions to each "questions" list.
+// A question with numbers looks like:
+//   { n: 1, title: "Cars sold", lines: ["The graph below shows ...", "Summarise the information by selecting and reporting the main features, and make comparisons where relevant."],
+//     chart: { type: "line", title: "...", unit: "%", xLabel: "Year", yLabel: "Percentage", x: ["2000","2005"], series: [{name: "A", values: [10, 20]}] },
+//     facts_extra: "Optional extra facts for the AI, one per line." }
+// chart types: "line", "bar" (use categories + series), "pie" (use pies: [{label, slices:[{name, value}]}]), "table" (columns + rows),
+// or "image" ({type:"image", src:"/task1/name.png"}) for processes and maps (then facts_extra must describe the picture in words).
+WRITING_DATA.task1 = {
+  categories: {
+    "line-graph": { name: "Line graphs",  icon: "📈", questions: [] },
+    "bar-chart":  { name: "Bar charts",   icon: "📊", questions: [] },
+    "pie-chart":  { name: "Pie charts",   icon: "🥧", questions: [] },
+    "table":      { name: "Tables",       icon: "🗂️", questions: [] },
+    "mixed":      { name: "Mixed charts", icon: "🧩", questions: [] },
+    "process":    { name: "Processes",    icon: "🔄", questions: [] },
+    "map":        { name: "Maps",         icon: "🗺️", questions: [] }
+  }
+};

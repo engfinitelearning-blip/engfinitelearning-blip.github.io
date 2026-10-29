@@ -466,6 +466,16 @@ option{background:#fff;color:#1a2e40}
 .wq-num{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#00aeef;margin-bottom:8px}
 .wq-text p{margin:0 0 8px;line-height:1.7;font-size:14.5px;color:#e8eef5}
 .wq-text p:last-child{margin-bottom:0}
+.t1-chart{background:#fff;border-radius:12px;padding:10px;margin:0 0 12px;overflow-x:auto;text-align:center}
+.t1-chart svg,.t1-chart img{max-width:100%;height:auto}
+.t1-chart table{border-collapse:collapse;margin:0 auto;font-size:13px;color:#222}
+.t1-chart th,.t1-chart td{border:1px solid #bbb;padding:5px 10px}
+.t1-chart th{background:#eef3f8}
+.t1-pies{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.t1-cw{display:none}
+.wq-card.open .t1-cw{display:block;margin-top:10px}
+.t1-prev img{max-width:100%;max-height:260px;border-radius:10px;margin-top:10px;background:#fff}
+.t1-facts{font-size:13px;line-height:1.6;white-space:pre-wrap;color:#333}
 .wq-link{cursor:pointer;position:relative;transition:transform .2s,border-color .2s,background .2s}
 .wq-link:hover{transform:translateY(-3px);background:rgba(0,174,239,0.06);border-color:rgba(0,174,239,0.28)}
 .wq-go{position:absolute;top:16px;right:22px;font-size:16px;font-weight:700;color:#00aeef;transition:transform .2s}
@@ -2416,6 +2426,7 @@ const DATA = {};
 const LISTENING_DATA = {}; // Loaded from data-listening-cam11.js ... data-listening-cam21.js
 const WRITING_DATA = {}; // Loaded from data-writing.js
 let WRITING_RECENT = []; // Loaded from data-recent.js
+let WRITING_RECENT_T1 = []; // Task 1 recent questions, also loaded from data-recent.js
 
 // ── STATE ──────────────────────────────────────────
 let curBook=null,curTest=null,curMode=null,curPassIdx=0;
@@ -2578,7 +2589,7 @@ makeChain("/writing-practice/task-2/own","writingOwn",[
   { pageId:"writingOwnWork",
     seg:()=>curOwnQuestion?"write":null,
     parseSeg:(s)=>{ if(s!=="write") return null; let v=""; try{ v=sessionStorage.getItem("wr_own_q")||""; }catch(e){} return v?v:null; },
-    enter:(v)=>{ curOwnQuestion=v; curWritingTopic="custom"; curWritingQ="c"+wrHash(v); curWritingMode="write"; showPage("writingOwn"); showPage("writingOwnWork"); } }
+    enter:(v)=>{ curWTask=2; curOwnQuestion=v; curWritingTopic="custom"; curWritingQ="c"+wrHash(v); curWritingMode="write"; showPage("writingOwn"); showPage("writingOwnWork"); } }
 ]);
 
 // ---- Ideas page for the student's own question ----
@@ -2587,6 +2598,19 @@ registerFlat("/writing-practice/task-2/own/ideas","writingOwnIdeas");
 // ---- Writing Task 2: list of topics (the topic pages keep their old addresses) ----
 registerFlat("/writing-practice/task-2/questions-by-topic","writingBank");
 registerFlat("/writing-practice/task-2/recent-questions","writingRecent");
+
+// ---- Writing Task 1 ----
+makeChain("/writing-practice/task-1","writingTask1",[
+  { pageId:"writingT1Topic",
+    seg:()=>curT1Cat||null,
+    parseSeg:(s)=>(WRITING_DATA.task1&&WRITING_DATA.task1.categories&&WRITING_DATA.task1.categories[s])?s:null,
+    enter:(k)=>{ selectT1Cat(k); } }
+]);
+registerFlat("/writing-practice/task-1/own","writingT1Own");
+registerFlat("/writing-practice/task-1/questions-by-category","writingT1Bank");
+registerFlat("/writing-practice/task-1/recent-questions","writingT1Recent");
+registerFlat("/writing-practice/task-1/plan","writingT1Ideas");
+registerFlat("/writing-practice/task-1/write","writingT1Work");
 
 // ---- Materials: flat pages, some nested under /materials/ielts/ ----
 // matSpeaking listed first under its canonical URL so computePath prefers it;
@@ -2642,6 +2666,16 @@ function __updateTitle(p){
       title=LISTENING_DATA[lsCurBook].name+" \u2014 Select a Test | "+base;
     } else if(p==="listeningexam" && typeof lsCurBook!=="undefined" && lsCurBook && lsCurTest && LISTENING_DATA[lsCurBook] && LISTENING_DATA[lsCurBook].tests[lsCurTest]){
       title=LISTENING_DATA[lsCurBook].tests[lsCurTest].title+" | "+base;
+    } else if(p==="writingTask1"){
+      title="IELTS Writing Task 1 | "+base;
+    } else if(p==="writingT1Bank"||p==="writingT1Topic"){
+      title="IELTS Writing Task 1 Questions by Category | "+base;
+    } else if(p==="writingT1Recent"){
+      title="Recent IELTS Writing Task 1 Questions | "+base;
+    } else if(p==="writingT1Own"||p==="writingT1Work"){
+      title="Write Your Own IELTS Writing Task 1 Question | "+base;
+    } else if(p==="writingT1Ideas"){
+      title="Answer Plan & Ideas \u2014 Writing Task 1 | "+base;
     } else if(p==="writingTask2"){
       title="IELTS Writing Task 2 Topics | "+base;
     } else if(p==="writingBank"){
@@ -2789,7 +2823,7 @@ window.addEventListener("popstate",(event)=>{
 });
 function _renderPage(p){
   if(p!=="typingPractice" && typeof tpCleanup==="function") tpCleanup();
-  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingBankPage","writingRecentPage","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
+  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingBankPage","writingRecentPage","writingTask1Page","writingT1BankPage","writingT1TopicPage","writingT1RecentPage","writingT1OwnPage","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.cssText="display:none";
   });
@@ -2799,7 +2833,7 @@ function _renderPage(p){
   if(lex) lex.style.display="none";
   const wre=document.getElementById("writingEditorPage");
   if(wre) wre.style.display="none";
-  if(p!=="writingWork"&&p!=="writingOwnWork") wrClearTimer();
+  if(p!=="writingWork"&&p!=="writingOwnWork"&&p!=="writingT1Work") wrClearTimer();
   if(p==="home"){
     document.getElementById("homePage").style.cssText="display:block;position:relative;z-index:1";
     updateHomeStats();
@@ -2835,6 +2869,8 @@ function _renderPage(p){
   } else if(p==="exam"){
     document.getElementById("examPage").style.display="flex";
     startTrackingTime();
+  } else if(p==="writingT1Work"){
+    wrEnterEditor1();
   } else if(p==="writingOwnWork"){
     wrEnterEditor();
   } else if(p==="writingWork"){
@@ -2865,6 +2901,12 @@ function _renderPage(p){
       "writingOwn":"writingOwnPage",
       "writingBank":"writingBankPage",
       "writingRecent":"writingRecentPage",
+      "writingTask1":"writingTask1Page",
+      "writingT1Bank":"writingT1BankPage",
+      "writingT1Topic":"writingT1TopicPage",
+      "writingT1Recent":"writingT1RecentPage",
+      "writingT1Own":"writingT1OwnPage",
+      "writingT1Ideas":"writingOwnIdeasPage",
       "writingOwnIdeas":"writingOwnIdeasPage",
       "writingTopic":"writingTopicPage",
       "speakingPractice":"speakingPracticePage",
@@ -2876,6 +2918,12 @@ function _renderPage(p){
       if(p==="writingTask2") buildWritingTopics();
       if(p==="writingBank") buildWritingTopics();
       if(p==="writingRecent"||p==="writingTask2") renderWritingRecent();
+      if(p==="writingTask1") t1UpdateSubs();
+      if(p==="writingT1Bank") t1BuildBank();
+      if(p==="writingT1Topic") renderT1Topic();
+      if(p==="writingT1Recent") renderT1Recent();
+      if(p==="writingT1Own") renderT1Own();
+      if(p==="writingT1Ideas") renderWritingOwnIdeas();
       if(p==="writingOwn") renderWritingOwn();
       if(p==="writingOwnIdeas") renderWritingOwnIdeas();
       if(p==="writingTopic") renderWritingTopic();
@@ -3007,6 +3055,7 @@ function wrApplyPlanButtons(root){
   });
 }
 function wrPlanClick(b,text){
+  curWTask=2;
   if(b.dataset.pid){ wrOpenIdeasPage(b.dataset.pid); return; }
   const ta=document.getElementById("woQ"); if(ta) ta.value=text;
   wrOwnIdeas();
@@ -3052,6 +3101,7 @@ function renderWritingRecent(){
   wrLoadPlanMap().then(()=>wrApplyPlanButtons(list));
 }
 function selectWritingTopic(key){
+  curWTask=2;
   curWritingTopic=key;
   curWritingQ=null;
   showPage("writingTopic");
@@ -3096,6 +3146,7 @@ let curWritingQ=null,curWritingMode=null,curOwnQuestion="";
 let __wrTimer=null,__wrStart=0;
 let __wrBusy=false,__wrPollTimer=null,__wrPollStop=false;
 function wrCurQuestion(){
+  if(curWTask===1) return curT1?{n:curT1.n||0,lines:curT1.lines||[]}:null;
   if(curWritingTopic==="custom"){
     if(!curOwnQuestion) return null;
     return {n:curWritingQ,lines:curOwnQuestion.split(/\n+/).map(x=>x.trim()).filter(Boolean)};
@@ -3106,6 +3157,7 @@ function wrCurQuestion(){
   return (t.questions||[]).find(q=>String(q.n)===String(curWritingQ))||null;
 }
 function openWriting(n,mode){
+  curWTask=2;
   curWritingQ=n;
   curWritingMode=mode;
   showPage("writingWork");
@@ -3137,7 +3189,7 @@ function renderWritingIdeas(){
   }
   document.getElementById("wipBody").innerHTML=html;
 }
-function wrDraftKey(){ return "wrsaved_t2_"+curWritingTopic+"_"+curWritingQ; }
+function wrDraftKey(){ if(curWTask===1) return "wrsaved_t1_"+(curT1&&curT1.key); return "wrsaved_t2_"+curWritingTopic+"_"+curWritingQ; }
 // One-time clean-up: essays used to be saved automatically on every key press. They are not kept any more.
 (function(){ try{ Object.keys(localStorage).forEach(k=>{ if(k.indexOf("wrdraft_t2_")===0) localStorage.removeItem(k); }); }catch(e){} })();
 let __wrSavedText="",__wrLeaving=false;
@@ -3154,23 +3206,28 @@ function wrTick(){
   const el=Math.floor((Date.now()-__wrStart)/1000);
   const box=document.getElementById("wrTimerBox");
   document.getElementById("wrTimer").textContent=wrFmt(el);
-  box.classList.toggle("late",el>=40*60);
+  box.classList.toggle("late",el>=(curWTask===1?20:40)*60);
 }
 function wrCountWords(s){ const t=(s||"").trim(); return t?t.split(/\s+/).length:0; }
 function wrOnInput(){
   const ta=document.getElementById("wrText");
   const n=wrCountWords(ta.value);
   document.getElementById("wrWords").textContent=n;
-  document.getElementById("wrWordsBox").classList.toggle("ok",n>=250);
+  document.getElementById("wrWordsBox").classList.toggle("ok",n>=(curWTask===1?150:250));
 }
 function wrOpenEditor(){
+  const T1=(curWTask===1);
   const q=wrCurQuestion();
   const topics=(WRITING_DATA.task2&&WRITING_DATA.task2.topics)||{};
-  const t=(curWritingTopic==="custom")?{name:"Your own question"}:topics[curWritingTopic];
+  const t=T1?{name:(curT1&&curT1.catName)||"Your own question"}:((curWritingTopic==="custom")?{name:"Your own question"}:topics[curWritingTopic]);
   if(!q||!t) return;
-  document.getElementById("wrTitle").textContent="Writing Task 2 — "+t.name;
-  document.getElementById("wrSub").textContent=(curWritingTopic==="custom")?"":"Question "+q.n;
-  document.getElementById("wrQBox").innerHTML=wrQuestionHtml(q);
+  document.getElementById("wrTitle").textContent=(T1?"Writing Task 1 — ":"Writing Task 2 — ")+t.name;
+  document.getElementById("wrSub").textContent=T1?(curT1.n?"Question "+curT1.n:""):((curWritingTopic==="custom")?"":"Question "+q.n);
+  document.getElementById("wrQBox").innerHTML=T1?t1QuestionHtml(curT1):wrQuestionHtml(q);
+  document.getElementById("wrQLabel").textContent=T1?"WRITING TASK 1":"WRITING TASK 2";
+  document.getElementById("wrInstr1").innerHTML=T1?"You should spend about 20 minutes on this task.<br>Look at the information and the question below:":"You should spend about 40 minutes on this task.<br>Write about the following topic:";
+  document.getElementById("wrInstr2").innerHTML=T1?"Summarise the information by selecting and reporting the main features, and make comparisons where relevant.<br><b>Write at least 150 words.</b>":"Give reasons for your answer and include any relevant examples from your own knowledge or experience.<br><b>Write at least 250 words.</b>";
+  document.getElementById("wrText").placeholder=T1?"Start writing your answer here…":"Start writing your essay here…";
   document.getElementById("wrQPane").style.display="";
   document.getElementById("wrToggleQ").textContent="Hide question";
   document.getElementById("wrOverlay").style.display="none";
@@ -3206,7 +3263,7 @@ async function wrSubmit(){
   const el=Math.floor((Date.now()-__wrStart)/1000);
   const mins=Math.floor(el/60);
   let fallback="You wrote "+n+" word"+(n===1?"":"s")+" in "+mins+" minute"+(mins===1?"":"s")+". ";
-  if(n<250) fallback+="IELTS Task 2 needs at least 250 words. ";
+  if(curWTask===1){ if(n<150) fallback+="IELTS Task 1 needs at least 150 words. "; } else if(n<250) fallback+="IELTS Task 2 needs at least 250 words. ";
   fallback+="AI marking is not available for your account yet. Your essay is still on this page. Press Save if you want to keep it on this device.";
   const soon=()=>wrSetModal("Essay saved",fallback,true);
   let session=null;
@@ -3220,7 +3277,10 @@ async function wrSubmit(){
     const res=await fetch(SUPABASE_URL+"/functions/v1/mark-writing",{
       method:"POST",
       headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_ANON_KEY},
-      body:JSON.stringify({essay:text,question:(q.lines||[]).join("\n"),topic:curWritingTopic,q:Number(q.n)})
+      body:JSON.stringify(curWTask===1
+        ?Object.assign({task:1,essay:text,question:(q.lines||[]).join("\n"),topic:curT1.topic,q:Number(q.n)||0},
+           curT1.facts?{facts:curT1.facts}:(curT1.image?{image:{media_type:curT1.image.media_type,data:curT1.image.data}}:{}))
+        :{essay:text,question:(q.lines||[]).join("\n"),topic:curWritingTopic,q:Number(q.n)})
     });
     let data={}; try{ data=await res.json(); }catch(e){}
     if(res.status===202&&data.id){ wrPoll(data.id); return; }
@@ -3268,8 +3328,8 @@ function wrPoll(id){
 }
 
 // ── WRITING: FEEDBACK REPORT (built from the marked result) ───
-const WR_TYPE_LABEL={TR:"Ideas (TR)",CC:"Linking (CC)",LR:"Vocabulary (LR)",GRA:"Grammar (GRA)"};
-const WR_CRIT_NAME={TR:"Task Response (TR) = Ideas",CC:"Coherence & Cohesion (CC) = Linking",LR:"Lexical Resource (LR) = Vocabulary",GRA:"Grammatical Range & Accuracy (GRA) = Grammar"};
+const WR_TYPE_LABEL={TR:"Ideas (TR)",CC:"Linking (CC)",LR:"Vocabulary (LR)",GRA:"Grammar (GRA)"}; window.__WR_TYPE_LABEL0=WR_TYPE_LABEL;
+const WR_CRIT_NAME={TR:"Task Response (TR) = Ideas",CC:"Coherence & Cohesion (CC) = Linking",LR:"Lexical Resource (LR) = Vocabulary",GRA:"Grammatical Range & Accuracy (GRA) = Grammar"}; window.__WR_CRIT_NAME0=WR_CRIT_NAME;
 function wrBandStr(b){ b=Number(b); return (b%1===0)?b.toFixed(1):String(b); }
 function wrNq(t){ return String(t).replace(/[‘’]/g,"'").replace(/[“”]/g,'"'); }
 function wrHighlight(text,mistakes){
@@ -3300,21 +3360,25 @@ function wrHighlight(text,mistakes){
 }
 function wrBuildReport(r){
   const C=r.criteria||{}, S=r.sentences||[];
+  const T1=(r.task===1), MINW=T1?150:250;
+  const WR_TYPE_LABEL=T1?Object.assign({},window.__WR_TYPE_LABEL0,{TR:"Task (TA)"}):window.__WR_TYPE_LABEL0;
+  const WR_CRIT_NAME=T1?Object.assign({},window.__WR_CRIT_NAME0,{TR:"Task Achievement (TA) = Answering the task"}):window.__WR_CRIT_NAME0;
   let h='';
-  h+='<div class="wrp-title">IELTS Writing Task 2<br><span>Full Feedback: Every Mistake Explained</span></div>';
+  h+='<div class="wrp-title">IELTS Writing Task '+(T1?'1':'2')+'<br><span>Full Feedback: Every Mistake Explained</span></div>';
   h+='<div class="wrp-ai"><p>এই Feedback-টা <b>AI দিয়ে Generate করা হয়েছে, কোনো Human Examiner দিয়ে না।</b> তাই এই <b>Band Score-টা খুব বেশি Seriously নেওয়ার দরকার নেই।</b> AI-এর দেওয়া Score আপনার Actual IELTS Score-এর চেয়ে কম বা বেশিও হতে পারে।</p>'
     +'<p>তাই Score-এর উপর Focus না করে <b>Mistakes গুলোর উপর Focus করুন।</b> কোথায় কোথায় ভুল হয়েছে, সেগুলো দেখুন, Correct করুন, তারপর আবার নতুন করে লিখুন।</p></div>';
   h+='<div class="wrp-h2">Results at a glance</div>';
   h+='<div class="wrp-qbox"><b>Question</b><br>'+wEsc(r.question||"").replace(/\n/g,"<br>")+'</div>';
-  h+='<div class="wrp-tblwrap"><table class="wrp-tbl"><tr><th>Words</th><th>Mistakes</th><th>TR</th><th>CC</th><th>LR</th><th>GRA</th><th>Overall</th></tr>'
+  h+='<div class="wrp-tblwrap"><table class="wrp-tbl"><tr><th>Words</th><th>Mistakes</th><th>'+(T1?'TA':'TR')+'</th><th>CC</th><th>LR</th><th>GRA</th><th>Overall</th></tr>'
     +'<tr><td>'+wEsc(r.word_count)+'</td><td>'+wEsc(r.total_mistakes)+'</td>'
     +['TR','CC','LR','GRA'].map(k=>'<td>'+wrBandStr((C[k]||{}).band)+'</td>').join('')
     +'<td class="wrp-ov">'+wrBandStr(r.overall)+'</td></tr></table></div>';
-  if(r.word_count<250) h+='<div class="wrp-warn">Word count: '+wEsc(r.word_count)+' words. The minimum is 250 words, so this is too short. In the real exam you have about 40 minutes for Task 2.</div>';
+  if(r.word_count<MINW) h+='<div class="wrp-warn">Word count: '+wEsc(r.word_count)+' words. The minimum is '+MINW+' words, so this is too short. In the real exam you have about '+(T1?20:40)+' minutes for Task '+(T1?1:2)+'.</div>';
+  if(T1&&r.facts) h+='<div class="wrp-qbox"><b>The information the AI used from the picture</b><br>'+wEsc(r.facts).replace(/\n/g,"<br>")+'<div style="margin-top:8px;font-size:12px;color:#666">The AI checked your numbers against this. If something here looks wrong, please ignore the marks about numbers.</div></div>';
   h+='<div class="wrp-note">'+wEsc(r.disclaimer||"Bands are estimates, not official results.")+'</div>';
 
   // Part A
-  h+='<div class="wrp-h1">A. Your essay (sentence numbers added)</div>';
+  h+='<div class="wrp-h1">A. Your '+(T1?'answer':'essay')+' (sentence numbers added)</div>';
   let last="";
   S.forEach(s=>{
     if(s.paragraph!==last){ h+='<div class="wrp-plabel">'+wEsc(String(s.paragraph).toUpperCase())+'</div>'; last=s.paragraph; }
@@ -3360,7 +3424,7 @@ function wrBuildReport(r){
   h+='<div class="wrp-note">Some mistakes count for two criteria, so the criterion numbers can add up to more than the total.</div>';
 
   // Part D
-  h+='<div class="wrp-h1">D. Your essay, corrected</div><div class="wrp-note">Same ideas as yours, with the mistakes above fixed. Read it next to Part A to see the changes.</div><div class="wrp-corr">';
+  h+='<div class="wrp-h1">D. Your '+(T1?'answer':'essay')+', corrected</div><div class="wrp-note">Same ideas as yours, with the mistakes above fixed. Read it next to Part A to see the changes.</div><div class="wrp-corr">';
   String(r.corrected_essay||"").split(/\n\n/).forEach(p=>{ if(p.trim()) h+='<p>'+wEsc(p)+'</p>'; });
   h+='</div>';
 
@@ -3469,6 +3533,7 @@ async function wrEnterEditor(){
 // ── WRITING: the student's own question ──
 function wrHash(s){ let h=5381; for(let i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))|0; } return (h>>>0).toString(36); }
 async function wrOwnOpen(){
+  curWTask=2;
   const ok=await wrCheckOpen();
   if(!ok){ wrBlockedDialog(); return; }
   showPage("writingOwn");
@@ -3486,6 +3551,7 @@ async function wrOwnStart(){
   wrOwnGo(v);
 }
 async function wrOwnGo(v){
+  curWTask=2;
   const ok=await wrCheckOpen();
   if(!ok){ wrBlockedDialog(); return; }
   curOwnQuestion=v;
@@ -3493,6 +3559,329 @@ async function wrOwnGo(v){
   curWritingTopic="custom"; curWritingQ="c"+wrHash(v); curWritingMode="write";
   showPage("writingOwnWork");
 }
+// ── WRITING TASK 1 (Academic): home, categories, recent, own question, charts ──
+let curWTask=2;          // 2 = Task 2 (default), 1 = Task 1
+let curT1=null;          // the Task 1 question being planned or written
+let curT1Cat=null;       // the category being viewed
+let __t1Pic=null;        // the picture the student uploaded {media_type,data,dataUrl}
+const T1_COLORS=["#2f6fdb","#e8742c","#2fa36b","#c0392b","#8e44ad","#d4a017","#16a2b8","#7f8c8d"];
+function t1Cats(){ return (WRITING_DATA.task1&&WRITING_DATA.task1.categories)||{}; }
+function t1Num(v){ return String(Math.round(v*100)/100); }
+function t1NiceMax(m){ return t1Scale(m).top; }
+function t1Scale(m){ if(!(m>0)) return {top:1,step:0.2,n:5}; const raw=m/5, p=Math.pow(10,Math.floor(Math.log10(raw))); let step=p*10; for(const f of [1,2,2.5,5,10]){ if(f*p>=raw-1e-9){ step=f*p; break; } } const n=Math.max(1,Math.ceil(m/step-1e-9)); return {top:step*n,step:step,n:n}; }
+
+// ---- Drawing a chart from its numbers ----
+function t1ChartHtml(c){
+  if(!c) return "";
+  const E=wEsc;
+  if(c.type==="image") return '<div class="t1-chart"><img src="'+E(c.src)+'" alt="'+E(c.alt||c.title||"Task 1 picture")+'"></div>';
+  if(c.type==="table"){
+    return '<div class="t1-chart">'+(c.title?'<div style="font-weight:700;margin-bottom:8px;color:#222">'+E(c.title)+'</div>':'')
+      +'<table><tr>'+(c.columns||[]).map(x=>'<th>'+E(x)+'</th>').join("")+'</tr>'
+      +(c.rows||[]).map(r=>'<tr>'+r.map(x=>'<td>'+E(x)+'</td>').join("")+'</tr>').join("")+'</table></div>';
+  }
+  if(c.type==="pie") return t1PiesHtml(c);
+  if(c.type==="line"||c.type==="bar") return '<div class="t1-chart">'+t1XySvg(c)+'</div>';
+  return "";
+}
+function t1XySvg(c){
+  const E=wEsc, W=640, H=400, L=64, R=20, T=46, B=88, pw=W-L-R, ph=H-T-B;
+  const xs=(c.type==="line"?c.x:c.categories)||[], n=xs.length;
+  let mx=0; (c.series||[]).forEach(s=>(s.values||[]).forEach(v=>{ if(typeof v==="number"&&v>mx) mx=v; }));
+  const sc=t1Scale(mx), top=sc.top, ticks=sc.n;
+  let g='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif">';
+  g+='<text x="'+(W/2)+'" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#222">'+E(c.title||"")+'</text>';
+  for(let i=0;i<=ticks;i++){
+    const v=top*i/ticks, y=T+ph-ph*i/ticks;
+    g+='<line x1="'+L+'" y1="'+y+'" x2="'+(W-R)+'" y2="'+y+'" stroke="#d9dee4"/><text x="'+(L-8)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" fill="#444">'+t1Num(v)+'</text>';
+  }
+  g+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'" stroke="#444"/><line x1="'+L+'" y1="'+(T+ph)+'" x2="'+(W-R)+'" y2="'+(T+ph)+'" stroke="#444"/>';
+  if(c.yLabel||c.unit) g+='<text transform="rotate(-90)" x="'+(-(T+ph/2))+'" y="16" text-anchor="middle" font-size="12" fill="#333">'+E(c.yLabel||c.unit)+'</text>';
+  const xp=(i)=>c.type==="line"?(n>1?L+pw*i/(n-1):L+pw/2):L+pw*(i+0.5)/n;
+  xs.forEach((x,i)=>{ g+='<text x="'+xp(i)+'" y="'+(T+ph+16)+'" text-anchor="middle" font-size="11" fill="#444">'+E(x)+'</text>'; });
+  if(c.xLabel) g+='<text x="'+(L+pw/2)+'" y="'+(T+ph+34)+'" text-anchor="middle" font-size="12" fill="#333">'+E(c.xLabel)+'</text>';
+  const ss=c.series||[];
+  if(c.type==="line"){
+    ss.forEach((s,si)=>{
+      const col=T1_COLORS[si%T1_COLORS.length]; let d="", pts="";
+      (s.values||[]).forEach((v,i)=>{ if(typeof v!=="number") return; const x=xp(i), y=T+ph-ph*v/top; d+=(d?"L":"M")+x+" "+y; pts+='<circle cx="'+x+'" cy="'+y+'" r="3" fill="'+col+'"/>'; });
+      g+='<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.2"/>'+pts;
+    });
+  } else {
+    const gw=pw/Math.max(1,n), bw=gw*0.78/Math.max(1,ss.length);
+    ss.forEach((s,si)=>{
+      const col=T1_COLORS[si%T1_COLORS.length];
+      (s.values||[]).forEach((v,i)=>{ if(typeof v!=="number") return; const x=L+gw*i+gw*0.11+bw*si, h=ph*v/top; g+='<rect x="'+x+'" y="'+(T+ph-h)+'" width="'+bw+'" height="'+h+'" fill="'+col+'"/>'; });
+    });
+  }
+  let lx=L; const ly=H-18;
+  ss.forEach((s,si)=>{ const col=T1_COLORS[si%T1_COLORS.length]; g+='<rect x="'+lx+'" y="'+(ly-9)+'" width="12" height="12" fill="'+col+'"/><text x="'+(lx+17)+'" y="'+(ly+1)+'" font-size="11.5" fill="#333">'+E(s.name||"")+'</text>'; lx+=34+String(s.name||"").length*6.6; });
+  return g+'</svg>';
+}
+function t1PiesHtml(c){
+  const E=wEsc, pies=c.pies||[]; const names=[];
+  pies.forEach(p=>(p.slices||[]).forEach(s=>{ if(names.indexOf(s.name)<0) names.push(s.name); }));
+  let h='<div class="t1-chart">'+(c.title?'<div style="font-weight:700;margin-bottom:6px;color:#222">'+E(c.title)+'</div>':'')+'<div class="t1-pies">';
+  pies.forEach(p=>{
+    const tot=(p.slices||[]).reduce((a,s)=>a+(Number(s.value)||0),0)||1; let a0=-Math.PI/2;
+    let g='<svg viewBox="0 0 200 215" width="200" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif">';
+    (p.slices||[]).forEach(s=>{
+      const v=Number(s.value)||0, a1=a0+2*Math.PI*v/tot, col=T1_COLORS[names.indexOf(s.name)%T1_COLORS.length];
+      const x0=100+85*Math.cos(a0), y0=95+85*Math.sin(a0), x1=100+85*Math.cos(a1), y1=95+85*Math.sin(a1);
+      g+=(v/tot>=0.9999)?'<circle cx="100" cy="95" r="85" fill="'+col+'"/>':'<path d="M100 95 L'+x0+' '+y0+' A85 85 0 '+((a1-a0)>Math.PI?1:0)+' 1 '+x1+' '+y1+' Z" fill="'+col+'" stroke="#fff" stroke-width="1.5"/>';
+      if(v/tot>=0.05){ const am=(a0+a1)/2; g+='<text x="'+(100+55*Math.cos(am))+'" y="'+(95+55*Math.sin(am)+4)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">'+t1Num(v)+(c.unit==="%"||!c.unit?"%":"")+'</text>'; }
+      a0=a1;
+    });
+    g+='<text x="100" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#222">'+E(p.label||"")+'</text></svg>';
+    h+=g;
+  });
+  h+='</div><div style="margin-top:6px;font-size:12px;color:#333">'+names.map((nm,i)=>'<span style="display:inline-block;margin:0 8px"><span style="display:inline-block;width:11px;height:11px;background:'+T1_COLORS[i%T1_COLORS.length]+';margin-right:4px"></span>'+E(nm)+'</span>').join("")+'</div></div>';
+  return h;
+}
+// The same numbers, as plain text, for the AI (the AI marks against this).
+function t1FactsFromChart(c,extra){
+  if(!c) return String(extra||"").trim();
+  const L=[];
+  if(c.title) L.push("Title: "+c.title);
+  if(c.unit) L.push("Unit: "+c.unit);
+  if(c.type==="line"||c.type==="bar"){
+    const xs=(c.type==="line"?c.x:c.categories)||[];
+    L.push((c.type==="line"?"X axis"+(c.xLabel?" ("+c.xLabel+")":""):"Categories")+": "+xs.join(", "));
+    if(c.yLabel) L.push("Y axis: "+c.yLabel);
+    (c.series||[]).forEach(s=>{ L.push('"'+s.name+'": '+(s.values||[]).map((v,i)=>xs[i]+"="+(v==null?"no data":v)).join(", ")); });
+  } else if(c.type==="pie"){
+    (c.pies||[]).forEach(p=>{ L.push('Pie "'+p.label+'": '+(p.slices||[]).map(s=>s.name+" "+s.value+(c.unit&&c.unit!=="%"?" "+c.unit:"%")).join(", ")); });
+  } else if(c.type==="table"){
+    L.push("Columns: "+(c.columns||[]).join(" | "));
+    (c.rows||[]).forEach(r=>{ L.push(r.map((x,i)=>(i?(c.columns[i]||"")+"="+x:x)).join("; ")); });
+  }
+  if(extra&&String(extra).trim()) L.push(String(extra).trim());
+  return L.join("\n");
+}
+function t1QuestionHtml(q){
+  let h="";
+  if(q.chart) h+=t1ChartHtml(q.chart);
+  else if(q.facts) h+='<div class="t1-chart" style="text-align:left"><div class="t1-facts"><b>Information from your picture (read by the AI):</b>\n'+wEsc(q.facts)+'</div></div>';
+  return h+(q.lines||[]).map(l=>'<p>'+wEsc(l)+'</p>').join("");
+}
+function t1Item(q,key,topic,n,when){
+  const lines=Array.isArray(q.lines)?q.lines.slice():String(q.text||"").split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const facts=t1FactsFromChart(q.chart,q.facts_extra||q.facts);
+  return {key:key,topic:topic,n:n,title:q.title||"",lines:lines,question:lines.join("\n"),chart:q.chart||null,facts:facts,when:when||""};
+}
+
+// ---- Home, categories, recent ----
+function t1AllRecent(){
+  const out=[]; let n=0;
+  (Array.isArray(WRITING_RECENT_T1)?WRITING_RECENT_T1:[]).forEach(g=>{ ((g&&g.questions)||[]).forEach(q=>{ if(!q) return; n++; out.push(t1Item(q,"recent-"+n,"t1:recent",n,String(g.when||""))); }); });
+  return out;
+}
+function t1UpdateSubs(){
+  const cats=t1Cats(); let tot=0, nc=0; Object.keys(cats).forEach(k=>{ const c=(cats[k].questions||[]).length; tot+=c; if(c) nc++; });
+  const a=document.getElementById("t1bankSub"); if(a) a.textContent=tot?(tot+(tot===1?" question":" questions")+" in "+nc+(nc===1?" category":" categories")):"Line graphs, bar charts, tables, maps and more";
+  const r=t1AllRecent().length, b=document.getElementById("t1recentSub"); if(b) b.textContent=r?(r+(r===1?" question":" questions")+" from recent exams"):"Questions from recent IELTS exams";
+}
+function t1BuildBank(){
+  t1UpdateSubs();
+  const g=document.getElementById("t1grid"); if(!g) return; g.innerHTML="";
+  const cats=t1Cats(), keys=Object.keys(cats);
+  if(!keys.length){ g.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px 0">Categories are being added. Check back soon!</div>'; return; }
+  keys.forEach(k=>{
+    const c=cats[k], n=(c.questions||[]).length, d=document.createElement("div");
+    d.className="folder-card";
+    d.innerHTML='<div class="folder-ico">'+wEsc(c.icon||"📊")+'</div><div class="folder-name">'+wEsc(c.name)+'</div><div class="folder-sub">'+(n?n+(n===1?" question":" questions"):"Coming soon")+'</div>';
+    d.onclick=()=>{ curT1Cat=k; showPage("writingT1Topic"); };
+    g.appendChild(d);
+  });
+}
+function selectT1Cat(k){ curT1Cat=k; showPage("writingT1Topic"); }
+function t1MakeCard(it,label,idPrefix){
+  const d=document.createElement("div"); d.className="wq-card wq-link";
+  d.innerHTML='<div class="wq-num">'+wEsc(label)+(it.title?' · '+wEsc(it.title):'')+'<span class="wq-badge" id="'+idPrefix+'b_'+it.n+'" style="display:none"></span></div><div class="wq-go">▾</div>'
+    +'<div class="wq-text">'+it.lines.map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>'
+    +'<div class="t1-cw">'+t1ChartHtml(it.chart)+'</div>'
+    +'<div class="wq-actions"><button class="wq-btn" data-m="ideas" data-qk="'+wEsc(wrNormQ(it.question))+'">💡 Plan the answer first</button><button class="wq-btn pri" data-m="write">✍️ Write the answer now</button></div>'
+    +'<div class="wq-hist" id="'+idPrefix+'h_'+it.n+'"></div>';
+  return d;
+}
+function t1WireCard(d,it,list){
+  d.onclick=()=>{ const was=d.classList.contains("open"); list.querySelectorAll(".wq-card.open").forEach(x=>x.classList.remove("open")); if(!was) d.classList.add("open"); };
+  d.querySelectorAll(".wq-btn").forEach(b=>{ b.onclick=(ev)=>{ ev.stopPropagation(); if(b.getAttribute("data-m")==="write") t1Go(it); else t1PlanClick(b,it); }; });
+  const hs=d.querySelector(".wq-hist"); if(hs) hs.onclick=(ev)=>ev.stopPropagation();
+}
+function renderT1Topic(){
+  const c=t1Cats()[curT1Cat], list=document.getElementById("t1pList"); if(!list) return; list.innerHTML="";
+  if(!c){ document.getElementById("t1pTitle").textContent="Category"; document.getElementById("t1pSub").textContent=""; return; }
+  document.getElementById("t1pTitle").textContent=(c.icon?c.icon+" ":"")+c.name;
+  const qs=c.questions||[];
+  document.getElementById("t1pSub").textContent="Writing Task 1 · "+c.name+" · "+qs.length+(qs.length===1?" question":" questions");
+  if(!qs.length){ list.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px 0">Questions are being added. Check back soon!</div>'; return; }
+  qs.forEach((q,i)=>{
+    const it=t1Item(q,curT1Cat+"-"+(q.n||i+1),"t1:"+curT1Cat,q.n||i+1); it.catName=c.name;
+    const d=t1MakeCard(it,"Question "+it.n,"t1"); t1WireCard(d,it,list); list.appendChild(d);
+  });
+  wrLoadPlanMap().then(()=>wrApplyPlanButtons(list));
+  t1LoadAttempts();
+}
+function renderT1Recent(){
+  t1UpdateSubs();
+  const list=document.getElementById("t1recList"); if(!list) return; list.innerHTML="";
+  const all=t1AllRecent();
+  if(!all.length){ list.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px 0">Recent questions are being added. Check back soon!</div>'; return; }
+  let last=null;
+  all.forEach(it=>{
+    if(it.when!==last){ last=it.when; if(it.when){ const h=document.createElement("div"); h.style.cssText="font-weight:700;margin:22px 0 10px;color:var(--text)"; h.textContent=it.when; list.appendChild(h); } }
+    it.catName="Recent questions";
+    const d=t1MakeCard(it,"Question "+it.n,"t1r"); t1WireCard(d,it,list); list.appendChild(d);
+  });
+  wrLoadPlanMap().then(()=>wrApplyPlanButtons(list));
+}
+let __t1AttTimer=null;
+async function t1LoadAttempts(){
+  if(__t1AttTimer){ clearTimeout(__t1AttTimer); __t1AttTimer=null; }
+  if(!currentUser||!curT1Cat) return;
+  let rows=null;
+  try{
+    const r=await sb.from("writing_submissions").select("id,question_no,status,created_at,overall:result->overall")
+      .eq("topic","t1:"+curT1Cat).in("status",["done","pending"]).order("created_at",{ascending:false}).limit(80);
+    rows=r&&r.data;
+  }catch(e){ rows=null; }
+  if(!rows||__navStack[__navStack.length-1]!=="writingT1Topic") return;
+  const now=Date.now(), by={}; let anyPending=false;
+  rows.forEach(x=>{ if(x.status==="pending"){ if(now-new Date(x.created_at).getTime()>10*60*1000) return; anyPending=true; } const k=String(x.question_no); (by[k]=by[k]||[]); if(by[k].length<3) by[k].push(x); });
+  document.querySelectorAll("#t1pList .wq-badge").forEach(b=>{
+    const k=b.id.replace("t1b_",""), a=by[k], h=document.getElementById("t1h_"+k);
+    if(!a||!a.length){ b.style.display="none"; if(h){ h.className="wq-hist"; h.innerHTML=""; } return; }
+    const first=a[0];
+    if(first.status==="pending"){ b.className="wq-badge wait"; b.textContent="⏳ Marking…"; }
+    else { b.className="wq-badge"; b.textContent="✓ Done"+(first.overall!=null?" · Band "+wrBandStr(first.overall):""); }
+    b.style.display="";
+    if(h){
+      h.className="wq-hist has";
+      h.innerHTML='<div class="wq-hist-t">Your last '+(a.length===1?"attempt":a.length+" attempts")+'</div>'+a.map(x=>{
+        const when=new Date(x.created_at).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+        return x.status==="pending"?'<div class="wq-att"><span>'+wEsc(when)+' · Marking…</span></div>'
+          :'<div class="wq-att"><span>'+wEsc(when)+' · <b>'+(x.overall!=null?"Band "+wrBandStr(x.overall):"Done")+'</b></span><button data-id="'+wEsc(x.id)+'">View report</button></div>';
+      }).join("");
+      h.querySelectorAll("button[data-id]").forEach(btn=>{ btn.onclick=(ev)=>{ ev.stopPropagation(); wrViewReport(btn.getAttribute("data-id")); }; });
+    }
+  });
+  if(anyPending) __t1AttTimer=setTimeout(t1LoadAttempts,8000);
+}
+
+// ---- Opening the editor, asking for a plan ----
+async function t1Go(it){
+  const ok=await wrCheckOpen();
+  if(!ok){ wrBlockedDialog(); return; }
+  curWTask=1; curT1=it;
+  showPage("writingT1Work");
+}
+async function wrEnterEditor1(){
+  if(!curT1||!curT1.question){ showPage("writingTask1"); return; }
+  const ok=await wrCheckOpen();
+  if(__navStack[__navStack.length-1]!=="writingT1Work") return;
+  if(ok){ document.getElementById("writingEditorPage").style.display="flex"; wrOpenEditor(); }
+  else { showPage("writingTask1"); wrBlockedDialog(); }
+}
+function t1PlanClick(b,it){
+  if(b.dataset.pid){ curWTask=1; curT1=it; wrOpenIdeasPage(b.dataset.pid); return; }
+  t1RequestPlan(it);
+}
+async function t1RequestPlan(it){
+  let session=null;
+  try{ const r=await sb.auth.getSession(); session=r&&r.data&&r.data.session; }catch(e){}
+  if(!currentUser||!session){ wrDialog("Please log in","Please log in to get an essay plan.","OK"); return; }
+  const ok=await wrCheckOpen();
+  if(!ok){ wrBlockedDialog(); return; }
+  curWTask=1; curT1=it;
+  wrDialog("Preparing your plan…","This takes about 20 to 60 seconds. Please wait here.",null);
+  try{
+    const payload={action:"ideas",task:1,question:it.question};
+    if(it.facts) payload.facts=it.facts; else if(it.image) payload.image={media_type:it.image.media_type,data:it.image.data};
+    const res=await fetch(SUPABASE_URL+"/functions/v1/mark-writing",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_ANON_KEY},
+      body:JSON.stringify(payload)
+    });
+    let data={}; try{ data=await res.json(); }catch(e){}
+    if((res.status===200||res.status===202)&&data.id){
+      if(data.status==="done"){ wrOpenIdeasPage(data.id); return; }
+      wrIdeasPoll(data.id); return;
+    }
+    if(data.code==="not_open"||data.code==="not_approved"){ wrBlockedDialog(); return; }
+    if(res.status===401){ wrDialog("Please log in again","Your login has expired. Please log in again.","OK"); return; }
+    if(data.error&&["limit","busy","bad_question"].indexOf(data.code)>=0){
+      wrDialog(data.code==="limit"?"Daily limit reached":"Cannot make a plan",data.error+(data.next_slot?" You can try again after "+new Date(data.next_slot).toLocaleString()+".":""),"OK"); return;
+    }
+    wrDialog("The plan is not available right now","Please try again later.","OK");
+  }catch(e){
+    console.error(e);
+    wrDialog("The plan is not available right now","Please check your internet and try again.","OK");
+  }
+}
+
+// ---- Own question: question text + uploaded picture ----
+async function t1OwnOpen(){
+  const ok=await wrCheckOpen();
+  if(!ok){ wrBlockedDialog(); return; }
+  curWTask=1;
+  showPage("writingT1Own");
+}
+function t1PickPic(inp){
+  const f=inp.files&&inp.files[0], prev=document.getElementById("t1Prev");
+  if(!f){ __t1Pic=null; if(prev) prev.innerHTML=""; return; }
+  if(!/^image\/(png|jpeg|webp)$/.test(f.type)){ showToast("Please choose a PNG or JPG picture."); inp.value=""; __t1Pic=null; if(prev) prev.innerHTML=""; return; }
+  if(f.size>20*1024*1024){ showToast("This picture is too big. Please choose a smaller one."); inp.value=""; return; }
+  const img=new Image(), url=URL.createObjectURL(f);
+  img.onload=()=>{
+    const max=1400; let w=img.naturalWidth, h=img.naturalHeight; const k=Math.min(1,max/Math.max(w,h)); w=Math.max(1,Math.round(w*k)); h=Math.max(1,Math.round(h*k));
+    const cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+    const cx=cv.getContext("2d"); cx.fillStyle="#fff"; cx.fillRect(0,0,w,h); cx.drawImage(img,0,0,w,h);
+    const dataUrl=cv.toDataURL("image/jpeg",0.85); URL.revokeObjectURL(url);
+    __t1Pic={media_type:"image/jpeg",data:dataUrl.split(",")[1],dataUrl:dataUrl};
+    if(prev) prev.innerHTML='<img src="'+dataUrl+'" alt="Your picture">';
+  };
+  img.onerror=()=>{ showToast("This picture could not be opened."); inp.value=""; __t1Pic=null; };
+  img.src=url;
+}
+function t1OwnItem(){
+  const v=(document.getElementById("t1Q").value||"").replace(/\r\n/g,"\n").split("\n").map(x=>x.trim()).filter(Boolean).join("\n");
+  if(v.length<10){ showToast("Please type your question first."); return null; }
+  if(v.length>1500){ showToast("Your question is too long (maximum 1500 characters)."); return null; }
+  if(!__t1Pic){ showToast("Please upload the picture first."); return null; }
+  return {key:"own-"+wrHash(v),topic:"t1:custom",n:0,title:"",lines:v.split("\n"),question:v,chart:{type:"image",src:__t1Pic.dataUrl},facts:"",image:__t1Pic,catName:"Your own question"};
+}
+function t1OwnPlan(){ const it=t1OwnItem(); if(it) t1RequestPlan(it); }
+function t1OwnWrite(){ const it=t1OwnItem(); if(it) t1Go(it); }
+function renderT1Own(){
+  const ta=document.getElementById("t1Q");
+  if(ta&&!ta.value&&curT1&&curT1.topic==="t1:custom") ta.value=curT1.question||"";
+  t1LoadOwnLists();
+}
+let __t1OwnTimer=null;
+async function t1LoadOwnLists(){
+  if(__t1OwnTimer){ clearTimeout(__t1OwnTimer); __t1OwnTimer=null; }
+  const pbox=document.getElementById("t1IdeasList"), abox=document.getElementById("t1List");
+  if(!currentUser){ if(pbox) pbox.innerHTML=""; if(abox) abox.innerHTML=""; return; }
+  let ar=null, pr=null;
+  try{ const r=await sb.from("writing_submissions").select("id,question_text,status,created_at,overall:result->overall").eq("topic","t1:custom").in("status",["done","pending"]).order("created_at",{ascending:false}).limit(10); ar=r&&r.data; }catch(e){}
+  try{ const r=await sb.from("writing_ideas").select("id,question_text,status,created_at").eq("content->>task","1").eq("status","done").order("created_at",{ascending:false}).limit(10); pr=r&&r.data; }catch(e){}
+  if(__navStack[__navStack.length-1]!=="writingT1Own") return;
+  const snip=(t)=>{ t=String(t||""); return t.length>110?t.slice(0,110)+"…":t; };
+  const when=(d)=>new Date(d).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+  if(pbox){
+    pbox.innerHTML=(pr&&pr.length)?'<div class="wo-list-t">Your answer plans (open for free)</div>'+pr.map(x=>'<div class="wo-item"><div class="wo-q">'+wEsc(snip(x.question_text))+'</div><div class="wo-meta"><span>'+wEsc(when(x.created_at))+'</span><button data-o="'+wEsc(x.id)+'">Open plan</button></div></div>').join(""):"";
+    pbox.querySelectorAll("button[data-o]").forEach(b=>{ b.onclick=()=>{ curWTask=1; wrOpenIdeasPage(b.getAttribute("data-o")); }; });
+  }
+  if(abox){
+    const now=Date.now(); let anyPending=false;
+    const rows=(ar||[]).filter(x=>{ if(x.status==="pending"){ if(now-new Date(x.created_at).getTime()>10*60*1000) return false; anyPending=true; } return true; });
+    abox.innerHTML=rows.length?'<div class="wo-list-t">Your recent answers</div>'+rows.map(x=>'<div class="wo-item"><div class="wo-q">'+wEsc(snip(x.question_text))+'</div><div class="wo-meta"><span>'+wEsc(when(x.created_at))+' · '+(x.status==="pending"?'⏳ Marking…':'<b>'+(x.overall!=null?"Band "+wrBandStr(x.overall):"Done")+'</b>')+'</span>'+(x.status==="pending"?'':'<button data-v="'+wEsc(x.id)+'">View report</button>')+'</div></div>').join(""):"";
+    abox.querySelectorAll("button[data-v]").forEach(b=>{ b.onclick=()=>wrViewReport(b.getAttribute("data-v")); });
+    if(anyPending) __t1OwnTimer=setTimeout(t1LoadOwnLists,8000);
+  }
+}
+
 // ── WRITING: ideas & vocabulary for the student's own question ──
 let curOwnIdeasId=null;
 function wrDialog(title,text,btn){
@@ -3508,9 +3897,10 @@ function wrOpenIdeasPage(id){
   curOwnIdeasId=id;
   try{ sessionStorage.setItem("wr_own_ideas_id",id); }catch(e){}
   const d=document.getElementById("wrBlockedDlg"); if(d) d.remove();
-  showPage("writingOwnIdeas");
+  showPage(curWTask===1?"writingT1Ideas":"writingOwnIdeas");
 }
 async function wrOwnIdeas(){
+  curWTask=2;
   const v=wrOwnQuestionText();
   if(v.length<10){ showToast("Please type your question first."); return; }
   if(v.length>1500){ showToast("Your question is too long (maximum 1500 characters)."); return; }
@@ -3564,13 +3954,21 @@ async function renderWritingOwnIdeas(){
   body.innerHTML='<div style="color:var(--muted);font-size:13px;padding:14px 0">Loading…</div>';
   let row=null;
   if(id){ try{ const r=await sb.from("writing_ideas").select("question_text,status,content").eq("id",id).single(); row=r&&r.data; }catch(e){} }
-  if(__navStack[__navStack.length-1]!=="writingOwnIdeas") return;
+  if(__navStack[__navStack.length-1]!=="writingOwnIdeas"&&__navStack[__navStack.length-1]!=="writingT1Ideas") return;
   if(!row||!row.content){
     body.innerHTML='<div style="color:var(--muted);font-size:14px;padding:14px 0;line-height:1.7">We could not open this page. Please go back and generate the ideas again.</div>';
     return;
   }
   curOwnQuestion=row.question_text;
-  qb.innerHTML='<div class="wq-text">'+String(row.question_text||"").split(/\n+/).filter(Boolean).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>';
+  if(row.content&&row.content.task===1){
+    curWTask=1;
+    if(!(curT1&&curT1.question===row.question_text)){ const ls=String(row.question_text||"").split(/\n+/).filter(Boolean); curT1={key:"plan-"+wrHash(row.question_text),topic:"t1:custom",n:0,title:"",lines:ls,question:row.question_text,chart:null,facts:row.content.facts||"",catName:"Your own question"}; }
+    if(!curT1.facts) curT1.facts=row.content.facts||"";
+    qb.innerHTML=t1QuestionHtml(curT1.chart?curT1:Object.assign({},curT1,{facts:""}));
+  } else {
+    curWTask=2;
+    qb.innerHTML='<div class="wq-text">'+String(row.question_text||"").split(/\n+/).filter(Boolean).map(l=>'<p>'+wEsc(l)+'</p>').join("")+'</div>';
+  }
   const c=row.content; let h="";
   if(c.version>=2&&c.version<=6){ body.innerHTML=wrIdeasV2Html(c); window.scrollTo({top:0}); return; }
   if(c.question_type) h+='<div class="wi-sec"><span class="wi-kind">'+wEsc(c.question_type)+'</span></div>';
@@ -3588,7 +3986,7 @@ async function renderWritingOwnIdeas(){
   window.scrollTo({top:0});
 }
 function wrIdeasV2Html(c){
-  const E=wEsc; let h="", n=0;
+  const E=wEsc; let h="", n=0; const T1=(c.task===1);
   const H=(icon,t)=>'<div class="wi-h">'+icon+' '+(++n)+'. '+t+'</div>';
   if(c.question_type) h+='<div class="wi-sec"><span class="wi-kind">'+E(c.question_type)+'</span></div>';
   const g=c.glance;
@@ -3604,7 +4002,7 @@ function wrIdeasV2Html(c){
     gl='<div class="wi-card"><p style="margin:0 0 10px;font-size:14px;line-height:1.7;color:#e8eef5">'+E(c.asks_summary)+'</p>'
       +((c.must_answer&&c.must_answer.length)?'<div class="wi-card-t">You must answer:</div><ul>'+c.must_answer.map(k=>'<li><b>'+E(k.part)+'</b> — '+E(k.meaning)+'</li>').join("")+'</ul>':'')+'</div>';
   }
-  h+='<div class="wi-sec">'+H("🧠","Understand the question")+gl
+  h+='<div class="wi-sec">'+H("🧠",T1?"Understand the picture":"Understand the question")+gl
     +((c.wording_clues&&c.wording_clues.length)?'<div class="wi-card"><div class="wi-card-t">🔎 Watch the words in your question</div><ul>'+c.wording_clues.map(w=>'<li><b>“'+E(w.words)+'”</b> — '+E(w.meaning)+'</li>').join("")+'</ul></div>':'')
     +'</div>';
   h+='<div class="wi-sec">'+H("🧭","Essay structure you can use");
@@ -3621,17 +4019,17 @@ function wrIdeasV2Html(c){
     h+='</div>';
   });
   if(c.special_note) h+='<div class="wi-sn"><b>Special note:</b> '+E(c.special_note)+'</div>';
-  if(c.version>=6) h+='<div class="wi-rem">Check the instruction words, singular/plural words, and the people or things mentioned. Answer every part, and explain each point.</div>';
+  if(c.version>=6) h+='<div class="wi-rem">'+(T1?'Write an overview, support the main features with figures, compare where it helps, and write at least 150 words.':'Check the instruction words, singular/plural words, and the people or things mentioned. Answer every part, and explain each point.')+'</div>';
   h+='</div>';
   if(c.ideas&&c.ideas.length){
-    h+='<div class="wi-sec">'+H("💡","Ideas you can use for this question");
+    h+='<div class="wi-sec">'+H("💡",T1?"Key features you can write about":"Ideas you can use for this question");
     c.ideas.forEach(g=>{
       h+='<div class="wi-card"><div class="wi-card-t">'+E(g.paragraph)+'</div>'
         +g.items.map(i=>'<div class="wi-idea"><b>'+E(i.title)+'</b><div class="m">'+E(i.point)+'</div>'+(i.example?'<div class="wi-ex">Example: '+E(i.example)+'</div>':'')+'</div>').join("")+'</div>';
     });
     h+='</div>';
   }
-  if(c.avoid&&c.avoid.length) h+='<div class="wi-sec">'+H("❌","Mistakes students often make with this question")+'<div class="wi-card">'
+  if(c.avoid&&c.avoid.length) h+='<div class="wi-sec">'+H("❌",T1?"Mistakes students often make with this kind of picture":"Mistakes students often make with this question")+'<div class="wi-card">'
     +c.avoid.map(m=>(typeof m==="string")?'<div class="wi-mis"><div class="wi-mt">'+E(m)+'</div></div>'
       :'<div class="wi-mis"><div class="wi-mt">✗ '+E(m.mistake)+'</div>'+(m.fix?'<div class="wi-mf">✓ '+E(m.fix)+'</div>':'')+'</div>').join("")+'</div></div>';
   if(c.vocabulary&&c.vocabulary.length){
@@ -3648,6 +4046,7 @@ function wrIdeasV2Html(c){
   return h;
 }
 function wrOwnWriteFromIdeas(){
+  if(curWTask===1){ if(!curT1||!curT1.question){ showToast("Please go back and open your plan again."); return; } t1Go(curT1); return; }
   if(!curOwnQuestion){ showToast("Please go back and open your ideas page again."); return; }
   wrOwnGo(curOwnQuestion);
 }
@@ -3687,7 +4086,9 @@ async function wrLoadOwnIdeasList(){
   if(!currentUser){ box.innerHTML=""; return; }
   let rows=null;
   try{
-    const r=await sb.from("writing_ideas").select("id,question_text,status,created_at")
+    let r=await sb.from("writing_ideas").select("id,question_text,status,created_at")
+      .in("status",["done","pending"]).or("content->>task.is.null,content->>task.neq.1").order("created_at",{ascending:false}).limit(10);
+    if(r&&r.error) r=await sb.from("writing_ideas").select("id,question_text,status,created_at")
       .in("status",["done","pending"]).order("created_at",{ascending:false}).limit(10);
     rows=r&&r.data;
   }catch(e){ rows=null; }
@@ -3701,7 +4102,7 @@ async function wrLoadOwnIdeasList(){
     return '<div class="wo-item"><div class="wo-q">'+wEsc(snip)+'</div><div class="wo-meta"><span>'+wEsc(when)+(x.status==="pending"?' · ⏳ Preparing…':'')+'</span>'
       +(x.status==="pending"?'':'<button data-o="'+wEsc(x.id)+'">Open plan</button>')+'</div></div>';
   }).join("");
-  box.querySelectorAll("button[data-o]").forEach(b=>{ b.onclick=()=>wrOpenIdeasPage(b.getAttribute("data-o")); });
+  box.querySelectorAll("button[data-o]").forEach(b=>{ b.onclick=()=>{ curWTask=2; wrOpenIdeasPage(b.getAttribute("data-o")); }; });
 }
 
 // ── WRITING: the student's last 3 attempts for each question ──
@@ -7318,8 +7719,8 @@ function _hmStillUsed(bankId, val, excludeQn){
 <script src="/data-listening-cam19.js?v=20260733e"></script>
 <script src="/data-listening-cam20.js?v=20260733e"></script>
 <script src="/data-listening-cam21.js?v=20260733e"></script>
-<script src="/data-writing.js?v=20261027c"></script>
-<script src="/data-recent.js?v=20261027b"></script>
+<script src="/data-writing.js?v=20261028a"></script>
+<script src="/data-recent.js?v=20261028a"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -8863,11 +9264,10 @@ function spPrint(){
   <div class="ptitle">✍️ Writing Practice</div>
   <div class="psub">Task 1 & Task 2 — model answers, tips and strategies</div>
   <div class="folder-grid">
-    <div class="folder-card locked" style="opacity:1;cursor:default">
+    <div class="folder-card" onclick="showPage('writingTask1')">
       <div class="folder-ico">📊</div>
       <div class="folder-name">Writing Task 1</div>
       <div class="folder-sub">Describe a graph, chart, table, map or process<br>Minimum 150 words · 20 minutes</div>
-      <div class="pz-tag soon">Coming Soon</div>
     </div>
     <div class="folder-card" onclick="showPage('writingTask2')">
       <div class="folder-ico">📝</div>
@@ -8901,6 +9301,55 @@ function spPrint(){
   <div class="ptitle">🆕 Recent questions</div>
   <div class="psub">Writing Task 2 questions from recent IELTS exams. Tap a question to plan or write the essay.</div>
   <div id="wrecList"></div>
+</div>
+
+<!-- WRITING TASK 1 — HOME -->
+<div class="selpage" id="writingTask1Page">
+  <div class="ptitle">📊 Writing Task 1</div>
+  <div class="psub">Choose how you want to practise</div>
+  <div class="folder-grid">
+    <div class="folder-card" onclick="t1OwnOpen()"><div class="folder-ico">✍️</div><div class="folder-name">Write your own question</div><div class="folder-sub">Upload your own picture and get AI feedback</div></div>
+    <div class="folder-card" onclick="showPage('writingT1Bank')"><div class="folder-ico">📚</div><div class="folder-name">Questions by category</div><div class="folder-sub" id="t1bankSub">Line graphs, bar charts, tables, maps and more</div></div>
+    <div class="folder-card" onclick="showPage('writingT1Recent')"><div class="folder-ico">🆕</div><div class="folder-name">Recent questions</div><div class="folder-sub" id="t1recentSub">Questions from recent IELTS exams</div></div>
+  </div>
+</div>
+
+<!-- WRITING TASK 1 — QUESTIONS BY CATEGORY -->
+<div class="selpage" id="writingT1BankPage">
+  <div class="ptitle">📚 Task 1 questions by category</div>
+  <div class="psub">Choose a category</div>
+  <div class="folder-grid" id="t1grid"></div>
+</div>
+
+<!-- WRITING TASK 1 — QUESTIONS IN A CATEGORY -->
+<div class="selpage" id="writingT1TopicPage">
+  <div class="ptitle" id="t1pTitle">Category</div>
+  <div class="psub" id="t1pSub"></div>
+  <div id="t1pList"></div>
+</div>
+
+<!-- WRITING TASK 1 — RECENT QUESTIONS -->
+<div class="selpage" id="writingT1RecentPage">
+  <div class="ptitle">🆕 Recent Task 1 questions</div>
+  <div class="psub">Task 1 questions from recent IELTS exams. Tap a question to plan or write the answer.</div>
+  <div id="t1recList"></div>
+</div>
+
+<!-- WRITING TASK 1 — YOUR OWN QUESTION -->
+<div class="selpage" id="writingT1OwnPage">
+  <div class="ptitle">✍️ Write your own Task 1 question</div>
+  <div class="psub">Type your question and upload its picture (a graph, chart, table, map or process). Then plan or write your answer and get AI feedback.</div>
+  <div class="wq-card" style="cursor:default">
+    <div class="wq-num">Your question</div>
+    <textarea class="wo-ta" id="t1Q" maxlength="1500" placeholder="Paste or type your Writing Task 1 question here (for example: The graph below shows…)" spellcheck="false"></textarea>
+    <div class="wq-num" style="margin-top:14px">Your picture</div>
+    <input type="file" id="t1Pic" accept="image/png,image/jpeg,image/webp" onchange="t1PickPic(this)" style="color:var(--muted);font-size:13px">
+    <div id="t1Prev" class="t1-prev"></div>
+    <div class="wo-hint">Only real IELTS Academic Writing Task 1 pictures can be marked. The AI reads the picture, so use a clear one. You can check what it read in your report.</div>
+    <div class="wq-actions" style="display:flex"><button class="wq-btn" onclick="t1OwnPlan()">💡 Plan the answer first</button><button class="wq-btn pri" onclick="t1OwnWrite()">✍️ Write the answer now</button></div>
+  </div>
+  <div id="t1IdeasList"></div>
+  <div id="t1List"></div>
 </div>
 
 <!-- WRITING TASK 2 — YOUR OWN QUESTION -->
@@ -8961,10 +9410,10 @@ function spPrint(){
   </div>
   <div class="wr-body">
     <div class="wr-qpane" id="wrQPane">
-      <div class="wr-qlabel">WRITING TASK 2</div>
-      <div class="wr-instr">You should spend about 40 minutes on this task.<br>Write about the following topic:</div>
+      <div class="wr-qlabel" id="wrQLabel">WRITING TASK 2</div>
+      <div class="wr-instr" id="wrInstr1">You should spend about 40 minutes on this task.<br>Write about the following topic:</div>
       <div class="wr-qbox" id="wrQBox"></div>
-      <div class="wr-instr">Give reasons for your answer and include any relevant examples from your own knowledge or experience.<br><b>Write at least 250 words.</b></div>
+      <div class="wr-instr" id="wrInstr2">Give reasons for your answer and include any relevant examples from your own knowledge or experience.<br><b>Write at least 250 words.</b></div>
     </div>
     <div class="wr-wpane"><textarea id="wrText" placeholder="Start writing your essay here…" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" oninput="wrOnInput()"></textarea></div>
   </div>
