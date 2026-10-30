@@ -3906,7 +3906,7 @@ async function t1OwnWrite(){
     } else if(data&&data.code==="bad_question"){ t1ChkErr("We could not accept this",data.error||"Please check your question and picture, then try again.");
     } else if(data&&(data.code==="limit"||data.code==="failed")){ t1ChkErr(data.code==="limit"?"Daily limit reached":"Please try again",data.error||"Please try again in a minute.");
     } else if(data&&(data.code==="not_open"||data.code==="not_approved")){ wrBlockedDialog();
-    } else { t1ChkErr("Please try again","We could not check your picture right now. Please try again in a minute."); }
+    } else { t1ChkErr("Please try again","We could not check your picture right now. Please try again in a minute. (Technical note for support: "+res.status+(data&&data.code?" "+data.code:"")+(data&&data.error&&!data.code?" "+String(data.error).slice(0,80):"")+")"); }
   }catch(e){ console.error(e); t1ChkErr("No connection","We could not reach the server. Please check your internet and try again."); }
   __t1Busy=false; if(btn) btn.disabled=false;
 }
@@ -7798,7 +7798,7 @@ function _hmStillUsed(bankId, val, excludeQn){
 <script src="/data-listening-cam20.js?v=20260733e"></script>
 <script src="/data-listening-cam21.js?v=20260733e"></script>
 <script src="/data-writing.js?v=20261028b"></script>
-<script src="/data-writing-task1.js?v=20261029d"></script>
+<script src="/data-writing-task1.js?v=20261029e"></script>
 <script src="/data-recent.js?v=20261028a"></script>
 <script src="/data-recent-task1.js?v=20261028a"></script>
 
