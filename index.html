@@ -2745,7 +2745,44 @@ function __commitHistory(p){
     }
   } catch(e){ /* History API unavailable in this context — safe to ignore */ }
 }
+// ── LOGIN GATE ─────────────────────────────────
+// Everyone can see the home page. Everything else asks for a login first.
+// Writing and Speaking Practice are for students only.
+const __STUDENT_PAGES=new Set(["writingPractice","speakingPractice","writingTask2","writingBank","writingRecent","writingTask1","writingT1Bank","writingT1Topic","writingT1Recent","writingT1Own","writingOwn","writingOwnIdeas","writingTopic","writingIdeas"]);
+window.__nextPage=null;
+function studentOnlyDialog(){
+  const prev=document.getElementById("wrBlockedDlg"); if(prev) prev.remove();
+  const d=document.createElement("div");
+  d.id="wrBlockedDlg";
+  d.innerHTML='<div class="bx"><h3>This part is for students</h3><p>Writing and Speaking Practice are for enrolled students. Everything else on the site is free for you to use. If you are a student, please contact your teacher to be added.</p><button onclick="document.getElementById(\'wrBlockedDlg\').remove()">OK</button></div>';
+  document.body.appendChild(d);
+}
+function authGateOK(p){
+  if(p==="home") return true;
+  if(!currentUser){
+    window.__nextPage=p;
+    try{ sessionStorage.setItem("ef_next",p); }catch(e){}
+    showToast("Please log in to continue.");
+    showAuth();
+    return false;
+  }
+  if(__STUDENT_PAGES.has(p) && !currentUser.isStudent){ studentOnlyDialog(); return false; }
+  return true;
+}
+function authContinue(){
+  let p=window.__nextPage; window.__nextPage=null;
+  try{ const s=sessionStorage.getItem("ef_next"); if(s){ sessionStorage.removeItem("ef_next"); p=p||s; } }catch(e){}
+  if(p && p!=="home" && authGateOK(p)) showPage(p);
+}
+// After the saved login (if any) is known: send visitors away from pages they may not open.
+function authEnforceCurrent(){
+  const cur=__navStack[__navStack.length-1];
+  if(!cur||cur==="home") return;
+  if(!currentUser){ __navStack=["home"]; updateNavBar("home"); _renderPage("home"); __updateTitle("home"); window.__nextPage=cur; showAuth(); return; }
+  if(__STUDENT_PAGES.has(cur) && !currentUser.isStudent){ showPage("home"); studentOnlyDialog(); }
+}
 function showPage(p){
+  if(!authGateOK(p)) return;
   if(p==="home"){ __navStack=["home"]; }
   else if(__navStack[__navStack.length-1]!==p){ __navStack.push(p); }
   updateNavBar(p);
@@ -3386,7 +3423,6 @@ function wrBuildReport(r){
     +['TR','CC','LR','GRA'].map(k=>'<td>'+wrBandStr((C[k]||{}).band)+'</td>').join('')
     +'<td class="wrp-ov">'+wrBandStr(r.overall)+'</td></tr></table></div>';
   if(r.word_count<MINW) h+='<div class="wrp-warn">Word count: '+wEsc(r.word_count)+' words. The minimum is '+MINW+' words, so this is too short. In the real exam you have about '+(T1?20:40)+' minutes for Task '+(T1?1:2)+'.</div>';
-  if(T1&&r.facts) h+='<div class="wrp-qbox"><b>The information the AI used from the picture</b><br>'+wEsc(r.facts).replace(/\n/g,"<br>")+'<div style="margin-top:8px;font-size:12px;color:#666">The AI checked your numbers against this. If something here looks wrong, please ignore the marks about numbers.</div></div>';
   h+='<div class="wrp-note">'+wEsc(r.disclaimer||"Bands are estimates, not official results.")+'</div>';
 
   // Part A
@@ -3592,6 +3628,7 @@ function t1ChartHtml(c){
       +'<table><tr>'+(c.columns||[]).map(x=>'<th>'+E(x)+'</th>').join("")+'</tr>'
       +(c.rows||[]).map(r=>'<tr>'+r.map(x=>'<td>'+E(x)+'</td>').join("")+'</tr>').join("")+'</table></div>';
   }
+  if(c.type==="svg") return '<div class="t1-chart" role="img" aria-label="'+E(c.alt||c.title||"diagram")+'">'+c.svg+'</div>';
   if(c.type==="multi") return (c.charts||[]).map(t1ChartHtml).join("");
   if(c.type==="pie") return t1PiesHtml(c);
   if(c.type==="line"||c.type==="bar") return '<div class="t1-chart">'+t1XySvg(c)+'</div>';
@@ -6239,6 +6276,16 @@ async function sendEmail(type,to,name){
   }catch(e){console.log('email error',e);}
 }
 
+// ── GOOGLE SIGN-IN ─────────────────────────────
+async function handleGoogle(){
+  try{ if(window.__nextPage) sessionStorage.setItem("ef_next",window.__nextPage); }catch(e){}
+  const btn=document.getElementById("authGoogleBtn"); if(btn) btn.disabled=true;
+  try{
+    const{error}=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin+window.location.pathname}});
+    if(error){ showAuthError("Google sign-in is not available right now. Please use your email instead."); if(btn) btn.disabled=false; }
+  }catch(e){ showAuthError("Google sign-in is not available right now. Please use your email instead."); if(btn) btn.disabled=false; }
+}
+
 async function handleAuth(){
   const email=document.getElementById("authEmail").value.trim().toLowerCase();
   const pass=document.getElementById("authPass").value;
@@ -6264,7 +6311,7 @@ async function handleAuth(){
       if(error){
         const msg=(error.message||"").toLowerCase();
         if(msg.includes("already registered")||msg.includes("already exists")||msg.includes("user already")){
-          showAuthError("This email is already registered. If you signed up before, your request may still be under review — try logging in, or wait for the approval email.");
+          showAuthError("This email is already registered. Please log in instead, or use Forgot password if you cannot remember it.");
         } else {
           showAuthError(error.message||"Something went wrong.");
         }
@@ -6288,16 +6335,18 @@ async function handleAuth(){
 }
 
 async function loadUserAfterLogin(authUser){
-  const{data:profile}=await sb.from("profiles").select("*").eq("id",authUser.id).single();
+  let{data:profile}=await sb.from("profiles").select("*").eq("id",authUser.id).maybeSingle();
   const isAdmin=authUser.email===ADMIN_EMAIL;
-  const status=profile?.status||"pending";
-
-  // Enforce the approval gate for everyone except the admin account.
-  if(!isAdmin && status==="pending"){
-    await sb.auth.signOut();
-    showPendingScreen();
-    return;
+  if(!profile){
+    // First sign-in (for example with Google) and no profile row yet: create one as a visitor.
+    const nm=authUser.user_metadata?.full_name||authUser.user_metadata?.name||(authUser.email||"").split("@")[0];
+    try{ await sb.from("profiles").upsert({id:authUser.id,email:authUser.email,full_name:nm,status:"pending"}); }catch(e){}
+    profile={status:"pending",full_name:nm};
   }
+  const status=profile.status||"pending";
+
+  // Blocked accounts cannot sign in. Everyone else gets in:
+  //   "approved" = student (can use Writing and Speaking), anything else = visitor.
   if(!isAdmin && status==="rejected"){
     await sb.auth.signOut();
     showRejectedScreen();
@@ -6308,9 +6357,10 @@ async function loadUserAfterLogin(authUser){
   loginUser({
     id:authUser.id,
     email:authUser.email,
-    name:profile?.full_name||authUser.user_metadata?.full_name||"Student",
+    name:profile?.full_name||authUser.user_metadata?.full_name||authUser.user_metadata?.name||"Student",
     stats,
-    isAdmin
+    isAdmin,
+    isStudent:isAdmin||status==="approved"
   });
 }
 
@@ -6459,6 +6509,7 @@ function loginUser(user){
   // Show admin panel link if admin
   const adminLink=document.getElementById("menuAdminLink");
   if(adminLink) adminLink.style.display=user.isAdmin?"flex":"none";
+  authContinue();
 }
 
 function updateHomeStats(){
@@ -6484,6 +6535,7 @@ async function logOut(){
   updateNavUser();
   document.getElementById("dashPanel").style.display="none";
   showToast("Logged out successfully.");
+  try{ showPage("home"); }catch(e){}
 }
 
 function updateNavUser(){
@@ -6600,6 +6652,7 @@ window.addEventListener("load", async function(){
       await loadUserAfterLogin(session.user);
     }
   }
+  try{ authEnforceCurrent(); }catch(e){ console.log("gate",e); }
 });
 
 // Also handle the PASSWORD_RECOVERY event from onAuthStateChange
@@ -7145,6 +7198,8 @@ function _hmStillUsed(bankId, val, excludeQn){
       <button onclick="switchAuth('signup')" id="tabSignup" style="flex:1;padding:8px;border-radius:9px;border:none;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all 0.2s">Sign Up</button>
     </div>
     <div id="authForm">
+      <button onclick="handleGoogle()" id="authGoogleBtn" style="width:100%;padding:12px;background:#fff;color:#222;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.5l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.100 0 24s.9 7.600 2.600 10.800l7.900-6.100z"/><path fill="#34A853" d="M24 48c6.300 0 11.600-2.100 15.500-5.700l-7.600-5.900c-2.100 1.400-4.800 2.300-7.900 2.300-6.300 0-11.600-4.100-13.500-9.800l-7.900 6.100C6.500 42.600 14.600 48 24 48z"/></svg>Continue with Google</button>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;color:var(--muted);font-size:12px"><span style="flex:1;height:1px;background:rgba(255,255,255,0.1)"></span>or use your email<span style="flex:1;height:1px;background:rgba(255,255,255,0.1)"></span></div>
       <div id="signupNameWrap" style="display:none;margin-bottom:12px">
         <input id="authName" type="text" placeholder="Full Name" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:14px;font-family:'Poppins',sans-serif;outline:none"/>
       </div>
@@ -7798,7 +7853,7 @@ function _hmStillUsed(bankId, val, excludeQn){
 <script src="/data-listening-cam20.js?v=20260733e"></script>
 <script src="/data-listening-cam21.js?v=20260733e"></script>
 <script src="/data-writing.js?v=20261028b"></script>
-<script src="/data-writing-task1.js?v=20261029e"></script>
+<script src="/data-writing-task1.js?v=20261029f"></script>
 <script src="/data-recent.js?v=20261028a"></script>
 <script src="/data-recent-task1.js?v=20261028a"></script>
 
@@ -9175,30 +9230,35 @@ async function adminLoadStudents(filter){
     const{data:students}=await query;
 
     if(!students||students.length===0){
-      listEl.innerHTML=`<div style="text-align:center;color:var(--muted);padding:40px">No ${filter==='all'?'':filter} students found.</div>`;
+      listEl.innerHTML=`<div style="text-align:center;color:var(--muted);padding:40px">Nobody here yet.</div>`;
       return;
     }
 
+    window.__adminRows={}; students.forEach(s=>{window.__adminRows[s.id]=s;});
+    const aEsc=(t)=>String(t==null?"":t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
     listEl.innerHTML=students.map(s=>{
       const date=new Date(s.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-      const statusColor=s.status==='approved'?'#4ade80':s.status==='rejected'?'#f87171':'rgba(251,191,36,0.9)';
-      const statusIcon=s.status==='approved'?'✅':s.status==='rejected'?'❌':'⏳';
-      return `<div class="admin-student-card" id="adminCard_${s.id}">
-        <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--green));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0">${(s.full_name||'?').charAt(0).toUpperCase()}</div>
+      const st=s.status==='approved'?'student':s.status==='rejected'?'blocked':'visitor';
+      const statusColor=st==='student'?'#4ade80':st==='blocked'?'#f87171':'#7dd3fc';
+      const statusIcon=st==='student'?'🎓':st==='blocked'?'⛔':'👤';
+      return `<div class="admin-student-card" id="adminCard_${aEsc(s.id)}">
+        <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--green));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0">${aEsc((s.full_name||'?').charAt(0).toUpperCase())}</div>
         <div style="flex:1;min-width:150px">
-          <div style="font-size:14px;font-weight:700;color:#fff">${s.full_name||'Unknown'}</div>
-          <div style="font-size:12px;color:var(--muted)">${s.email||'No email'}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px">Joined ${date}</div>
+          <div style="font-size:14px;font-weight:700;color:#fff">${aEsc(s.full_name||'Unknown')}</div>
+          <div style="font-size:12px;color:var(--muted)">${aEsc(s.email||'No email')}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Joined ${date}<span id="adminMeta_${aEsc(s.id)}"></span></div>
         </div>
         <div style="display:flex;align-items:center;gap:6px;margin-right:8px">
-          <span style="font-size:11px;font-weight:700;color:${statusColor}">${statusIcon} ${(s.status||'pending').toUpperCase()}</span>
+          <span style="font-size:11px;font-weight:700;color:${statusColor}">${statusIcon} ${st.toUpperCase()}</span>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          ${s.status!=='approved'?`<button class="admin-approve-btn" onclick="adminApprove('${s.id}','${s.email}','${s.full_name}')">✅ Approve</button>`:''}
-          ${s.status!=='rejected'?`<button class="admin-reject-btn" onclick="adminReject('${s.id}','${s.email}','${s.full_name}')">❌ Reject</button>`:''}
+          ${st!=='student'?`<button class="admin-approve-btn" onclick="adminMakeStudent('${aEsc(s.id)}')">🎓 Make student</button>`:`<button class="admin-reject-btn" onclick="adminRemoveStudent('${aEsc(s.id)}')">↩ Remove student</button>`}
+          ${st!=='blocked'?`<button class="admin-reject-btn" onclick="adminBlock('${aEsc(s.id)}')">⛔ Block</button>`:`<button class="admin-approve-btn" onclick="adminUnblock('${aEsc(s.id)}')">Unblock</button>`}
+          <button class="admin-reject-btn" onclick="adminDelete('${aEsc(s.id)}')">🗑 Delete</button>
         </div>
       </div>`;
     }).join('');
+    adminLoadMeta();
 
   }catch(e){
     listEl.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">Error loading students. Please try again.</div>';
@@ -9232,6 +9292,58 @@ async function adminReject(userId, email, name){
   }catch(e){showToast('Error rejecting student.');}
 }
 // ─────────────────────────────────────────────────────
+
+// How each person signed in and when they last came back (from the owner-only function).
+async function adminLoadMeta(){
+  try{
+    const{data,error}=await sb.functions.invoke('admin-users',{body:{action:'meta'}});
+    if(error||!data||!data.meta) return;
+    Object.keys(data.meta).forEach(id=>{
+      const el=document.getElementById('adminMeta_'+id); if(!el) return;
+      const m=data.meta[id];
+      const last=m.last?new Date(m.last).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'never';
+      el.textContent=' · Signed up with '+m.provider+' · Last login '+last;
+    });
+  }catch(e){}
+}
+async function adminSetStatus(id,status,okMsg,email,name,mail){
+  const{error}=await sb.from('profiles').update({status}).eq('id',id);
+  if(error){ showToast('Could not save. Please try again.'); return; }
+  if(mail) await sendEmail(mail,email,name);
+  showToast(okMsg);
+  adminLoadStudents(adminCurrentFilter);
+}
+function adminRow(id){ return (window.__adminRows||{})[id]||{}; }
+async function adminMakeStudent(id){
+  const r=adminRow(id);
+  if(!confirm('Make '+(r.full_name||'this person')+' ('+(r.email||'')+') a student?')) return;
+  await adminSetStatus(id,'approved','🎓 Now a student.',r.email,r.full_name,'approved');
+}
+async function adminRemoveStudent(id){
+  const r=adminRow(id);
+  if(!confirm('Remove student access for '+(r.full_name||'this person')+'? They stay as a visitor.')) return;
+  await adminSetStatus(id,'pending','Student access removed. They are a visitor now.');
+}
+async function adminBlock(id){
+  const r=adminRow(id);
+  if(!confirm('Block '+(r.full_name||'this person')+' ('+(r.email||'')+')? They will not be able to log in.')) return;
+  await adminSetStatus(id,'rejected','⛔ Blocked.');
+}
+async function adminUnblock(id){
+  const r=adminRow(id);
+  if(!confirm('Unblock '+(r.full_name||'this person')+'? They will be a visitor again.')) return;
+  await adminSetStatus(id,'pending','Unblocked. They are a visitor now.');
+}
+async function adminDelete(id){
+  const r=adminRow(id);
+  if(!confirm('DELETE '+(r.full_name||'this person')+' ('+(r.email||'')+') for good?\n\nTheir login and saved work will be removed. This cannot be undone.')) return;
+  try{
+    const{data,error}=await sb.functions.invoke('admin-users',{body:{action:'delete',user_id:id}});
+    if(error||!data||!data.ok){ showToast((data&&data.error)||'Could not delete. Is the admin-users function deployed?'); return; }
+    showToast('🗑 User deleted.');
+    adminLoadStudents(adminCurrentFilter);
+  }catch(e){ showToast('Could not delete. Please try again.'); }
+}
 
 function spPrint_dummy(){}
 
@@ -9308,29 +9420,29 @@ function spPrint(){
 <div class="selpage" id="adminPanelPage" style="max-width:800px">
   <button class="bk" onclick="goHome()">← Back to Home</button>
   <div class="ptitle">⚙️ Admin Panel</div>
-  <div class="psub">Manage student signup requests</div>
+  <div class="psub">Everyone who signs up is a visitor. Press "Make student" to give someone Writing and Speaking.</div>
 
   <!-- Stats row -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
     <div style="background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);border-radius:14px;padding:16px;text-align:center">
       <div id="adminPendingCount" style="font-size:28px;font-weight:800;color:rgba(251,191,36,0.9)">-</div>
-      <div style="font-size:12px;color:var(--muted)">Pending</div>
+      <div style="font-size:12px;color:var(--muted)">Visitors</div>
     </div>
     <div style="background:rgba(57,181,74,0.07);border:1px solid rgba(57,181,74,0.2);border-radius:14px;padding:16px;text-align:center">
       <div id="adminApprovedCount" style="font-size:28px;font-weight:800;color:#4ade80">-</div>
-      <div style="font-size:12px;color:var(--muted)">Approved</div>
+      <div style="font-size:12px;color:var(--muted)">Students</div>
     </div>
     <div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:14px;padding:16px;text-align:center">
       <div id="adminRejectedCount" style="font-size:28px;font-weight:800;color:#f87171">-</div>
-      <div style="font-size:12px;color:var(--muted)">Rejected</div>
+      <div style="font-size:12px;color:var(--muted)">Blocked</div>
     </div>
   </div>
 
   <!-- Filter tabs -->
   <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-    <button onclick="adminFilter('pending',this)" class="admin-tab active" id="adminTabPending">⏳ Pending</button>
-    <button onclick="adminFilter('approved',this)" class="admin-tab" id="adminTabApproved">✅ Approved</button>
-    <button onclick="adminFilter('rejected',this)" class="admin-tab" id="adminTabRejected">❌ Rejected</button>
+    <button onclick="adminFilter('pending',this)" class="admin-tab active" id="adminTabPending">👤 Visitors</button>
+    <button onclick="adminFilter('approved',this)" class="admin-tab" id="adminTabApproved">🎓 Students</button>
+    <button onclick="adminFilter('rejected',this)" class="admin-tab" id="adminTabRejected">⛔ Blocked</button>
     <button onclick="adminFilter('all',this)" class="admin-tab" id="adminTabAll">👥 All</button>
   </div>
 
