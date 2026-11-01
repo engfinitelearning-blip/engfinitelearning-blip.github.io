@@ -4734,6 +4734,12 @@ function pgRecentRender(){
     items.push({t:new Date(a.created_at).getTime(),ico:rd?"📖":"🎧",title:(rd?"Reading":"Listening")+" · Cambridge "+n+" · Test "+a.test+(rd?(a.mode==="exam"?" · Exam mode":" · Free practice"):""),
       sub:"Score "+a.correct+"/"+a.total+" · Band "+(a.band!=null?attBandStr(a.band):(a.total>=40?"below 4.0":"—"))+" · "+pgDur(a.seconds),at:a.created_at});
   });
+  (typeof __pcAtt!=="undefined"?__pcAtt:[]).forEach(x=>{
+    const m=String(x.practice_id).match(/^map-cam(\d+)-t(\d+)-s\d+-q(\d+)-(\d+)$/);
+    const pct=x.total?Math.round(x.correct/x.total*100):0;
+    items.push({t:new Date(x.created_at).getTime(),ico:"🗺️",title:"Listening Practice · Map"+(m?" · Cambridge "+m[1]+" · Test "+m[2]+" · Q"+m[3]+"–"+m[4]:""),
+      sub:"Score "+x.correct+"/"+x.total+" · Accuracy "+pct+"%",at:x.created_at});
+  });
   __pgW.forEach(x=>{
     items.push({t:new Date(x.created_at).getTime(),ico:"✍️",title:"Writing Task "+(Number(x.task)===1?"1":"2"),sub:"Band "+(x.overall==null?"—":attBandStr(x.overall))+" · "+pgDur(x.seconds),at:x.created_at});
   });
@@ -5076,6 +5082,7 @@ async function pcLoad(uid){
     if(!r.error&&r.data) __pcAtt=r.data;
   }catch(e){}
   try{ const pg=document.getElementById("listeningPracticeMapPage"); if(pg&&pg.style.display==="block") pcBuildMapList(); }catch(e){}
+  try{ pgRecentRender(); }catch(e){}
 }
 async function pcSave(id,qtype,correct,total,seconds,retry){
   if(!currentUser||!sb) return;
@@ -5084,6 +5091,7 @@ async function pcSave(id,qtype,correct,total,seconds,retry){
   try{ const r=await sb.from("practice_attempts").insert(row); err=r.error; }catch(e){ err=e; }
   if(err){ if(!retry) setTimeout(()=>pcSave(id,qtype,correct,total,seconds,true),3000); return; }
   __pcAtt.push(Object.assign({created_at:new Date().toISOString()},row));
+  try{ pgRecentRender(); }catch(e){}
 }
 function pcMark(id){
   const a=__pcAtt.filter(x=>x.practice_id===id);
@@ -7978,7 +7986,7 @@ async function adminProfExport(){
 
 async function logOut(){
   await sb.auth.signOut();
-  currentUser=null; __attList=[];
+  currentUser=null; __attList=[]; __pcAtt=[];
   updateNavUser();
   document.getElementById("dashPanel").style.display="none";
   showToast("Logged out successfully.");
