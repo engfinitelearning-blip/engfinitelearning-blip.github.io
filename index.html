@@ -1,6 +1,7 @@
 <!DOCTYPE html><!-- v2.1 cam11-live -->
 <html lang="en">
 <head>
+<script>window.__efLoc={s:location.search,h:location.hash};</script>
 <meta charset="UTF-8"/>
 <script>
 // Apply display settings BEFORE render to prevent flash
@@ -11,6 +12,7 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.13.15/bundle/libphonenumber-min.js" defer></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--blue:#00AEEF;--green:#39B54A;--bg:#070d1a;--text:#e8f4ff;--muted:#5a7a96;--sur:rgba(255,255,255,0.03);--bor:rgba(255,255,255,0.07)}
@@ -337,6 +339,42 @@ input[type="date"].sp-select::-webkit-calendar-picker-indicator{filter:brightnes
 .tnum{font-size:28px;font-weight:800;color:var(--blue);line-height:1;margin-bottom:6px}
 .tlabel{font-size:13px;font-weight:500;color:rgba(255,255,255,0.75)}
 .tinfo{font-size:12px;color:var(--muted);margin-top:4px}
+.att-mark{font-size:11.5px;font-weight:700;color:var(--green);margin-top:8px}
+.att-sub{font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.att-book{font-size:10.5px;font-weight:700;color:var(--green);margin-top:5px}
+#progressPage{display:none;position:relative;z-index:1;padding:40px 24px 60px;max-width:860px;margin:0 auto;min-height:60vh}
+.pg-scope{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 16px}
+.pg-pill{padding:8px 18px;border-radius:20px;border:1px solid var(--bor);background:var(--sur);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.pg-pill.on{background:rgba(0,174,239,0.14);border-color:rgba(0,174,239,0.5);color:var(--blue)}
+.pg-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.pg-card{background:var(--sur);border:1px solid var(--bor);border-radius:16px;padding:16px 14px;cursor:pointer;text-align:center;transition:transform .2s,border-color .2s}
+.pg-card:hover{transform:translateY(-3px);border-color:rgba(0,174,239,0.35)}
+.pg-card.on{border-color:rgba(0,174,239,0.6);background:rgba(0,174,239,0.07)}
+.pg-card .pg-t{font-size:12.5px;font-weight:700;color:var(--muted)}
+.pg-card .pg-b{font-size:34px;font-weight:800;margin:6px 0 2px;color:var(--text)}
+.pg-card .pg-n{font-size:11.5px;color:var(--muted)}
+.pg-box{background:var(--sur);border:1px solid var(--bor);border-radius:16px;padding:16px;margin-bottom:14px}
+.pg-box h3{font-size:15px;margin:0 0 4px;color:var(--text)}
+.pg-sum{display:flex;gap:18px;flex-wrap:wrap;margin:6px 0 10px;font-size:13px;color:var(--muted)}
+.pg-sum b{color:var(--text);font-size:18px}
+.pg-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.pg-tbl th{text-align:left;font-size:11px;color:var(--muted);font-weight:600;padding:4px 6px;border-bottom:1px solid var(--bor)}
+.pg-tbl td{padding:7px 6px;border-bottom:1px solid var(--bor);color:var(--text)}
+.pg-tbl tr:last-child td{border-bottom:none}
+.pg-empty{font-size:13px;color:var(--muted);padding:6px 0}
+.pg-act{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--bor)}
+.pg-act:last-of-type{border-bottom:none}
+.pg-act-ico{font-size:20px;flex-shrink:0}
+.pg-act-body{flex:1;min-width:0}
+.pg-act-t{font-size:13.5px;font-weight:600;color:var(--text)}
+.pg-act-s{font-size:12px;color:var(--muted);margin-top:2px}
+.pg-act-d{font-size:11.5px;color:var(--muted);white-space:nowrap;flex-shrink:0;margin-top:2px}
+.pg-del{margin-top:26px;padding-top:16px;border-top:1px solid var(--bor)}
+.pg-delbtn{padding:9px 18px;border-radius:20px;border:1px solid rgba(239,68,68,0.35);background:rgba(239,68,68,0.08);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.pg-dlg{position:fixed;inset:0;z-index:10070;background:rgba(5,10,25,0.8);display:flex;align-items:center;justify-content:center;padding:16px}
+.pg-dlg>div{background:var(--bg,#0f172a);color:var(--text);border:1px solid var(--bor);border-radius:16px;max-width:440px;width:100%;padding:22px;max-height:90vh;overflow:auto}
+.pg-opt{display:block;width:100%;text-align:left;padding:12px 14px;margin-top:10px;border-radius:12px;border:1px solid var(--bor);background:var(--sur);color:var(--text);cursor:pointer;font-family:'Poppins',sans-serif}
+.pg-opt b{display:block;font-size:14px}.pg-opt span{font-size:12px;color:var(--muted)}
 /* modes */
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
 .mcard{background:var(--sur);border:1px solid var(--bor);border-radius:22px;padding:36px 28px;cursor:pointer;transition:transform 0.2s,border-color 0.2s,background 0.2s;text-align:center}
@@ -478,6 +516,12 @@ option{background:#fff;color:#1a2e40}
 .t1-facts{font-size:13px;line-height:1.6;white-space:pre-wrap;color:#333}
 .t1-chk,.t1-chk h4,.t1-chk div,.t1-chk li{color:#fff}
 .t1-chk .t1-read,.t1-chk .t1-read.t1-facts{color:#222}
+#profileBanner{display:none;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:10px 16px;background:linear-gradient(90deg,rgba(0,174,239,0.18),rgba(57,181,74,0.16));border-bottom:1px solid rgba(0,174,239,0.3);font-size:13.5px;color:#fff;text-align:center}
+#profileBanner button{font-family:'Poppins',sans-serif;font-size:12.5px;font-weight:600;border-radius:20px;padding:6px 16px;cursor:pointer;border:1px solid rgba(255,255,255,0.3);background:transparent;color:#fff}
+#profileBanner button.go{background:var(--blue);border-color:var(--blue)}
+.pf-lab{display:block;text-align:left;font-size:12px;font-weight:600;color:rgba(255,255,255,0.75);margin:12px 0 5px}
+.pf-in{width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#fff;font-size:14px;font-family:'Poppins',sans-serif;outline:none;box-sizing:border-box}
+.pf-in option{color:#111;background:#fff}
 .t1-chk{margin-top:14px;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);font-size:14px;line-height:1.6}
 .t1-chk.err{border-color:rgba(255,107,107,.55);background:rgba(255,107,107,.08)}
 .t1-chk.ok{border-color:rgba(46,204,113,.55);background:rgba(46,204,113,.07)}
@@ -1951,6 +1995,40 @@ body.dark-mode .lst-map-img{
   .lst-input,.fi-inline{width:90px;max-width:38vw}
 }
 
+
+/* ── ADMIN PANEL: white theme (only while the admin panel is open and the owner chose it) ── */
+body.adm-light{--bg:#f1f5f9;--text:#0f172a;--muted:#64748b;--sur:#ffffff;--bor:#e2e8f0;background:#f1f5f9}
+body.adm-light .orb,body.adm-light #cv{display:none}
+body.adm-light nav{background:#0f172a}
+body.adm-light .ptitle{color:#0f172a}
+body.adm-light .psub{color:#475569}
+body.adm-light .admin-tab{background:#fff;border-color:#cbd5e1;color:#475569}
+body.adm-light .admin-tab.active{background:#fef3c7;border-color:#f59e0b;color:#92400e}
+body.adm-light .admin-student-card{background:#fff;border-color:#e2e8f0;box-shadow:0 1px 2px rgba(15,23,42,0.04)}
+body.adm-light .admin-approve-btn{background:#dcfce7;color:#166534;border-color:#86efac}
+body.adm-light .admin-reject-btn{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+body.adm-light .pf-in{background:#fff;border-color:#cbd5e1;color:#0f172a}
+body.adm-light .pf-lab{color:#475569}
+body.adm-light #adminPanelPage [style*="color:#fff"]:not([style*="gradient"]):not([style*="background:var(--blue)"]),
+body.adm-light #adDlg [style*="color:#fff"]:not([style*="gradient"]):not([style*="background:var(--blue)"]){color:#0f172a !important}
+body.adm-light #adminPanelPage [style*="color:rgba(255,255,255"],body.adm-light #adDlg [style*="color:rgba(255,255,255"]{color:#334155 !important}
+body.adm-light #adminPanelPage [style*="color:#f87171"],body.adm-light #adDlg [style*="color:#f87171"]{color:#dc2626 !important}
+body.adm-light #adminPanelPage [style*="color:#fca5a5"],body.adm-light #adDlg [style*="color:#fca5a5"]{color:#b91c1c !important}
+body.adm-light #adminPanelPage [style*="color:#fbbf24"],body.adm-light #adminPanelPage [style*="color:rgba(251,191,36"]{color:#b45309 !important}
+body.adm-light #adminPanelPage [style*="color:#c084fc"]{color:#7e22ce !important}
+body.adm-light #adminPanelPage [style*="color:#4ade80"]{color:#15803d !important}
+body.adm-light #adminPanelPage [style*="color:#7dd3fc"]{color:#0369a1 !important}
+body.adm-light #adminPanelPage [style*="background:rgba(255,255,255"]{background:#fff !important}
+body.adm-light #adminPanelPage [style*="height:10px"][style*="background:rgba(255,255,255"]{background:#e2e8f0 !important}
+body.adm-light #adminPanelPage [style*="border:1px solid rgba(255,255,255"],body.adm-light #adDlg [style*="border:1px solid rgba(255,255,255"]{border-color:#cbd5e1 !important}
+body.adm-light #adminPanelPage [style*="border-top:1px solid rgba(255,255,255"],body.adm-light #adminPanelPage [style*="border-bottom:1px solid rgba(255,255,255"]{border-color:#e2e8f0 !important}
+body.adm-light #adminPanelPage [style*="background:rgba(125,211,252"]{background:#e0f2fe !important}
+body.adm-light #adminPanelPage [style*="background:rgba(192,132,252"]{background:#f3e8ff !important}
+.adm-bulk{color:rgba(255,255,255,0.8)}
+body.adm-light .adm-bulk{color:#334155}
+body.adm-light #adDlg>div{background:#fff !important;border-color:#e2e8f0 !important}
+body.adm-light #adDlg [style*="background:transparent"]{border-color:#cbd5e1 !important}
+body.adm-light #adDlg [style*="background:transparent"][style*="color:#fff"]{color:#334155 !important}
 </style>
 </head>
 <body>
@@ -1997,8 +2075,10 @@ body.dark-mode .lst-map-img{
         <a onclick="showPage('studyPlan');closeMenu()" style="padding-left:32px;font-size:13px">📅 Study Plan Maker</a>
       </div>
 
-      <a id="menuActivityLink" onclick="showActivityPage();closeMenu()" style="display:none">📋 My Activity</a>
-      <a id="menuAdminLink" onclick="showPage('adminPanel');closeMenu()" style="display:none;color:rgba(251,191,36,0.9)">⚙️ Admin Panel</a>
+      <a id="menuProgressLink" onclick="showProgressPage();closeMenu()" style="display:none">📈 My Progress</a>
+      <a id="menuActivityLink" onclick="showActivityPage();closeMenu()" style="display:none">🕘 Recent Activity</a>
+      <a id="menuProfileLink" onclick="openProfile();closeMenu()" style="display:none">👤 My Profile</a>
+      <a id="menuAdminLink" onclick="showPage('adminPanel');closeMenu()" style="display:none;color:rgba(251,191,36,0.9)">⚙️ Admin Panel<span id="menuAdminBadge" style="margin-left:6px;font-size:11px;color:#4ade80"></span></a>
       <a id="menuLoginLink" onclick="showAuth();closeMenu()" style="border-top:1px solid rgba(255,255,255,0.08);margin-top:2px">👤 Log In / Sign Up</a>
       <a id="menuUserRow" onclick="toggleDash();closeMenu()" style="display:none;border-top:1px solid rgba(255,255,255,0.08);margin-top:2px">
         <div id="navAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--green));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0"></div>
@@ -2008,6 +2088,7 @@ body.dark-mode .lst-map-img{
     </div>
   </div>
 </nav></div>
+<div id="profileBanner" role="status"><span>📝 Please complete your profile. It takes about a minute.</span><span style="display:flex;gap:8px"><button class="go" onclick="openProfile()">Complete now</button><button onclick="profileLater()">Later</button></span></div>
 
 <!-- HOME -->
 <div id="homePage">
@@ -2020,9 +2101,13 @@ body.dark-mode .lst-map-img{
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Need Help?
       </a>
+      <button id="progressHomeBtn" onclick="showProgressPage()" style="display:inline-flex;align-items:center;gap:8px;background:rgba(57,181,74,0.1);border:1px solid rgba(57,181,74,0.35);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;font-family:'Poppins',sans-serif;transition:background 0.2s,border-color 0.2s" onmouseover="this.style.background='rgba(57,181,74,0.18)';this.style.borderColor='rgba(57,181,74,0.6)'" onmouseout="this.style.background='rgba(57,181,74,0.1)';this.style.borderColor='rgba(57,181,74,0.35)'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        My Progress
+      </button>
       <button id="activityHomeBtn" onclick="showActivityPage()" style="display:inline-flex;align-items:center;gap:8px;background:rgba(57,181,74,0.1);border:1px solid rgba(57,181,74,0.35);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;font-family:'Poppins',sans-serif;transition:background 0.2s,border-color 0.2s" onmouseover="this.style.background='rgba(57,181,74,0.18)';this.style.borderColor='rgba(57,181,74,0.6)'" onmouseout="this.style.background='rgba(57,181,74,0.1)';this.style.borderColor='rgba(57,181,74,0.35)'">
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Show Activity
+        Recent Activity
       </button>
     </div>
   </div>
@@ -2182,7 +2267,7 @@ body.dark-mode .lst-map-img{
     </div>
   </div>
 
-  <footer>© 2025 EngFinite Learning. All rights reserved.</footer>
+  <footer>© 2025 EngFinite Learning. All rights reserved. &nbsp;·&nbsp; <a href="/privacy.html" style="color:inherit;text-decoration:underline">Privacy Policy</a> &nbsp;·&nbsp; <a href="/terms.html" style="color:inherit;text-decoration:underline">Terms of Service</a></footer>
 </div>
 
 <!-- PRACTICE ZONE -->
@@ -2373,6 +2458,7 @@ body.dark-mode .lst-map-img{
     <div class="lst-tools">
       <button class="tbtn" id="settingsBtn2" onclick="toggleSettingsPanel(this)">⚙️ Settings</button>
       <button class="tbtn" id="lstScriptBtn" onclick="lsToggleScript()">📄 Audio Script</button>
+      <button class="tbtn" id="lstSaveBtn" onclick="lsSaveTest()">💾 Save</button>
       <button class="ebtn" onclick="lsSubmit()">Submit Test</button>
       <button class="tbtn" onclick="lsExit()">✕ Exit</button>
     </div>
@@ -2473,7 +2559,7 @@ function updateNavBar(p){
 // makeChain() or registerFlat() instead of this simple set.
 const __DEEP_LINK_PAGES=new Set([
   "home","practicezone","reading","listening",
-  "grammarPassive","activity","typingPractice",
+  "grammarPassive","activity","progress","typingPractice",
   "bandCalculator","studyPlan","writingPractice","speakingPractice","adminPanel"
 ]);
 
@@ -2766,6 +2852,7 @@ function authGateOK(p){
     showAuth();
     return false;
   }
+  if(p==="adminPanel" && !(currentUser.isAdmin||currentUser.isSupervisor)){ showToast("This page is for the owner and supervisors."); return false; }
   if(__STUDENT_PAGES.has(p) && !currentUser.isStudent){ studentOnlyDialog(); return false; }
   return true;
 }
@@ -2871,8 +2958,9 @@ window.addEventListener("popstate",(event)=>{
   }
 });
 function _renderPage(p){
+  if(typeof adminApplyTheme==="function") adminApplyTheme(p);
   if(p!=="typingPractice" && typeof tpCleanup==="function") tpCleanup();
-  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingBankPage","writingRecentPage","writingTask1Page","writingT1BankPage","writingT1TopicPage","writingT1RecentPage","writingT1OwnPage","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
+  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","progressPage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingBankPage","writingRecentPage","writingTask1Page","writingT1BankPage","writingT1TopicPage","writingT1RecentPage","writingT1OwnPage","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.cssText="display:none";
   });
@@ -2942,6 +3030,7 @@ function _renderPage(p){
       "matSpeaking":"matSpeakingPage",
       "matListening":"matListeningPage",
       "activity":"activityPage",
+      "progress":"progressPage",
       "typingPractice":"typingPracticePage",
       "bandCalculator":"bandCalculatorPage",
       "studyPlan":"studyPlanPage",
@@ -2977,10 +3066,10 @@ function _renderPage(p){
       if(p==="writingOwnIdeas") renderWritingOwnIdeas();
       if(p==="writingTopic") renderWritingTopic();
       if(p==="vocab") setTimeout(()=>renderVocab(VOCAB),50);
-      if(p==="activity") setTimeout(()=>loadActivityLog(),50);
+      if(p==="progress"||p==="activity") setTimeout(()=>progressLoad(),50);
       if(p==="typingPractice") setTimeout(()=>tpStartFresh(),50);
       if(p==="studyPlan") setTimeout(()=>spCheckSavedPlan(),50);
-      if(p==="adminPanel") setTimeout(()=>adminLoadStudents('pending'),50);
+      if(p==="adminPanel") setTimeout(()=>{ adminQuery=''; const si=document.getElementById('adminSearch'); if(si) si.value=''; const vt=document.getElementById('adminViewTabs'); if(vt) vt.style.display='flex'; adminSetView('people'); adminBatchesLoad(); adminFilter('pending',document.getElementById('adminTabPending')); adminCheckNew(false); },50);
     }
   }
   if(p!=="exam") clearTimer();
@@ -3091,7 +3180,7 @@ async function wrLoadPlanMap(){
   __wrPlanMap={};
   if(!currentUser) return;
   try{
-    const r=await sb.from("writing_ideas").select("id,question_text,created_at").eq("status","done").order("created_at",{ascending:false}).limit(1000);
+    const r=await sb.from("writing_ideas").select("id,question_text,created_at").eq("erased",false).eq("status","done").order("created_at",{ascending:false}).limit(1000);
     ((r&&r.data)||[]).forEach(x=>{ const k=wrNormQ(x.question_text); if(k&&!__wrPlanMap[k]) __wrPlanMap[k]=x.id; });
   }catch(e){}
 }
@@ -3271,7 +3360,7 @@ function wrOpenEditor(){
   const t=T1?{name:(curT1&&curT1.catName)||"Your own question"}:((curWritingTopic==="custom")?{name:"Your own question"}:topics[curWritingTopic]);
   if(!q||!t) return;
   document.getElementById("wrTitle").textContent=(T1?"Writing Task 1 — ":"Writing Task 2 — ")+t.name;
-  document.getElementById("wrSub").textContent=T1?(curT1.n?"Question "+curT1.n:""):((curWritingTopic==="custom")?"":"Question "+q.n);
+  document.getElementById("wrSub").textContent=T1?(curT1.n?"Question "+(curT1.disp||curT1.n):""):((curWritingTopic==="custom")?"":"Question "+q.n);
   document.getElementById("wrQBox").innerHTML=T1?t1QuestionHtml(curT1):wrQuestionHtml(q);
   document.getElementById("wrQLabel").textContent=T1?"WRITING TASK 1":"WRITING TASK 2";
   document.getElementById("wrInstr1").innerHTML=T1?"You should spend about 20 minutes on this task.<br>Look at the information and the question below:":"You should spend about 40 minutes on this task.<br>Write about the following topic:";
@@ -3282,9 +3371,11 @@ function wrOpenEditor(){
   document.getElementById("wrOverlay").style.display="none";
   const ta=document.getElementById("wrText");
   let draft="";
-  try{ draft=localStorage.getItem(wrDraftKey())||""; }catch(e){}
+  let draftAt=0;
+  try{ draft=localStorage.getItem(wrDraftKey())||""; draftAt=Number(localStorage.getItem(wrDraftKey()+"_at"))||0; }catch(e){}
   ta.value=draft;
   __wrSavedText=draft; __wrLeaving=false;
+  wrCloudLoad(draft,draftAt);
   wrOnInput();
   wrClearTimer();
   __wrStart=Date.now();
@@ -3326,10 +3417,10 @@ async function wrSubmit(){
     const res=await fetch(SUPABASE_URL+"/functions/v1/mark-writing",{
       method:"POST",
       headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_ANON_KEY},
-      body:JSON.stringify(curWTask===1
+      body:JSON.stringify(Object.assign({seconds:el},curWTask===1
         ?Object.assign({task:1,essay:text,question:(q.lines||[]).join("\n"),topic:curT1.topic,q:Number(q.n)||0},
            curT1.check_token?{facts:curT1.facts,check_token:curT1.check_token}:(curT1.facts?{facts:curT1.facts}:(curT1.image?{image:{media_type:curT1.image.media_type,data:curT1.image.data}}:{})))
-        :{essay:text,question:(q.lines||[]).join("\n"),topic:curWritingTopic,q:Number(q.n)})
+        :{essay:text,question:(q.lines||[]).join("\n"),topic:curWritingTopic,q:Number(q.n)}))
     });
     let data={}; try{ data=await res.json(); }catch(e){}
     if(res.status===202&&data.id){ wrPoll(data.id); return; }
@@ -3357,7 +3448,8 @@ function wrPoll(id){
     if(__wrPollStop){ __wrBusy=false; return; }
     if(row&&row.status==="done"&&row.result){
       __wrBusy=false; document.getElementById("wrOverlay").style.display="none";
-      try{ localStorage.removeItem(wrDraftKey()); }catch(e){}
+      try{ localStorage.removeItem(wrDraftKey()); localStorage.removeItem(wrDraftKey()+"_at"); }catch(e){}
+      wrCloudDelete(wrDraftKey());
       __wrSavedText=document.getElementById("wrText").value;
       wrShowReport(row.result); return;
     }
@@ -3422,6 +3514,7 @@ function wrBuildReport(r){
     +'<tr><td>'+wEsc(r.word_count)+'</td><td>'+wEsc(r.total_mistakes)+'</td>'
     +['TR','CC','LR','GRA'].map(k=>'<td>'+wrBandStr((C[k]||{}).band)+'</td>').join('')
     +'<td class="wrp-ov">'+wrBandStr(r.overall)+'</td></tr></table></div>';
+  if(typeof r.time_seconds==="number"){ const tm=Math.floor(r.time_seconds/60), ts=r.time_seconds%60; h+='<div class="wrp-note" style="margin-bottom:8px"><b>Time taken:</b> '+tm+' min '+(ts<10?'0':'')+ts+' s (the exam gives about '+(T1?20:40)+' minutes)</div>'; }
   if(r.word_count<MINW) h+='<div class="wrp-warn">Word count: '+wEsc(r.word_count)+' words. The minimum is '+MINW+' words, so this is too short. In the real exam you have about '+(T1?20:40)+' minutes for Task '+(T1?1:2)+'.</div>';
   h+='<div class="wrp-note">'+wEsc(r.disclaimer||"Bands are estimates, not official results.")+'</div>';
 
@@ -3505,8 +3598,53 @@ function wrCloseModal(){ document.getElementById("wrOverlay").style.display="non
 function wrSave(){
   const ta=document.getElementById("wrText"); const v=ta?ta.value:"";
   if(!v.trim()){ showToast("Nothing to save yet."); return false; }
-  try{ localStorage.setItem(wrDraftKey(),v); __wrSavedText=v; showToast("Saved on this device ✓"); return true; }
-  catch(e){ showToast("Could not save on this device."); return false; }
+  let okLocal=false;
+  try{ localStorage.setItem(wrDraftKey(),v); localStorage.setItem(wrDraftKey()+"_at",String(Date.now())); okLocal=true; }catch(e){}
+  if(okLocal) __wrSavedText=v;
+  wrCloudSave(v,okLocal);
+  return okLocal||!!currentUser;
+}
+function wrDraftMeta(){
+  try{
+    if(curWTask===1){
+      const c=curT1||{}; const custom=/^(own|plan)-/.test(String(c.key||""))||c.topic==="t1:custom";
+      return {task:1,kind:custom?"custom":"bank",key:c.key||"",question:custom?String(c.question||"").slice(0,1500):"",label:custom?"Your own question":((c.catName||"")+(c.n?" · Question "+(c.disp||c.n):""))};
+    }
+    if(curWritingTopic==="custom") return {task:2,kind:"custom",question:String(curOwnQuestion||"").slice(0,1500),label:"Your own question"};
+    return {task:2,kind:"bank",topic:curWritingTopic,q:curWritingQ,label:String(curWritingTopic||"")+" · Question "+curWritingQ};
+  }catch(e){ return null; }
+}
+async function wrCloudSave(v,okLocal){
+  if(!currentUser||!sb){ showToast(okLocal?"Saved on this device ✓":"Could not save on this device."); return; }
+  let err=null;
+  try{
+    const r=await sb.from("writing_drafts").upsert({user_id:currentUser.id,draft_key:wrDraftKey().slice(0,200),content:v.slice(0,20000),meta:wrDraftMeta(),updated_at:new Date().toISOString()},{onConflict:"user_id,draft_key"});
+    err=r.error;
+  }catch(e){ err=e; }
+  if(err){ showToast(okLocal?"Saved on this device ✓ (could not save to your account)":"Could not save. Please try again."); return; }
+  __wrSavedText=v;
+  showToast("Saved to your account ✓");
+  try{ sb.from("writing_drafts").delete().eq("user_id",currentUser.id).lt("updated_at",new Date(Date.now()-30*86400000).toISOString()).then(()=>{},()=>{}); }catch(e){}
+}
+async function wrCloudLoad(startText,startAt){
+  if(!currentUser||!sb) return;
+  const key=wrDraftKey();
+  let row=null;
+  try{ const r=await sb.from("writing_drafts").select("content,updated_at").eq("user_id",currentUser.id).eq("draft_key",key.slice(0,200)).maybeSingle(); row=r&&r.data; }catch(e){}
+  if(!row||!row.content) return;
+  if(wrDraftKey()!==key) return;
+  const ta=document.getElementById("wrText"); if(!ta) return;
+  if(ta.value!==startText) return;
+  if(row.content===startText) return;
+  const dbAt=new Date(row.updated_at).getTime();
+  if(startText&&dbAt<=startAt) return;
+  ta.value=row.content; __wrSavedText=row.content; wrOnInput();
+  try{ localStorage.setItem(key,row.content); localStorage.setItem(key+"_at",String(dbAt)); }catch(e){}
+  showToast("Loaded your saved draft ✓");
+}
+function wrCloudDelete(key){
+  if(!currentUser||!sb) return;
+  try{ sb.from("writing_drafts").delete().eq("user_id",currentUser.id).eq("draft_key",key.slice(0,200)).then(()=>{},()=>{}); }catch(e){}
 }
 function wrHasUnsaved(){
   const ta=document.getElementById("wrText"); const v=ta?ta.value:"";
@@ -3631,14 +3769,42 @@ function t1ChartHtml(c){
   if(c.type==="svg") return '<div class="t1-chart" role="img" aria-label="'+E(c.alt||c.title||"diagram")+'">'+c.svg+'</div>';
   if(c.type==="multi") return (c.charts||[]).map(t1ChartHtml).join("");
   if(c.type==="pie") return t1PiesHtml(c);
-  if(c.type==="line"||c.type==="bar") return '<div class="t1-chart">'+t1XySvg(c)+'</div>';
+  if(c.type==="line"||c.type==="bar") return '<div class="t1-chart">'+(c.type==="bar"&&c.horizontal?t1BarHSvg(c):t1XySvg(c))+'</div>';
   return "";
+}
+function t1Sc(c,mx){ if(c.step>0){ if(c.max>mx) mx=c.max; const n=Math.max(1,Math.ceil(mx/c.step-1e-9)); return {top:n*c.step,step:c.step,n:n}; } return t1Scale(mx); }
+function t1Txt(label,x,y,anchor,size,fill){
+  const E=wEsc, ls=String(label==null?"":label).split("\n");
+  return '<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'" font-size="'+size+'" fill="'+fill+'">'+ls.map((l,i)=>'<tspan x="'+x+'" dy="'+(i?size+3:0)+'">'+E(l)+'</tspan>').join("")+'</text>';
+}
+function t1Legend(ss,c,lx,ly){
+  const E=wEsc; let g="";
+  ss.forEach((s,si)=>{ const col=T1_COLORS[si%T1_COLORS.length]; g+='<rect x="'+lx+'" y="'+(ly-9)+'" width="12" height="12" fill="'+col+'"/><text x="'+(lx+17)+'" y="'+(ly+1)+'" font-size="11.5" fill="#333">'+E(s.name||"")+'</text>'; lx+=34+String(s.name||"").length*6.6; });
+  if(c.target&&typeof c.target.value==="number"){ g+='<line x1="'+lx+'" y1="'+(ly-3)+'" x2="'+(lx+14)+'" y2="'+(ly-3)+'" stroke="#1fa347" stroke-width="3"/><text x="'+(lx+19)+'" y="'+(ly+1)+'" font-size="11.5" fill="#333">'+E(c.target.label||"Target")+'</text>'; }
+  return g;
+}
+function t1BarHSvg(c){
+  const E=wEsc, xs=c.categories||[], n=xs.length, ss=c.series||[], ns=Math.max(1,ss.length);
+  const W=640, L=150, R=40, T=44, B=84, rowH=Math.max(34,Math.min(52,380/Math.max(1,n))), ph=rowH*n, pw=W-L-R, H=T+ph+B;
+  let mx=0; ss.forEach(s=>(s.values||[]).forEach(v=>{ if(typeof v==="number"&&v>mx) mx=v; }));
+  const sc=t1Sc(c,mx), top=sc.top, ticks=sc.n;
+  let g='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif">';
+  g+='<text x="'+(W/2)+'" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#222">'+E(c.title||"")+'</text>';
+  for(let i=0;i<=ticks;i++){ const v=top*i/ticks, x=L+pw*i/ticks; g+='<line x1="'+x+'" y1="'+T+'" x2="'+x+'" y2="'+(T+ph)+'" stroke="#d9dee4"/><text x="'+x+'" y="'+(T+ph+16)+'" text-anchor="middle" font-size="11" fill="#444">'+t1Num(v)+'</text>'; }
+  g+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'" stroke="#444"/><line x1="'+L+'" y1="'+(T+ph)+'" x2="'+(W-R)+'" y2="'+(T+ph)+'" stroke="#444"/>';
+  if(c.xLabel||c.unit) g+='<text x="'+(L+pw/2)+'" y="'+(T+ph+36)+'" text-anchor="middle" font-size="12" fill="#333">'+E(c.xLabel||c.unit)+'</text>';
+  const bw=rowH*0.78/ns;
+  xs.forEach((x,i)=>{ g+=t1Txt(x,L-8,T+rowH*i+rowH/2+4,"end",11,"#444"); });
+  ss.forEach((s,si)=>{ const col=T1_COLORS[si%T1_COLORS.length];
+    (s.values||[]).forEach((v,i)=>{ if(typeof v!=="number") return; const y=T+rowH*i+rowH*0.11+bw*si, w=pw*v/top; g+='<rect x="'+L+'" y="'+y+'" width="'+w+'" height="'+bw+'" fill="'+col+'"/>'; if(c.labels) g+='<text x="'+(L+w+5)+'" y="'+(y+bw/2+4)+'" font-size="12.5" font-weight="700" fill="#222" stroke="#fff" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round">'+t1Num(v)+'</text>'; });
+  });
+  return g+t1Legend(ss,c,L,H-20)+'</svg>';
 }
 function t1XySvg(c){
   const E=wEsc, W=640, H=400, L=64, R=34, T=46, B=88, pw=W-L-R, ph=H-T-B;
   const xs=(c.type==="line"?c.x:c.categories)||[], n=xs.length;
   let mx=0; (c.series||[]).forEach(s=>(s.values||[]).forEach(v=>{ if(typeof v==="number"&&v>mx) mx=v; }));
-  const sc=t1Scale(mx), top=sc.top, ticks=sc.n;
+  const sc=t1Sc(c,mx), top=sc.top, ticks=sc.n;
   let g='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" font-family="Arial,sans-serif">';
   g+='<text x="'+(W/2)+'" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#222">'+E(c.title||"")+'</text>';
   for(let i=0;i<=ticks;i++){
@@ -3648,7 +3814,7 @@ function t1XySvg(c){
   g+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'" stroke="#444"/><line x1="'+L+'" y1="'+(T+ph)+'" x2="'+(W-R)+'" y2="'+(T+ph)+'" stroke="#444"/>';
   if(c.yLabel||c.unit) g+='<text transform="rotate(-90)" x="'+(-(T+ph/2))+'" y="16" text-anchor="middle" font-size="12" fill="#333">'+E(c.yLabel||c.unit)+'</text>';
   const xp=(i)=>c.type==="line"?(n>1?L+pw*i/(n-1):L+pw/2):L+pw*(i+0.5)/n;
-  xs.forEach((x,i)=>{ g+='<text x="'+xp(i)+'" y="'+(T+ph+16)+'" text-anchor="middle" font-size="11" fill="#444">'+E(x)+'</text>'; });
+  xs.forEach((x,i)=>{ g+=t1Txt(x,xp(i),T+ph+16,"middle",11,"#444"); });
   if(c.xLabel) g+='<text x="'+(L+pw/2)+'" y="'+(T+ph+34)+'" text-anchor="middle" font-size="12" fill="#333">'+E(c.xLabel)+'</text>';
   const ss=c.series||[];
   if(c.type==="line"){
@@ -3658,14 +3824,15 @@ function t1XySvg(c){
       g+='<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.2"/>'+pts;
     });
   } else {
-    const gw=pw/Math.max(1,n), bw=gw*0.78/Math.max(1,ss.length);
+    const gw=pw/Math.max(1,n), bw=gw*0.78/Math.max(1,ss.length); let lab="";
+    if(c.target&&typeof c.target.value==="number"){ const ty=T+ph-ph*c.target.value/top; g+='<line x1="'+L+'" y1="'+ty+'" x2="'+(W-R)+'" y2="'+ty+'" stroke="#1fa347" stroke-width="2.5"/>'; }
     ss.forEach((s,si)=>{
       const col=T1_COLORS[si%T1_COLORS.length];
-      (s.values||[]).forEach((v,i)=>{ if(typeof v!=="number") return; const x=L+gw*i+gw*0.11+bw*si, h=ph*v/top; g+='<rect x="'+x+'" y="'+(T+ph-h)+'" width="'+bw+'" height="'+h+'" fill="'+col+'"/>'; });
+      (s.values||[]).forEach((v,i)=>{ if(typeof v!=="number") return; const x=L+gw*i+gw*0.11+bw*si, h=ph*v/top; g+='<rect x="'+x+'" y="'+(T+ph-h)+'" width="'+bw+'" height="'+h+'" fill="'+col+'"/>'; if(c.labels) lab+='<text x="'+(x+bw/2)+'" y="'+(T+ph-h-5)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="#222" stroke="#fff" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round">'+t1Num(v)+'</text>'; });
     });
+    g+=lab;
   }
-  let lx=L; const ly=H-18;
-  ss.forEach((s,si)=>{ const col=T1_COLORS[si%T1_COLORS.length]; g+='<rect x="'+lx+'" y="'+(ly-9)+'" width="12" height="12" fill="'+col+'"/><text x="'+(lx+17)+'" y="'+(ly+1)+'" font-size="11.5" fill="#333">'+E(s.name||"")+'</text>'; lx+=34+String(s.name||"").length*6.6; });
+  g+=t1Legend(ss,c,L,H-18);
   return g+'</svg>';
 }
 function t1PiesHtml(c){
@@ -3703,9 +3870,10 @@ function t1FactsFromChart(c,extra){
   if(c.title) L.push("Title: "+c.title);
   if(c.unit) L.push("Unit: "+c.unit);
   if(c.type==="line"||c.type==="bar"){
-    const xs=(c.type==="line"?c.x:c.categories)||[];
+    const xs=((c.type==="line"?c.x:c.categories)||[]).map(x=>String(x).replace(/\n/g," "));
     L.push((c.type==="line"?"X axis"+(c.xLabel?" ("+c.xLabel+")":""):"Categories")+": "+xs.join(", "));
     if(c.yLabel) L.push("Y axis: "+c.yLabel);
+    if(c.target&&typeof c.target.value==="number") L.push((c.target.label||"Target")+" line at "+c.target.value);
     (c.series||[]).forEach(s=>{ L.push('"'+s.name+'": '+(s.values||[]).map((v,i)=>xs[i]+"="+(v==null?"no data":v)).join(", ")); });
   } else if(c.type==="pie"){
     (c.pies||[]).forEach(p=>{ L.push('Pie "'+p.label+'": '+(p.slices||[]).map(s=>s.name+" "+s.value+(c.unit&&c.unit!=="%"?" "+c.unit:"%")).join(", ")); });
@@ -3725,7 +3893,7 @@ function t1QuestionHtml(q){
 function t1Item(q,key,topic,n,when){
   const lines=Array.isArray(q.lines)?q.lines.slice():String(q.text||"").split(/\n+/).map(x=>x.trim()).filter(Boolean);
   const facts=t1FactsFromChart(q.chart,q.facts_extra||q.facts);
-  return {key:key,topic:topic,n:n,title:q.title||"",lines:lines,question:lines.join("\n"),chart:q.chart||null,facts:facts,when:when||""};
+  return {key:key,topic:topic,n:n,disp:(n>100?n-100:n),title:q.title||"",lines:lines,question:lines.join("\n"),chart:q.chart||null,facts:facts,when:when||""};
 }
 
 // ---- Home, categories, recent ----
@@ -3776,7 +3944,7 @@ function renderT1Topic(){
   if(!qs.length){ list.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px 0">Questions are being added. Check back soon!</div>'; return; }
   qs.forEach((q,i)=>{
     const it=t1Item(q,curT1Cat+"-"+(q.n||i+1),"t1:"+curT1Cat,q.n||i+1); it.catName=c.name;
-    const d=t1MakeCard(it,"Question "+it.n,"t1"); t1WireCard(d,it,list); list.appendChild(d);
+    const d=t1MakeCard(it,"Question "+(it.disp||it.n),"t1"); t1WireCard(d,it,list); list.appendChild(d);
   });
   t1LoadAttempts();
 }
@@ -3789,7 +3957,7 @@ function renderT1Recent(){
   all.forEach(it=>{
     if(it.when!==last){ last=it.when; if(it.when){ const h=document.createElement("div"); h.style.cssText="font-weight:700;margin:22px 0 10px;color:var(--text)"; h.textContent=it.when; list.appendChild(h); } }
     it.catName="Recent questions";
-    const d=t1MakeCard(it,"Question "+it.n,"t1r"); t1WireCard(d,it,list); list.appendChild(d);
+    const d=t1MakeCard(it,"Question "+(it.disp||it.n),"t1r"); t1WireCard(d,it,list); list.appendChild(d);
   });
 }
 let __t1AttTimer=null;
@@ -3798,7 +3966,7 @@ async function t1LoadAttempts(){
   if(!currentUser||!curT1Cat) return;
   let rows=null;
   try{
-    const r=await sb.from("writing_submissions").select("id,question_no,status,created_at,overall:result->overall")
+    const r=await sb.from("writing_submissions").select("id,question_no,status,created_at,overall:result->overall").eq("erased",false)
       .eq("topic","t1:"+curT1Cat).in("status",["done","pending"]).order("created_at",{ascending:false}).limit(80);
     rows=r&&r.data;
   }catch(e){ rows=null; }
@@ -3979,8 +4147,8 @@ async function t1LoadOwnLists(){
   const pbox=document.getElementById("t1IdeasList"), abox=document.getElementById("t1List");
   if(!currentUser){ if(pbox) pbox.innerHTML=""; if(abox) abox.innerHTML=""; return; }
   let ar=null, pr=null;
-  try{ const r=await sb.from("writing_submissions").select("id,question_text,status,created_at,overall:result->overall").eq("topic","t1:custom").in("status",["done","pending"]).order("created_at",{ascending:false}).limit(10); ar=r&&r.data; }catch(e){}
-  try{ const r=await sb.from("writing_ideas").select("id,question_text,status,created_at").eq("content->>task","1").eq("status","done").order("created_at",{ascending:false}).limit(10); pr=r&&r.data; }catch(e){}
+  try{ const r=await sb.from("writing_submissions").select("id,question_text,status,created_at,overall:result->overall").eq("erased",false).eq("topic","t1:custom").in("status",["done","pending"]).order("created_at",{ascending:false}).limit(10); ar=r&&r.data; }catch(e){}
+  try{ const r=await sb.from("writing_ideas").select("id,question_text,status,created_at").eq("erased",false).eq("content->>task","1").eq("status","done").order("created_at",{ascending:false}).limit(10); pr=r&&r.data; }catch(e){}
   if(__navStack[__navStack.length-1]!=="writingT1Own") return;
   const snip=(t)=>{ t=String(t||""); return t.length>110?t.slice(0,110)+"…":t; };
   const when=(d)=>new Date(d).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
@@ -4172,7 +4340,7 @@ async function wrLoadOwnAttempts(){
   if(!currentUser){ box.innerHTML=""; return; }
   let rows=null;
   try{
-    const r=await sb.from("writing_submissions").select("id,question_text,status,created_at,overall:result->overall")
+    const r=await sb.from("writing_submissions").select("id,question_text,status,created_at,overall:result->overall").eq("erased",false)
       .eq("topic","custom").in("status",["done","pending"]).order("created_at",{ascending:false}).limit(10);
     rows=r&&r.data;
   }catch(e){ rows=null; }
@@ -4201,9 +4369,9 @@ async function wrLoadOwnIdeasList(){
   if(!currentUser){ box.innerHTML=""; return; }
   let rows=null;
   try{
-    let r=await sb.from("writing_ideas").select("id,question_text,status,created_at")
+    let r=await sb.from("writing_ideas").select("id,question_text,status,created_at").eq("erased",false)
       .in("status",["done","pending"]).or("content->>task.is.null,content->>task.neq.1").order("created_at",{ascending:false}).limit(10);
-    if(r&&r.error) r=await sb.from("writing_ideas").select("id,question_text,status,created_at")
+    if(r&&r.error) r=await sb.from("writing_ideas").select("id,question_text,status,created_at").eq("erased",false)
       .in("status",["done","pending"]).order("created_at",{ascending:false}).limit(10);
     rows=r&&r.data;
   }catch(e){ rows=null; }
@@ -4227,7 +4395,7 @@ async function wrLoadAttempts(){
   if(!currentUser||!curWritingTopic) return;
   let rows=null;
   try{
-    const r=await sb.from("writing_submissions").select("id,question_no,status,created_at,overall:result->overall")
+    const r=await sb.from("writing_submissions").select("id,question_no,status,created_at,overall:result->overall").eq("erased",false)
       .eq("topic",curWritingTopic).in("status",["done","pending"]).order("created_at",{ascending:false}).limit(80);
     rows=r&&r.data;
   }catch(e){ rows=null; }
@@ -4291,6 +4459,7 @@ function buildBooks(){
       <div class="bkico">${hasData?"📘":"📗"}</div>
       <div class="bkname">Cambridge IELTS ${i}</div>
       <div class="bksub">${hasData?"4 Tests · Available":"Available Soon"}</div>
+      ${hasData?attBookMark("reading",key):""}
       ${hasData?'<div class="avbadge">LIVE</div>':'<div class="soonbadge">Soon</div>'}
     `;
     if(hasData) d.onclick=()=>selectBook(key,i);
@@ -4309,7 +4478,7 @@ function selectBook(key,num){
     const locked=!t; // lock tests that have no data yet
     const d=document.createElement("div");
     d.className="tcard"+(locked?" locked":"");
-    d.innerHTML=`<div class="tnum">${n}</div><div class="tlabel">Test ${n}</div><div class="tinfo">${locked?"Coming soon":"3 Passages · 40 Questions"}</div>`;
+    d.innerHTML=`<div class="tnum">${n}</div><div class="tlabel">Test ${n}</div><div class="tinfo">${locked?"Coming soon":"3 Passages · 40 Questions"}</div>${locked?"":attTestMark("reading",key,n)}`;
     if(!locked) d.onclick=()=>selectTest(n);
     g.appendChild(d);
   });
@@ -4321,6 +4490,395 @@ function selectTest(n){
   const t=DATA[curBook].tests[n];
   document.getElementById("modeTitle").textContent=t.title;
   showPage("mode");
+}
+
+// ── TEST ATTEMPTS (Reading + Listening results saved on the account) ──
+const ATT_READ=[[39,9],[37,8.5],[35,8],[33,7.5],[30,7],[27,6.5],[23,6],[19,5.5],[15,5],[13,4.5],[10,4]];
+const ATT_LIST=[[39,9],[37,8.5],[35,8],[32,7.5],[30,7],[26,6.5],[23,6],[18,5.5],[16,5],[13,4.5],[10,4]];
+let __attList=[];
+function attBand(skill,c,total){
+  if(total<40) return null;
+  const t=skill==="listening"?ATT_LIST:ATT_READ;
+  for(const r of t){ if(c>=r[0]) return r[1]; }
+  return null;
+}
+function attBandStr(b){ b=Number(b); return (b%1===0)?b.toFixed(1):String(b); }
+async function attLoad(uid){
+  __attList=[];
+  try{
+    let from=0, all=[];
+    for(let i=0;i<10;i++){
+      const r=await sb.from("test_attempts").select("skill,book,test,mode,correct,total,band,seconds,created_at").eq("user_id",uid).order("created_at",{ascending:true}).range(from,from+999);
+      if(r.error||!r.data) break;
+      all=all.concat(r.data);
+      if(r.data.length<1000) break;
+      from+=1000;
+    }
+    __attList=all;
+  }catch(e){}
+  try{ const pg=document.getElementById("cambridgebooksPage"); if(pg&&pg.style.display==="block") buildBooks(); }catch(e){}
+  try{ const pg=document.getElementById("listeningBooksPage"); if(pg&&pg.style.display==="block") buildListeningBooks(); }catch(e){}
+  try{ pgReqLoad(); }catch(e){}
+}
+async function attSave(skill,book,test,mode,correct,total,seconds,retry){
+  if(!currentUser||!sb) return;
+  const row={user_id:currentUser.id,skill:skill,book:book,test:Number(test),mode:mode||null,correct:correct,total:total,band:attBand(skill,correct,total),seconds:Math.max(0,Math.round(seconds||0))};
+  let err=null;
+  try{ const r=await sb.from("test_attempts").insert(row); err=r.error; }catch(e){ err=e; }
+  if(err){
+    if(!retry) setTimeout(()=>attSave(skill,book,test,mode,correct,total,seconds,true),3000);
+    return;
+  }
+  __attList.push(Object.assign({created_at:new Date().toISOString()},row));
+}
+function attFor(skill,book,n){ return __attList.filter(a=>a.skill===skill&&a.book===book&&a.test===n); }
+function attIsDone(skill,book,n){
+  if(attFor(skill,book,n).length) return true;
+  try{ return skill==="reading"&&!!(currentUser&&currentUser.stats&&(currentUser.stats.completed||[]).includes(book+"_t"+n)); }catch(e){ return false; }
+}
+function attTestMark(skill,book,n){
+  const a=attFor(skill,book,n);
+  if(!attIsDone(skill,book,n)) return "";
+  if(!a.length) return '<div class="att-mark">✓ Completed</div>';
+  let best=null; a.forEach(x=>{ if(x.band!=null&&(best===null||Number(x.band)>best)) best=Number(x.band); });
+  const last=a.slice(-5).map(x=>x.correct+(x.total!==40?"/"+x.total:""));
+  return '<div class="att-mark">✓ Completed'+(best!==null?' · Best Band '+attBandStr(best):'')+'</div>'
+    +'<div class="att-sub">Done '+a.length+(a.length===1?' time':' times')+' · Score'+(a.length===1?'':'s')+': '+(a.length>5?'… ':'')+last.join(', ')+'</div>';
+}
+function attBookMark(skill,book){
+  let n=0; [1,2,3,4].forEach(t=>{ if(attIsDone(skill,book,t)) n++; });
+  if(!n) return "";
+  return '<div class="att-book">'+(n===4?'✓ All 4 tests completed':n+' of 4 tests completed')+'</div>';
+}
+
+// ── PROGRESS PAGE ──
+let __pgScope="life", __pgOpen=null, __pgW=[];
+function showProgressPage(){
+  if(!currentUser){ showToast("Please log in to see your progress."); showAuth(); return; }
+  showPage("progress");
+}
+function showActivityPage(){
+  if(!currentUser){ showToast("Please log in to see your activity."); showAuth(); return; }
+  showPage("activity");
+}
+let __pgActClear=0;
+function pgActClearedAt(){ return __pgActClear||0; }
+async function pgActClear(){
+  if(!currentUser) return;
+  if(!confirm("Clear your recent activity list? Your progress, bands and saved work will stay as they are.")) return;
+  const now=Date.now(); __pgActClear=now;
+  if(__pgInProg.length && confirm("Also delete your unfinished saved work (saved tests and essay drafts)? OK = delete them too. Cancel = keep them so you can continue later.")){
+    let bad=null;
+    try{
+      const r1=await sb.from("saved_tests").delete().eq("user_id",currentUser.id).eq("status","in_progress").in("activity_type",["reading","listening"]).select("id");
+      const r2=await sb.from("writing_drafts").delete().eq("user_id",currentUser.id).select("user_id");
+      const left=await sb.from("saved_tests").select("id").eq("user_id",currentUser.id).eq("status","in_progress").in("activity_type",["reading","listening"]).limit(1);
+      if(!(r1&&r1.error)&&left&&left.data&&left.data.length){ throw new Error("the database did not allow deleting (run file 22_saved_tests_delete.sql)"); }
+      bad=(r1&&r1.error)||(r2&&r2.error)||null;
+      Object.keys(localStorage).filter(k=>k.indexOf("wrsaved_")===0).forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+    }catch(e){ bad=e; }
+    if(bad){ showToast("⚠️ Could not delete the unfinished work: "+String(bad.message||bad).slice(0,120)); await pgLoadInProgress(); pgRecentRender(); return; }
+    __pgInProg=[];
+  }
+  pgRecentRender();
+  sb.from("user_prefs").upsert({user_id:currentUser.id,activity_cleared_at:new Date(now).toISOString()},{onConflict:"user_id"}).then(r=>{
+    if(r&&r.error) showToast("⚠️ Cleared here, but could not save it to your account."); else showToast("Recent activity cleared.");
+  },()=>{ showToast("⚠️ Cleared here, but could not save it to your account."); });
+}
+function progressScope(v){
+  __pgScope=v;
+  const a=document.getElementById("pgScopeLife"), b=document.getElementById("pgScope7");
+  if(a) a.classList.toggle("on",v==="life"); if(b) b.classList.toggle("on",v==="last7");
+  progressRender();
+}
+function progressOpen(k){ __pgOpen=(__pgOpen===k)?null:k; progressRender(); }
+async function progressLoad(){
+  if(!currentUser){ return; }
+  const body=document.getElementById("pgBody"); if(body&&!__attList.length&&!__pgW.length) body.innerHTML='<div class="pg-empty">Loading…</div>';
+  await attLoad(currentUser.id);
+  let rows=[];
+  try{
+    const r=await sb.from("writing_submissions").select("id,created_at,seconds,overall:result->overall,task:result->task").eq("erased",false).eq("user_id",currentUser.id).eq("status","done").order("created_at",{ascending:false}).limit(1000);
+    rows=(r&&r.data)||[];
+  }catch(e){}
+  __pgW=rows.slice().reverse();
+  await pgLoadInProgress();
+  try{ const r=await sb.from("user_prefs").select("activity_cleared_at").eq("user_id",currentUser.id).maybeSingle(); __pgActClear=(r&&r.data&&r.data.activity_cleared_at)?new Date(r.data.activity_cleared_at).getTime():0; }catch(e){ __pgActClear=0; }
+  progressRender();
+}
+function pgEff(a){ if(a.band!=null) return Number(a.band); return (a.total>=40)?3.5:null; }
+function pgAvg(vals){ vals=vals.filter(v=>v!=null&&!isNaN(v)); if(!vals.length) return null; return Math.round(vals.reduce((x,y)=>x+y,0)/vals.length*2)/2; }
+function pgMean(vals){ vals=vals.filter(v=>v!=null&&!isNaN(v)); if(!vals.length) return null; return vals.reduce((x,y)=>x+y,0)/vals.length; }
+function pgWriteOverall(w1,w2){
+  const m1=pgMean(pgScoped(w1).map(x=>x.overall==null?null:Number(x.overall)));
+  const m2=pgMean(pgScoped(w2).map(x=>x.overall==null?null:Number(x.overall)));
+  if(m1==null&&m2==null) return {band:null,note:""};
+  if(m1!=null&&m2!=null) return {band:Math.round(((m1+2*m2)/3)*2)/2,note:"Task 2 counts double, as in the real exam"};
+  if(m2!=null) return {band:Math.round(m2*2)/2,note:"Task 2 only so far. Write a Task 1 to complete your Writing band"};
+  return {band:Math.round(m1*2)/2,note:"Task 1 only so far. Write a Task 2 to complete your Writing band"};
+}
+function pgBand(v){ return v==null?"—":attBandStr(v); }
+function pgScoped(list){ return __pgScope==="last7"?list.slice(-7):list; }
+function pgDur(sec){ if(sec==null||isNaN(sec)) return "—"; sec=Math.round(sec); const m=Math.floor(sec/60), s=sec%60; return m+" min "+(s<10?"0":"")+s+" s"; }
+function pgDate(iso){ try{ return new Date(iso).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}); }catch(e){ return ""; } }
+function pgTestName(a){ const n=parseInt(String(a.book).replace("cam",""),10); return "Cambridge "+n+" · Test "+a.test; }
+function pgAvgTime(list){ const v=list.map(x=>x.seconds).filter(x=>typeof x==="number"); if(!v.length) return null; return v.reduce((x,y)=>x+y,0)/v.length; }
+function pgTestBlock(title,note,list,withTime){
+  const sc=pgScoped(list);
+  let h='<div class="pg-box"><h3>'+title+'</h3>'+(note?'<div class="pg-empty" style="padding:0 0 6px">'+note+'</div>':'');
+  if(!list.length){ return h+'<div class="pg-empty">No tests yet. Your average will show here after your first test.</div></div>'; }
+  const avg=pgAvg(sc.map(pgEff));
+  const avgCorrect=sc.reduce((x,y)=>x+y.correct,0)/sc.length;
+  const at=pgAvgTime(sc);
+  h+='<div class="pg-sum"><span>Average band<br><b>'+pgBand(avg)+'</b></span><span>Tests completed<br><b>'+list.length+'</b></span><span>Average score<br><b>'+(Math.round(avgCorrect*10)/10)+'</b> /40</span>'+(withTime?'<span>Average time<br><b style="font-size:15px">'+pgDur(at)+'</b></span>':'')+'</div>';
+  if(__pgScope==="last7") h+='<div class="pg-empty" style="padding:0 0 6px">Average of your last '+sc.length+' test'+(sc.length===1?'':'s')+'.</div>';
+  h+='<table class="pg-tbl"><tr><th>Date</th><th>Test</th><th>Score</th><th>Band</th>'+(withTime?'<th>Time</th>':'')+'</tr>';
+  list.slice(-5).reverse().forEach(a=>{
+    h+='<tr><td>'+pgDate(a.created_at)+'</td><td>'+pgTestName(a)+'</td><td>'+a.correct+(a.total!==40?'/'+a.total:'')+'</td><td>'+(a.band!=null?attBandStr(a.band):(a.total>=40?'Below 4.0':'—'))+'</td>'+(withTime?'<td>'+pgDur(a.seconds)+'</td>':'')+'</tr>';
+  });
+  return h+'</table></div>';
+}
+function pgWriteBlock(title,list){
+  const sc=pgScoped(list);
+  let h='<div class="pg-box"><h3>'+title+'</h3>';
+  if(!list.length) return h+'<div class="pg-empty">No marked essays yet. Your average will show here after your first marked essay.</div></div>';
+  const avg=pgAvg(sc.map(x=>x.overall==null?null:Number(x.overall)));
+  const at=pgAvgTime(sc);
+  h+='<div class="pg-sum"><span>Average band<br><b>'+pgBand(avg)+'</b></span><span>Essays marked<br><b>'+list.length+'</b></span><span>Average time<br><b style="font-size:15px">'+pgDur(at)+'</b></span></div>';
+  if(__pgScope==="last7") h+='<div class="pg-empty" style="padding:0 0 6px">Average of your last '+sc.length+' essay'+(sc.length===1?'':'s')+'.</div>';
+  h+='<table class="pg-tbl"><tr><th>Date</th><th>Band</th><th>Time taken</th></tr>';
+  list.slice(-5).reverse().forEach(x=>{ h+='<tr><td>'+pgDate(x.created_at)+'</td><td>'+(x.overall==null?'—':attBandStr(x.overall))+'</td><td>'+pgDur(x.seconds)+'</td></tr>'; });
+  return h+'</table></div>';
+}
+function pgHtmlCore(attList,wList,open,openFn){
+  const rd=attList.filter(a=>a.skill==="reading"), ls=attList.filter(a=>a.skill==="listening");
+  const w1=wList.filter(x=>Number(x.task)===1), w2=wList.filter(x=>Number(x.task)!==1);
+  const card=(k,t,list,vals)=>{
+    const sc=pgScoped(list); const avg=pgAvg(vals(sc));
+    return '<div class="pg-card'+(open===k?' on':'')+'" onclick="'+openFn+'(\''+k+'\')"><div class="pg-t">'+t+'</div><div class="pg-b">'+pgBand(avg)+'</div><div class="pg-n">'+list.length+' test'+(list.length===1?'':'s')+'</div></div>';
+  };
+  const wo=pgWriteOverall(w1,w2), wn=w1.length+w2.length;
+  let h='<div class="pg-cards">'
+    +card("reading","📖 Reading",rd,l=>l.map(pgEff))
+    +card("listening","🎧 Listening",ls,l=>l.map(pgEff))
+    +'<div class="pg-card'+(open==="writing"?' on':'')+'" onclick="'+openFn+'(\'writing\')"><div class="pg-t">✍️ Writing</div><div class="pg-b">'+pgBand(wo.band)+'</div><div class="pg-n">'+wn+' essay'+(wn===1?'':'s')+'</div></div>'
+    +'</div>';
+  if(!open) h+='<div class="pg-empty">Tap a skill above to see the latest tests.</div>';
+  if(open==="reading") h+=pgTestBlock("⏱ With time limit (Exam mode)","60 minutes countdown",rd.filter(a=>a.mode==="exam"),true)+pgTestBlock("📝 Without time limit (Free practice)","",rd.filter(a=>a.mode!=="exam"),true);
+  if(open==="listening") h+=pgTestBlock("🎧 Listening","",ls,true);
+  if(open==="writing") h+='<div class="pg-box"><h3>✍️ Overall Writing band</h3><div class="pg-sum"><span>Overall band<br><b>'+pgBand(wo.band)+'</b></span></div>'+(wo.note?'<div class="pg-empty" style="padding:0">'+wo.note+'.</div>':'<div class="pg-empty" style="padding:0">No marked essays yet.</div>')+'</div>'+pgWriteBlock("Writing Task 1 (about 20 minutes)",w1)+pgWriteBlock("Writing Task 2 (about 40 minutes)",w2);
+  h+='<div class="pg-empty" style="margin-top:6px">Writing bands are AI estimates. Averages are rounded to the nearest half band. Tests with fewer than 40 questions are not counted in the average.</div>';
+  return h;
+}
+function progressRender(){
+  const body=document.getElementById("pgBody"); if(!body) return;
+  body.innerHTML=pgHtmlCore(__attList,__pgW,__pgOpen,"progressOpen");
+  pgRecentRender();
+}
+let __pgRecentN=10;
+function pgRecentMore(){ __pgRecentN+=10; pgRecentRender(); }
+function pgRecentRender(){
+  const box=document.getElementById("pgRecent"); if(!box) return;
+  const items=[];
+  __attList.forEach(a=>{
+    const n=parseInt(String(a.book).replace("cam",""),10);
+    const rd=a.skill==="reading";
+    items.push({t:new Date(a.created_at).getTime(),ico:rd?"📖":"🎧",title:(rd?"Reading":"Listening")+" · Cambridge "+n+" · Test "+a.test+(rd?(a.mode==="exam"?" · Exam mode":" · Free practice"):""),
+      sub:"Score "+a.correct+"/"+a.total+" · Band "+(a.band!=null?attBandStr(a.band):(a.total>=40?"below 4.0":"—"))+" · "+pgDur(a.seconds),at:a.created_at});
+  });
+  __pgW.forEach(x=>{
+    items.push({t:new Date(x.created_at).getTime(),ico:"✍️",title:"Writing Task "+(Number(x.task)===1?"1":"2"),sub:"Band "+(x.overall==null?"—":attBandStr(x.overall))+" · "+pgDur(x.seconds),at:x.created_at});
+  });
+  { const ca=pgActClearedAt(); if(ca){ for(let k=items.length-1;k>=0;k--) if(items[k].t<=ca) items.splice(k,1); } }
+  items.sort((a,b)=>b.t-a.t);
+  const dbox=document.getElementById("pgActDel"); if(dbox) dbox.innerHTML=(items.length||__pgInProg.length)?'<button class="pg-delbtn" onclick="pgActClear()">🗑 Delete my activity</button>':"";
+  let prog="";
+  if(__pgInProg.length){
+    prog='<div class="pg-box" style="margin-top:6px"><h3>⏳ Unfinished</h3><div class="pg-empty" style="padding:0 0 4px">Saved work you can continue.</div>';
+    __pgInProg.forEach((it,i)=>{ prog+='<div class="pg-act"><div class="pg-act-ico">'+it.ico+'</div><div class="pg-act-body"><div class="pg-act-t">'+pfEsc(it.title)+'</div><div class="pg-act-s">'+pfEsc(it.sub)+' · '+pgDate(it.at)+'</div></div><button class="pg-pill on" onclick="pgContinue('+i+')">Continue</button></div>'; });
+    prog+='</div>';
+  }
+  if(!items.length&&prog){ box.innerHTML=prog; return; }
+  if(!items.length){ box.innerHTML='<div class="pg-box" style="margin-top:6px"><h3>🕘 Recent activity</h3><div class="pg-empty">No activity yet. Your latest tests and essays will appear here.</div></div>'; return; }
+  const shown=items.slice(0,__pgRecentN);
+  let h='<div class="pg-box" style="margin-top:6px"><h3>🕘 Recent activity</h3>';
+  shown.forEach(it=>{ h+='<div class="pg-act"><div class="pg-act-ico">'+it.ico+'</div><div class="pg-act-body"><div class="pg-act-t">'+it.title+'</div><div class="pg-act-s">'+it.sub+'</div></div><div class="pg-act-d">'+pgDate(it.at)+'</div></div>'; });
+  if(items.length>shown.length) h+='<button class="pg-pill" style="margin-top:10px" onclick="pgRecentMore()">Show more</button>';
+  box.innerHTML=prog+h+'</div>';
+}
+
+// ── DELETE MY PROGRESS (a request to the admin) ──
+let __pgReq=null;
+function pgClearLocalIfErased(doneAt){
+  try{
+    if(!doneAt) return;
+    const t=new Date(doneAt).getTime();
+    if((Number(localStorage.getItem("ef_erased_at"))||0)>=t) return;
+    const del=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.indexOf("wrsaved_")===0) del.push(k); }
+    del.forEach(k=>localStorage.removeItem(k));
+    localStorage.setItem("ef_erased_at",String(t));
+  }catch(e){}
+}
+async function pgReqLoad(){
+  if(!currentUser||!sb) return;
+  try{
+    const r=await sb.from("progress_requests").select("id,scope,status,created_at,decided_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(5);
+    const rows=(r&&r.data)||[];
+    __pgReq=rows[0]||null;
+    const done=rows.find(x=>x.status==="done");
+    if(done) pgClearLocalIfErased(done.decided_at);
+  }catch(e){ __pgReq=null; }
+  pgReqRender();
+}
+function pgScopeText(sc){ return sc==="keep7"?"everything except your last 7 tests in each skill":"everything"; }
+function pgReqRender(){
+  const box=document.getElementById("pgDelBox"); if(!box) return;
+  if(!currentUser||!currentUser.isStudent){ box.innerHTML=""; return; }
+  const d=iso=>pgDate(iso);
+  let h='<div class="pg-del">';
+  if(__pgReq&&__pgReq.status==="pending"){
+    h+='<div class="pg-empty">⏳ You asked to delete '+pgScopeText(__pgReq.scope)+' on '+d(__pgReq.created_at)+'. Waiting for the admin.</div>';
+  } else {
+    if(__pgReq&&__pgReq.status==="done"&&__pgReq.decided_at&&Date.now()-new Date(__pgReq.decided_at).getTime()<30*864e5) h+='<div class="pg-empty">✅ Your progress was deleted on '+d(__pgReq.decided_at)+'.</div>';
+    if(__pgReq&&__pgReq.status==="declined"&&__pgReq.decided_at&&Date.now()-new Date(__pgReq.decided_at).getTime()<30*864e5) h+='<div class="pg-empty">Your last request was declined on '+d(__pgReq.decided_at)+'.</div>';
+    h+='<button class="pg-delbtn" onclick="pgDelOpen()">🗑 Delete my progress</button>';
+  }
+  box.innerHTML=h+'</div>';
+}
+function pgDelClose(){ const o=document.getElementById("pgDlg"); if(o) o.remove(); }
+function pgDelOpen(){
+  pgDelClose();
+  const d=document.createElement("div"); d.id="pgDlg"; d.className="pg-dlg";
+  d.innerHTML='<div><div style="font-size:17px;font-weight:700">Delete my progress</div>'
+    +'<div style="font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6">Choose what you want to delete. Your profile and your account stay.</div>'
+    +'<button class="pg-opt" onclick="pgDelStep2(\'all\')"><b>Delete everything</b><span>All your test results, essays, plans and drafts.</span></button>'
+    +'<button class="pg-opt" onclick="pgDelStep2(\'keep7\')"><b>Delete everything except my last 7 tests</b><span>Keeps your last 7 Reading tests, 7 Listening tests and 7 Writing essays.</span></button>'
+    +'<button class="pg-opt" style="text-align:center;margin-top:14px" onclick="pgDelClose()">Cancel</button></div>';
+  document.body.appendChild(d);
+}
+function pgDelStep2(scope){
+  const d=document.getElementById("pgDlg"); if(!d) return;
+  d.innerHTML='<div><div style="font-size:17px;font-weight:700">Send a request to the admin</div>'
+    +'<div style="font-size:13px;line-height:1.7;margin-top:8px">You cannot delete your progress yourself. You can send a request to the admin to delete <b>'+pgScopeText(scope)+'</b>.</div>'
+    +'<div style="font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:8px">If the admin accepts, your progress is deleted for good and it cannot be brought back. If the admin declines, nothing changes.</div>'
+    +'<div style="display:flex;gap:10px;margin-top:16px"><button class="pg-opt" style="margin:0;text-align:center" onclick="pgDelOpen()">Back</button><button class="pg-opt" id="pgDelSend" style="margin:0;text-align:center;background:var(--blue);color:#fff;border:none" onclick="pgDelSend(\''+scope+'\')"><b>Send request</b></button></div></div>';
+}
+async function pgDelSend(scope){
+  if(!currentUser||!sb) return;
+  const btn=document.getElementById("pgDelSend"); if(btn) btn.disabled=true;
+  let err=null;
+  try{ const r=await sb.from("progress_requests").insert({user_id:currentUser.id,email:currentUser.email,full_name:currentUser.name,scope:scope}); err=r.error; }catch(e){ err=e; }
+  pgDelClose();
+  if(err){
+    if(String(err.code||"")==="23505"||/duplicate/i.test(String(err.message||""))) showToast("You already sent a request. Please wait for the admin.");
+    else showToast("Could not send your request. Please try again.");
+    pgReqLoad(); return;
+  }
+  showToast("Request sent to the admin.");
+  pgReqLoad();
+}
+
+// ── LISTENING: save and continue later ──
+async function lsSaveTest(){
+  if(!currentUser){ showToast("⚠️ Please log in to save your progress."); return; }
+  if(lsSubmitted){ showToast("This test is already submitted."); return; }
+  const audio=document.getElementById("lstAudio");
+  const content={book:lsCurBook,test:lsCurTest,section:lsCurSection,audioTime:Math.floor(audio?audio.currentTime||0:0),answers:lsAnswers,savedAt:new Date().toLocaleString()};
+  const aid=lsCurBook+"_t"+lsCurTest;
+  let err=null;
+  try{
+    const ex=await sb.from("saved_tests").select("id").eq("user_id",currentUser.id).eq("activity_type","listening").eq("activity_id",aid).maybeSingle();
+    const row={mode:"practice",status:"in_progress",content:content,updated_at:new Date().toISOString()};
+    if(ex&&ex.data) { const r=await sb.from("saved_tests").update(row).eq("id",ex.data.id); err=r.error; }
+    else { const r=await sb.from("saved_tests").insert(Object.assign({user_id:currentUser.id,activity_type:"listening",activity_id:aid,created_at:new Date().toISOString()},row)); err=r.error; }
+  }catch(e){ err=e; }
+  if(err){ showToast("⚠️ Could not save — please try again."); return; }
+  showToast("✅ Progress saved! You can close and continue anytime.");
+  const b=document.getElementById("lstSaveBtn"); if(b){ b.textContent="💾 Saved"; setTimeout(()=>{ b.textContent="💾 Save"; },2000); }
+}
+async function lsClearSaved(book,test){
+  if(!currentUser||!sb) return;
+  try{ await sb.from("saved_tests").delete().eq("user_id",currentUser.id).eq("activity_type","listening").eq("activity_id",book+"_t"+test); }catch(e){}
+}
+async function lsResumeSaved(aid){
+  if(!currentUser) return false;
+  let d=null;
+  try{
+    const r=await sb.from("saved_tests").select("content").eq("user_id",currentUser.id).eq("activity_type","listening").eq("status","in_progress").eq("activity_id",aid).maybeSingle();
+    d=r&&r.data&&r.data.content;
+  }catch(e){}
+  if(!d||!LISTENING_DATA[d.book]||!LISTENING_DATA[d.book].tests||!LISTENING_DATA[d.book].tests[d.test]){ showToast("Could not open the saved test."); return false; }
+  startListeningTest(d.book,d.test);
+  lsAnswers=d.answers||{};
+  const sec=LISTENING_DATA[d.book].tests[d.test].sections[d.section]?d.section:lsCurSection;
+  lsSwitchSection(sec);
+  const audio=document.getElementById("lstAudio");
+  const t=Number(d.audioTime)||0;
+  if(t>0){
+    const setT=()=>{ try{ audio.currentTime=t; }catch(e){} };
+    if(audio.readyState>=1) setT(); else audio.addEventListener("loadedmetadata",setT,{once:true});
+  }
+  showToast("✅ Resumed from where you left off!");
+  return true;
+}
+
+// ── MY PROGRESS: unfinished work (saved Reading and Listening tests, Writing drafts) ──
+let __pgInProg=[];
+async function pgLoadInProgress(){
+  __pgInProg=[];
+  if(!currentUser||!sb) return;
+  try{
+    const r=await sb.from("saved_tests").select("activity_type,activity_id,content,updated_at").eq("user_id",currentUser.id).eq("status","in_progress").in("activity_type",["reading","listening"]).order("updated_at",{ascending:false}).limit(50);
+    ((r&&r.data)||[]).forEach(x=>{
+      const d=x.content||{}; const n=parseInt(String(d.book||"").replace("cam",""),10); if(!n) return;
+      const rd=x.activity_type==="reading";
+      __pgInProg.push({kind:x.activity_type,aid:x.activity_id,t:new Date(x.updated_at).getTime(),at:x.updated_at,ico:rd?"📖":"🎧",
+        title:(rd?"Reading":"Listening")+" · Cambridge "+n+" · Test "+d.test+(rd?(d.mode==="exam"?" · Exam mode":" · Free practice"):""),
+        sub:(rd?"Saved at Passage "+((d.passIdx||0)+1):"Saved at Section "+(d.section||1))});
+    });
+  }catch(e){}
+  try{
+    const r=await sb.from("writing_drafts").select("draft_key,content,meta,updated_at").eq("user_id",currentUser.id).order("updated_at",{ascending:false}).limit(50);
+    ((r&&r.data)||[]).forEach(x=>{
+      const m=x.meta||{}; if(!m.task) return;
+      if(Number(m.task)===1&&m.kind!=="custom"&&!t1FindByKey(m.key)) return;
+      const words=String(x.content||"").trim()?String(x.content).trim().split(/\s+/).length:0;
+      if(!words) return;
+      __pgInProg.push({kind:"writing",meta:m,t:new Date(x.updated_at).getTime(),at:x.updated_at,ico:"✍️",
+        title:"Writing Task "+(Number(m.task)===1?"1":"2")+(m.label?" · "+m.label:""),sub:"Draft saved · "+words+" word"+(words===1?"":"s")});
+    });
+  }catch(e){}
+  __pgInProg.sort((a,b)=>b.t-a.t);
+}
+function t1FindByKey(key){
+  key=String(key||""); let found=null;
+  const rm=key.match(/^recent-(\d+)$/);
+  if(rm){ found=t1AllRecent()[Number(rm[1])-1]||null; if(found) found.catName="Recent questions"; return found; }
+  const cats=t1Cats(); const cut=key.lastIndexOf("-"); const cat=key.slice(0,cut), num=key.slice(cut+1);
+  const c=cats[cat];
+  if(c){ (c.questions||[]).forEach((q,idx)=>{ if(!found&&String(q.n||idx+1)===num){ found=t1Item(q,key,"t1:"+cat,q.n||idx+1); found.catName=c.name; } }); }
+  return found;
+}
+async function pgContinue(i){
+  const it=__pgInProg[i]; if(!it) return;
+  if(it.kind==="reading"){ await loadSavedTest(it.aid); return; }
+  if(it.kind==="listening"){ await lsResumeSaved(it.aid); return; }
+  const m=it.meta||{};
+  if(Number(m.task)===2){
+    if(m.kind==="custom"){ if(m.question) wrOwnGo(m.question); return; }
+    curWTask=2; curWritingTopic=m.topic; curWritingQ=m.q; curWritingMode="write";
+    if(!WRITING_DATA.task2||!WRITING_DATA.task2.topics||!WRITING_DATA.task2.topics[m.topic]){ showToast("Could not open this question."); return; }
+    wrStartWrite(m.q); return;
+  }
+  // Task 1
+  if(m.kind==="custom"){
+    curWTask=1; curT1={key:m.key,topic:"t1:custom",n:0,title:"",lines:String(m.question||"").split("\n"),question:m.question||"",chart:null,facts:"",catName:"Your own question"};
+    showPage("writingT1Own"); showToast("Add your picture again, then press Write. Your draft will come back.");
+    return;
+  }
+  const found=t1FindByKey(m.key);
+  if(!found){ showToast("Could not open this question."); return; }
+  t1Go(found);
 }
 
 // ── LISTENING NAVIGATION ─────────────────────────────
@@ -4337,6 +4895,7 @@ function buildListeningBooks(){
       <div class="bkico">${hasData?"🎧":"📗"}</div>
       <div class="bkname">Cambridge IELTS ${i}</div>
       <div class="bksub">${hasData?"Listening · Available":"Available Soon"}</div>
+      ${hasData?attBookMark("listening",key):""}
       ${hasData?'<div class="avbadge">LIVE</div>':'<div class="soonbadge">Soon</div>'}
     `;
     if(hasData) d.onclick=()=>selectListeningBook(key,i);
@@ -4355,7 +4914,7 @@ function selectListeningBook(key,num){
     const locked=!t;
     const d=document.createElement("div");
     d.className="tcard"+(locked?" locked":"");
-    d.innerHTML=`<div class="tnum">${n}</div><div class="tlabel">Test ${n}</div><div class="tinfo">${locked?"Coming soon":"4 Sections · 40 Questions"}</div>`;
+    d.innerHTML=`<div class="tnum">${n}</div><div class="tlabel">Test ${n}</div><div class="tinfo">${locked?"Coming soon":"4 Sections · 40 Questions"}</div>${locked?"":attTestMark("listening",key,n)}`;
     if(!locked) d.onclick=()=>selectListeningTest(n);
     g.appendChild(d);
   });
@@ -4885,6 +5444,8 @@ function lsSubmit(){
     }
   });
   const wrong=total-correct;
+  attSave("listening",lsCurBook,lsCurTest,null,correct,total,timeUsed);
+  lsClearSaved(lsCurBook,lsCurTest);
   const m=Math.floor(timeUsed/60), s=Math.floor(timeUsed%60);
 
   document.getElementById("rCorr").textContent=correct;
@@ -4934,7 +5495,7 @@ function lsReviewAnswers(){
 
 // ── START EXAM ──────────────────────────────────────
 function startExam(mode){
-  curMode=mode; examMode=(mode==="exam");
+  curMode=mode; examMode=(mode==="exam"); __attSaved=false;
   reviewing=false; userAns={}; curPassIdx=0; passageStates={}; isPaused=false; lsResultsActive=false;
   // Show pause, save, unsave only in practice mode
   const pb=document.getElementById("pauseBtn");
@@ -5128,15 +5689,17 @@ async function unsaveTest(bookKey, testKey){
 }
 
 // ── LOAD SAVED TEST ────────────────────────────
-async function loadSavedTest(){
+async function loadSavedTest(aid){
   try{
     if(!currentUser) return false;
 
-    const { data, error } = await sb.from("saved_tests")
+    let q = sb.from("saved_tests")
       .select("*")
       .eq("user_id", currentUser.id)
       .eq("activity_type", "reading")
-      .eq("status", "in_progress")
+      .eq("status", "in_progress");
+    if(aid) q = q.eq("activity_id", aid);
+    const { data, error } = await q
       .order("updated_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -5144,7 +5707,7 @@ async function loadSavedTest(){
     if(error || !data) return false;
 
     const d = data.content;
-    curBook=d.book; curTest=d.test; curMode=d.mode;
+    curBook=d.book; curTest=d.test; curMode=d.mode; __attSaved=false;
     examMode=(curMode==="exam");
     userAns=d.userAns||{};
     passageStates=d.passageStates||{};
@@ -5882,6 +6445,7 @@ function toggleNotes(){
 }
 
 // ── END TEST ───────────────────────────────────────
+let __attSaved=false;
 function endTest(auto){
   clearTimer();
   stopTrackingTime();
@@ -5959,6 +6523,7 @@ function endTest(auto){
     });
   });
   const timeUsed=examMode?3600-timerSec:timerSec;
+  if(!__attSaved){ __attSaved=true; attSave("reading",curBook,curTest,curMode,correct,total,timeUsed); }
   const m=Math.floor(timeUsed/60),s=timeUsed%60;
   document.getElementById("rCorr").textContent=correct;
   document.getElementById("rWrong").textContent=wrong;
@@ -6340,7 +6905,7 @@ async function loadUserAfterLogin(authUser){
   if(!profile){
     // First sign-in (for example with Google) and no profile row yet: create one as a visitor.
     const nm=authUser.user_metadata?.full_name||authUser.user_metadata?.name||(authUser.email||"").split("@")[0];
-    try{ await sb.from("profiles").upsert({id:authUser.id,email:authUser.email,full_name:nm,status:"pending"}); }catch(e){}
+    try{ await sb.from("profiles").insert({id:authUser.id,email:authUser.email,full_name:nm,status:"pending"}); }catch(e){}
     profile={status:"pending",full_name:nm};
   }
   const status=profile.status||"pending";
@@ -6353,15 +6918,22 @@ async function loadUserAfterLogin(authUser){
     return;
   }
 
+  let isSupervisor=false;
+  if(!isAdmin){
+    try{ const{data:w}=await sb.functions.invoke("admin-users",{body:{action:"whoami"}}); isSupervisor=!!(w&&w.role==="supervisor"); }catch(e){}
+  }
   const stats=await loadUserStats(authUser.id);
+  attLoad(authUser.id);
   loginUser({
     id:authUser.id,
     email:authUser.email,
     name:profile?.full_name||authUser.user_metadata?.full_name||authUser.user_metadata?.name||"Student",
     stats,
     isAdmin,
-    isStudent:isAdmin||status==="approved"
+    isSupervisor,
+    isStudent:isAdmin||isSupervisor||(status==="approved"&&!(profile.access_until&&new Date(profile.access_until).getTime()<Date.now()))
   });
+  profileAfterLogin();
 }
 
 // ── PENDING / REJECTED SCREENS ──────────────────
@@ -6508,7 +7080,7 @@ function loginUser(user){
   updateHomeStats();
   // Show admin panel link if admin
   const adminLink=document.getElementById("menuAdminLink");
-  if(adminLink) adminLink.style.display=user.isAdmin?"flex":"none";
+  if(adminLink) adminLink.style.display=(user.isAdmin||user.isSupervisor)?"flex":"none";
   authContinue();
 }
 
@@ -6529,9 +7101,638 @@ function updateHomeStats(){
   document.getElementById("homeProgressLabel").textContent=done+" of 84 tests completed (Cambridge IELTS 1–21)";
 }
 
+// ── STUDENT PROFILE ───────────────────────────────
+// Name, phone, country, division/state, city/district (chosen from lists), street (optional).
+// Saved in the student_profiles table. The owner reads everyone's profile in the Admin Panel.
+const GEO_BASE="/geo/";
+let __geoIndex=null; const __geoCache={}; let __pfPhoneTouched=false; let __pfSaving=false;
+async function geoIndex(){
+  if(__geoIndex) return __geoIndex;
+  try{ const r=await fetch(GEO_BASE+"index.json"); __geoIndex=await r.json(); }catch(e){ __geoIndex=[]; }
+  return __geoIndex;
+}
+async function geoCountry(iso){
+  if(__geoCache[iso]) return __geoCache[iso];
+  let d={s:[]};
+  try{ const r=await fetch(GEO_BASE+iso+".json"); if(r.ok) d=await r.json(); }catch(e){}
+  __geoCache[iso]=d; return d;
+}
+function pfEl(id){ return document.getElementById(id); }
+function pfFill(sel,items,placeholder,keep){
+  sel.innerHTML=""; const o0=document.createElement("option"); o0.value=""; o0.textContent=placeholder; sel.appendChild(o0);
+  items.forEach(t=>{ const o=document.createElement("option"); o.value=t; o.textContent=t; sel.appendChild(o); });
+  if(keep) sel.value=keep;
+}
+function updateProfileBanner(){
+  const b=pfEl("profileBanner"); if(!b) return;
+  let later=false; try{ later=sessionStorage.getItem("ef_profile_later")==="1"; }catch(e){}
+  const need=currentUser && !currentUser.isAdmin && currentUser.profileLoaded && !currentUser.profile;
+  b.style.display=(need && !later)?"flex":"none";
+}
+function profileLater(){ try{ sessionStorage.setItem("ef_profile_later","1"); }catch(e){} updateProfileBanner(); }
+async function profileAfterLogin(){
+  if(!currentUser) return;
+  try{
+    const{data}=await sb.from("student_profiles").select("*").eq("user_id",currentUser.id).maybeSingle();
+    currentUser.profile=data||null;
+  }catch(e){ currentUser.profile=null; }
+  currentUser.profileLoaded=true;
+  updateProfileBanner();
+  if(currentUser.isAdmin && typeof adminCheckNew==="function") adminCheckNew(true);
+}
+async function openProfile(){
+  if(!currentUser){ showAuth(); return; }
+  const ov=pfEl("profileOverlay"); if(!ov) return;
+  ov.style.display="flex"; pfEl("pfErr").style.display="none";
+  const p=currentUser.profile||{};
+  pfEl("pfName").value=p.full_name||currentUser.name||"";
+  pfEl("pfStreet").value=p.street||""; pfEl("pfArea").value=p.area||"";
+  const idx=await geoIndex();
+  const cSel=pfEl("pfCountry"), ccSel=pfEl("pfPhoneCc");
+  cSel.innerHTML=""; ccSel.innerHTML="";
+  const o0=document.createElement("option"); o0.value=""; o0.textContent="Select your country"; cSel.appendChild(o0);
+  idx.forEach(c=>{
+    const o=document.createElement("option"); o.value=c.c; o.textContent=c.n; cSel.appendChild(o);
+    if(c.d){ const q=document.createElement("option"); q.value=c.c; q.textContent=c.n+" (+"+c.d+")"; ccSel.appendChild(q); }
+  });
+  const startC=p.country_code||"BD";
+  cSel.value=startC; ccSel.value=startC; __pfPhoneTouched=false;
+  let local="";
+  if(p.phone){ const dial=((idx.find(c=>c.c===startC)||{}).d)||""; local=p.phone.replace(/^\+/,""); if(dial&&local.indexOf(dial)===0) local=local.slice(dial.length); }
+  pfEl("pfPhone").value=local;
+  await pfCountryChanged(p.division,p.district);
+  pfEl("pfName").focus();
+}
+function closeProfile(){ const ov=pfEl("profileOverlay"); if(ov) ov.style.display="none"; }
+async function pfCountryChanged(keepDiv,keepDist){
+  const iso=pfEl("pfCountry").value;
+  if(!__pfPhoneTouched && iso) pfEl("pfPhoneCc").value=iso;
+  const dSel=pfEl("pfDiv"), cSel=pfEl("pfDist"), dTxt=pfEl("pfDivTxt"), cTxt=pfEl("pfDistTxt");
+  const bd=(iso==="BD");
+  pfEl("pfDivLab").textContent=(bd?"Division":"State / Province / Division")+" *";
+  pfEl("pfDistLab").textContent=(bd?"District":"City / District")+" *";
+  pfEl("pfAreaLab").textContent=bd?"Area / Upazila (optional)":"Area (optional)";
+  dTxt.style.display=cTxt.style.display="none"; dSel.style.display=cSel.style.display="block";
+  pfFill(dSel,[],"Select"); pfFill(cSel,[],"Select");
+  if(!iso){ return; }
+  pfEl("pfGeoNote").textContent="Loading…";
+  const g=await geoCountry(iso); pfEl("pfGeoNote").textContent="";
+  if(pfEl("pfCountry").value!==iso) return;
+  const states=(g&&g.s)||[];
+  if(!states.length){
+    // No ready list for this country: let the student type it.
+    dSel.style.display=cSel.style.display="none"; dTxt.style.display=cTxt.style.display="block";
+    dTxt.value=keepDiv||""; cTxt.value=keepDist||"";
+    pfEl("pfDivLab").textContent=pfEl("pfDivLab").textContent.replace(" *",""); pfEl("pfDistLab").textContent=pfEl("pfDistLab").textContent.replace(" *","");
+    return;
+  }
+  pfFill(dSel,states.map(s=>s.n),"Select "+(bd?"division":"state / province"),keepDiv||"");
+  pfDivChanged(keepDist||"");
+}
+function pfDivChanged(keepDist){
+  const iso=pfEl("pfCountry").value; const g=__geoCache[iso]||{s:[]};
+  const st=(g.s||[]).find(s=>s.n===pfEl("pfDiv").value);
+  const cSel=pfEl("pfDist"), cTxt=pfEl("pfDistTxt"); const bd=(iso==="BD");
+  if(st && st.c && st.c.length){ cTxt.style.display="none"; cSel.style.display="block"; pfFill(cSel,st.c,"Select "+(bd?"district":"city"),keepDist||""); }
+  else if(st){ cSel.style.display="none"; cTxt.style.display="block"; cTxt.value=keepDist||""; }
+  else { cTxt.style.display="none"; cSel.style.display="block"; pfFill(cSel,[],"Select"); }
+}
+function pfError(msg){ const e=pfEl("pfErr"); e.textContent=msg; e.style.display="block"; }
+function pfParsePhone(iso,raw){
+  const L=window.libphonenumber;
+  const idx=__geoIndex||[]; const dial=((idx.find(c=>c.c===iso)||{}).d)||"";
+  const txt=String(raw||"").trim();
+  if(!txt) return {err:"Please enter your phone number."};
+  if(L && L.parsePhoneNumberFromString){
+    const pn=L.parsePhoneNumberFromString(txt,iso);
+    if(!pn || !pn.isValid()) return {err:"That phone number does not look right for the country you chose. Please check it."};
+    return {e164:pn.number};
+  }
+  // Fallback if the phone checker could not load: simple digit check.
+  let d=txt.replace(/[^\d]/g,"").replace(/^0+/,"");
+  if(txt.charAt(0)==="+") d=txt.replace(/[^\d]/g,"");
+  else d=dial+d;
+  if(!/^[1-9]\d{6,14}$/.test(d)) return {err:"That phone number does not look right. Please check it."};
+  return {e164:"+"+d};
+}
+async function saveProfile(){
+  if(__pfSaving||!currentUser) return;
+  const name=pfEl("pfName").value.trim().replace(/\s+/g," ");
+  const country=pfEl("pfCountry").value; const idx=__geoIndex||[];
+  const cn=((idx.find(c=>c.c===country)||{}).n)||"";
+  const useTxt=pfEl("pfDiv").style.display==="none";
+  const division=(useTxt?pfEl("pfDivTxt").value:pfEl("pfDiv").value).trim();
+  const distTxt=pfEl("pfDist").style.display==="none";
+  const district=(distTxt?pfEl("pfDistTxt").value:pfEl("pfDist").value).trim();
+  const area=pfEl("pfArea").value.trim(), street=pfEl("pfStreet").value.trim();
+  if(name.length<2){ pfError("Please enter your full name."); return; }
+  const ph=pfParsePhone(pfEl("pfPhoneCc").value,pfEl("pfPhone").value);
+  if(ph.err){ pfError(ph.err); return; }
+  if(!country){ pfError("Please choose your country."); return; }
+  const g=__geoCache[country]||{s:[]};
+  if((g.s||[]).length){
+    if(!division){ pfError("Please choose your "+(country==="BD"?"division":"state or province")+"."); return; }
+    if(!district){ pfError("Please choose your "+(country==="BD"?"district":"city")+"."); return; }
+  }
+  const row={user_id:currentUser.id,full_name:name.slice(0,100),phone:ph.e164,country_code:country,country_name:cn,division:division.slice(0,120)||null,district:district.slice(0,120)||null,area:area.slice(0,120)||null,street:street.slice(0,300)||null};
+  __pfSaving=true; const btn=pfEl("pfSave"); const old=btn.textContent; btn.disabled=true; btn.textContent="Saving…";
+  let err=null;
+  try{ const r=await sb.from("student_profiles").upsert(row,{onConflict:"user_id"}); err=r.error; }catch(e){ err=e; }
+  __pfSaving=false; btn.disabled=false; btn.textContent=old;
+  if(err){ pfError("We could not save your profile just now. Please try again."); return; }
+  currentUser.profile=row; currentUser.profileLoaded=true;
+  closeProfile(); updateProfileBanner(); showToast("✅ Profile saved. Thank you!");
+}
+
+// ── PROFILES VIEW IN THE ADMIN PANEL (owner only) ─────
+let adminView_="people", adminProfFilter="all", adminProfPage=1, adminProfQuery="", adminProfTimer=null;
+async function adminCheckNew(announce){
+  if(!currentUser||!currentUser.isAdmin) return;
+  try{
+    const{data}=await sb.functions.invoke("admin-users",{body:{action:"profiles_unseen"}});
+    const n=(data&&data.unseen)||0;
+    let rq=0; try{ const{data:rd}=await sb.functions.invoke("admin-users",{body:{action:"requests_count"}}); rq=(rd&&rd.pending)||0; }catch(e){}
+    const rb=pfEl("adminReqBadge"); if(rb){ rb.textContent=rq?String(rq):""; rb.style.display=rq?"inline-block":"none"; }
+    const mb=pfEl("menuAdminBadge"); if(mb){ mb.textContent=(n+rq)?(" ("+(n+rq)+" new)"):""; }
+    const pb=pfEl("adminProfBadge"); if(pb){ pb.textContent=n?String(n):""; pb.style.display=n?"inline-block":"none"; }
+    if(announce && n) showToast("📋 "+n+" new or updated profile"+(n===1?"":"s")+" to review.");
+    else if(announce && rq) showToast("🗑 "+rq+" delete-progress request"+(rq===1?"":"s")+" waiting.");
+  }catch(e){}
+}
+
+// ── ADMIN: delete-progress requests ──
+async function adminReqLoad(){
+  if(!adminPanelUser()) return;
+  const box=pfEl("adminReqList"); if(!box) return;
+  box.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px">Loading...</div>';
+  try{
+    const[a,b]=await Promise.all([sb.functions.invoke("admin-users",{body:{action:"requests_list",view:"pending"}}),sb.functions.invoke("admin-users",{body:{action:"requests_list",view:"decided"}})]);
+    const pa=a.data, pb=b.data;
+    if(a.error||!pa||!pa.ok){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">'+pfEsc((pa&&pa.error)||"Could not load the requests. Is admin-users deployed and 18_progress_requests.sql run?")+'</div>'; return; }
+    const fmt=d=>new Date(d).toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    const scopeT=sc=>sc==="keep7"?"Delete everything except the last 7 tests in each skill":"Delete everything";
+    const owner=!!currentUser.isAdmin;
+    let h='<div style="font-size:13px;font-weight:700;color:var(--text);margin:4px 0 8px">Waiting for you ('+pa.rows.length+')</div>';
+    if(!pa.rows.length) h+='<div style="text-align:center;color:var(--muted);padding:22px">No requests waiting.</div>';
+    h+=pa.rows.map(r=>{
+      const p=r.preview||{};
+      const lines=['Test results: '+(p.attempts||0),'Writing essays: '+(p.essays||0),'Plans and ideas pages: '+(p.ideas||0),'Saved tests: '+(p.saved_tests||0),'Activity entries: '+(p.activity||0),'Drafts: '+(p.drafts||0)];
+      const keep=r.scope==="keep7"?'<div style="font-size:12px;color:#4ade80;margin-top:4px">Stays: '+(p.kept_tests||0)+' test results and '+(p.kept_essays||0)+' essays</div>':'';
+      return '<div class="admin-student-card" style="flex-direction:column;align-items:stretch;gap:8px"><div><b style="color:#fff">'+pfEsc(r.full_name||"")+'</b> <span style="font-size:12px;color:var(--muted)">'+pfEsc(r.email||"")+'</span></div>'
+        +'<div style="font-size:13px;color:#fbbf24">'+pfEsc(scopeT(r.scope))+'</div>'
+        +'<div style="font-size:12px;color:var(--muted)">Asked on '+fmt(r.created_at)+'</div>'
+        +'<div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.7">Will be deleted: '+lines.join(" · ")+'</div>'+keep
+        +(owner?'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><button class="admin-reject-btn" onclick="adminReqDecide('+r.id+',\'accept\')">🗑 Accept and delete</button><button class="admin-tab" onclick="adminReqDecide('+r.id+',\'decline\')">✋ Decline</button></div>':'<div style="font-size:11px;color:var(--muted)">Only the owner can accept or decline.</div>')
+        +'</div>';
+    }).join("");
+    const dec=(pb&&pb.ok&&pb.rows)||[];
+    h+='<div style="font-size:13px;font-weight:700;color:var(--text);margin:20px 0 8px">Decided</div>';
+    if(!dec.length) h+='<div style="text-align:center;color:var(--muted);padding:16px">Nothing decided yet.</div>';
+    h+=dec.map(r=>'<div class="admin-student-card"><div style="flex:1;min-width:200px"><div style="font-size:13px;color:rgba(255,255,255,0.85)"><b style="color:#fff">'+pfEsc(r.full_name||"")+'</b> <span style="font-size:12px;color:var(--muted)">'+pfEsc(r.email||"")+'</span></div><div style="font-size:11px;color:var(--muted);margin-top:2px">'+pfEsc(scopeT(r.scope))+' · '+(r.status==="done"?"Deleted":"Declined")+' on '+(r.decided_at?fmt(r.decided_at):"")+'</div></div><span style="font-size:12px;font-weight:700;color:'+(r.status==="done"?"#4ade80":"#fbbf24")+'">'+(r.status==="done"?"DELETED":"DECLINED")+'</span></div>').join("");
+    box.innerHTML=h;
+  }catch(e){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">Could not load the requests.</div>'; }
+}
+async function adminReqDecide(id,decision){
+  if(!currentUser||!currentUser.isAdmin) return;
+  const msg=decision==="accept"?"Delete this student's progress for good? This cannot be undone. Their profile and account stay.":"Decline this request? Nothing will be deleted.";
+  if(!confirm(msg)) return;
+  const{data,error}=await sb.functions.invoke("admin-users",{body:{action:"request_decide",id:id,decision:decision}});
+  if(error||!data||!data.ok){ showToast((data&&data.error)||"Could not finish. Please try again."); adminReqLoad(); return; }
+  showToast(decision==="accept"?"Progress deleted.":"Request declined.");
+  adminReqLoad(); adminCheckNew(false);
+}
+
+// ── ADMIN: one student's progress ──
+let __admP=null;
+function admProgClose(){ const o=document.getElementById("admProgDlg"); if(o) o.remove(); __admP=null; }
+async function adminProgressOne(id){
+  if(!adminPanelUser()) return;
+  const{data,error}=await sb.functions.invoke("admin-users",{body:{action:"student_progress",user_id:id}});
+  if(error||!data||!data.ok){ showToast((data&&data.error)||"Could not open the progress. Please try again."); return; }
+  __admP={att:data.attempts||[],w:data.essays||[],open:null,scope:"life",name:data.name,email:data.email,batch:data.batch};
+  admProgDraw(true);
+}
+function admProgDraw(first){
+  if(!__admP) return;
+  const keepScroll=document.getElementById("admProgScroll"); const top=keepScroll?keepScroll.scrollTop:0;
+  const old=document.getElementById("admProgDlg"); if(old) old.remove();
+  const saveScope=__pgScope; __pgScope=__admP.scope;
+  let body="";
+  try{ body=pgHtmlCore(__admP.att,__admP.w,__admP.open,"admProgOpen"); }finally{ __pgScope=saveScope; }
+  const d=document.createElement("div"); d.id="admProgDlg"; d.className="pg-dlg";
+  d.innerHTML='<div style="max-width:760px"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div style="font-size:17px;font-weight:700">📈 '+pfEsc(__admP.name||"Student")+'</div><div style="font-size:12px;color:var(--muted)">'+pfEsc(__admP.email)+(__admP.batch?' · '+pfEsc(__admP.batch):'')+'</div></div><button class="pg-pill" onclick="admProgClose()">Close</button></div>'
+    +'<div class="pg-scope"><button class="pg-pill'+(__admP.scope==="life"?' on':'')+'" onclick="admProgScope(\'life\')">Lifetime</button><button class="pg-pill'+(__admP.scope==="last7"?' on':'')+'" onclick="admProgScope(\'last7\')">Last 7</button></div>'
+    +'<div id="admProgScroll">'+body+'</div></div>';
+  document.body.appendChild(d);
+  const sc=document.getElementById("admProgScroll"); if(sc&&!first) sc.scrollTop=top;
+}
+function admProgOpen(k){ if(!__admP) return; __admP.open=(__admP.open===k)?null:k; admProgDraw(false); }
+function admProgScope(v){ if(!__admP) return; __admP.scope=v; admProgDraw(false); }
+// ── ADMIN: dark / white theme ─────────────────────────
+function adminTheme(){ if(window.__admThemeMem) return window.__admThemeMem; try{ return localStorage.getItem("ef_admin_theme")==="light"?"light":"dark"; }catch(e){ return "dark"; } }
+function adminApplyTheme(page){
+  const on=(page==="adminPanel")&&adminTheme()==="light";
+  document.body.classList.toggle("adm-light",on);
+  const b=pfEl("adminThemeBtn"); if(b) b.textContent=adminTheme()==="light"?"🌙 Dark theme":"☀️ White theme";
+}
+function adminToggleTheme(){
+  const next=adminTheme()==="light"?"dark":"light";
+  window.__admThemeMem=next;
+  try{ localStorage.setItem("ef_admin_theme",next); }catch(e){}
+  adminApplyTheme("adminPanel");
+}
+function adminPanelUser(){ return !!(currentUser&&(currentUser.isAdmin||currentUser.isSupervisor)); }
+function adminSetView(v){
+  if(!adminPanelUser()) v="people";
+  adminView_=v;
+  const map={people:["adminPeopleView","adminVwPeople"],profiles:["adminProfilesView","adminVwProfiles"],usage:["adminUsageView","adminVwUsage"],ai:["adminAiView","adminVwAi"],log:["adminLogView","adminVwLog"],requests:["adminReqView","adminVwReq"]};
+  Object.keys(map).forEach(k=>{ const el=pfEl(map[k][0]), tb=pfEl(map[k][1]); if(el) el.style.display=(k===v)?"block":"none"; if(tb) tb.classList.toggle("active",k===v); });
+  if(v==="profiles"){ const sb_=pfEl("adminProfSeenAllBtn"); if(sb_) sb_.style.display=currentUser.isAdmin?"inline-block":"none"; adminProfLoad(1); }
+  if(v==="usage") adminUsageLoad();
+  if(v==="ai") adminAiLoad();
+  if(v==="log") adminLogLoad(1);
+  if(v==="requests") adminReqLoad();
+}
+function adminProfSearch(v){ clearTimeout(adminProfTimer); adminProfTimer=setTimeout(()=>{ adminProfQuery=String(v||"").trim(); adminProfLoad(1); },350); }
+function adminProfFilterSet(f,btn){ adminProfFilter=f; document.querySelectorAll(".admin-pf-tab").forEach(x=>x.classList.remove("active")); if(btn) btn.classList.add("active"); adminProfLoad(1); }
+function pfEsc(t){ return String(t==null?"":t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+async function adminProfLoad(page){
+  if(!adminPanelUser()) return;
+  adminProfPage=page||adminProfPage||1;
+  const box=pfEl("adminProfList"); if(!box) return;
+  box.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px">Loading...</div>';
+  try{
+    const{data:res,error}=await sb.functions.invoke("admin-users",{body:{action:"profiles_list",filter:adminProfFilter,q:adminProfQuery,page:adminProfPage}});
+    if(error||!res||!res.ok){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">'+pfEsc((res&&res.error)||"Could not load profiles. Is admin-users deployed and 09_student_profiles.sql run?")+'</div>'; return; }
+    const pb=pfEl("adminProfBadge"); if(pb){ pb.textContent=res.unseen?String(res.unseen):""; pb.style.display=res.unseen?"inline-block":"none"; }
+    const rows=res.rows||[];
+    if(!rows.length){ box.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px">'+(adminProfQuery?"No profile matches that search.":(adminProfFilter==="new"?"No new profiles.":"No profiles yet."))+'</div>'; pfEl("adminProfPager").innerHTML=""; return; }
+    const fmt=d=>new Date(d).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+    box.innerHTML=rows.map(r=>{
+      const loc=[r.area,r.district,r.division,r.country_name].filter(Boolean).map(pfEsc).join(", ");
+      return '<div class="admin-student-card"><div style="flex:1;min-width:220px">'
+        +'<div style="font-size:14px;font-weight:700;color:#fff">'+pfEsc(r.full_name)+((r.seen_by_owner||!currentUser.isAdmin)?'':' <span style="font-size:10px;font-weight:700;color:#4ade80;margin-left:6px">● NEW</span>')+'</div>'
+        +'<div style="font-size:12px;color:var(--muted)">'+pfEsc(r.email||"No email")+'</div>'
+        +'<div style="font-size:13px;color:#fff;margin-top:4px">📞 '+pfEsc(r.phone)+'</div>'
+        +'<div style="font-size:12px;color:rgba(255,255,255,0.75);margin-top:2px">📍 '+loc+(r.street?'<br>🏠 '+pfEsc(r.street):'')+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:4px">Completed '+fmt(r.completed_at)+(r.updated_at&&fmt(r.updated_at)!==fmt(r.completed_at)?' · Updated '+fmt(r.updated_at):'')+'</div></div>'
+        +((r.seen_by_owner||!currentUser.isAdmin)?'':'<button class="admin-approve-btn" onclick="adminProfSeen(\''+pfEsc(r.user_id)+'\')">Mark as seen</button>')
+        +'</div>';
+    }).join("");
+    const total=res.total||0,size=res.pageSize||50,pg=res.page||1,pages=res.pages||1;
+    pfEl("adminProfPager").innerHTML='<span style="font-size:12px;color:var(--muted)">Showing '+((pg-1)*size+1)+'–'+Math.min(total,pg*size)+' of '+total+'</span>'
+      +'<span style="display:flex;gap:8px;align-items:center"><button class="admin-tab" '+(pg<=1?'disabled style="opacity:.4"':'onclick="adminProfLoad('+(pg-1)+')"')+'>← Previous</button><span style="font-size:12px;color:var(--muted)">Page '+pg+' of '+pages+'</span><button class="admin-tab" '+(pg>=pages?'disabled style="opacity:.4"':'onclick="adminProfLoad('+(pg+1)+')"')+'>Next →</button></span>';
+  }catch(e){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">Could not load profiles.</div>'; }
+}
+// ── ADMIN: end-date dialog, bulk actions ───────────────
+let adminSel=new Set();
+function adminSelUpdate(){
+  const n=adminSel.size; const c=pfEl("adminSelCount"), b=pfEl("adminBulkBtns");
+  if(c) c.textContent=n?(n+" selected"):"";
+  if(b) b.style.display=n?"flex":"none";
+  const bl=pfEl("adminBulkLimit"); if(bl) bl.style.display=(currentUser&&currentUser.isAdmin)?"inline-block":"none";
+  const all=pfEl("adminSelAllBox"); if(all){ const boxes=document.querySelectorAll(".admin-sel"); all.checked=boxes.length>0&&Array.from(boxes).every(x=>x.checked); }
+}
+function adminSelToggle(id,on){ if(on) adminSel.add(id); else adminSel.delete(id); adminSelUpdate(); }
+function adminSelAll(on){ document.querySelectorAll(".admin-sel").forEach(c=>{ c.checked=on; if(on) adminSel.add(c.dataset.id); else adminSel.delete(c.dataset.id); }); adminSelUpdate(); }
+function adminYmd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+// Asks for an access end date and/or a batch. Resolves {ok:true, until:"YYYY-MM-DD" or "", batch:"" or name} or {ok:false}.
+// o.showDate=false hides the date; o.batches (list of names) shows the batch picker; o.defaultBatch preselects one.
+function adminAskDate(o){
+  return new Promise(res=>{
+    const old=pfEl("adDlg"); if(old) old.remove();
+    const showDate=o.showDate!==false, bl=o.batches||null;
+    const d=document.createElement("div"); d.id="adDlg";
+    d.style.cssText="position:fixed;inset:0;z-index:10060;background:rgba(5,10,25,0.85);display:flex;align-items:center;justify-content:center;padding:16px";
+    d.innerHTML='<div style="background:#0f172a;border:1px solid rgba(255,255,255,0.12);border-radius:16px;max-width:400px;width:100%;padding:22px">'
+      +'<div style="font-size:16px;font-weight:700;color:#fff">'+pfEsc(o.title)+'</div>'
+      +(o.sub?'<div style="font-size:12px;color:var(--muted);margin-top:3px">'+pfEsc(o.sub)+'</div>':'')
+      +(bl?'<label class="pf-lab" for="adBatch">Batch</label><select class="pf-in" id="adBatch"><option value="">No batch</option>'+bl.map(n=>'<option value="'+pfEsc(n)+'"'+(n===o.defaultBatch?' selected':'')+'>'+pfEsc(n)+'</option>').join("")+'</select>':'')
+      +(showDate?'<label class="pf-lab" for="adSel">Student access lasts</label>'
+      +'<select class="pf-in" id="adSel"><option value="none">No end date</option><option value="1">1 month</option><option value="3">3 months</option><option value="6">6 months</option><option value="12">1 year</option><option value="custom">Pick a date…</option></select>'
+      +'<input class="pf-in" type="date" id="adDate" style="display:none;margin-top:8px"/>'
+      +'<div style="font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5">When the date passes, the person becomes a visitor again by themselves.</div>':'')
+      +'<div id="adErr" style="display:none;margin-top:10px;font-size:12.5px;color:#fca5a5"></div>'
+      +'<div style="display:flex;gap:10px;margin-top:16px"><button id="adOk" style="flex:1;padding:11px;border:none;border-radius:12px;background:var(--blue);color:#fff;font-weight:700;font-family:\'Poppins\',sans-serif;cursor:pointer">'+pfEsc(o.okText||"Save")+'</button><button id="adNo" style="padding:11px 18px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-family:\'Poppins\',sans-serif;cursor:pointer">Cancel</button></div></div>';
+    document.body.appendChild(d);
+    const sel=pfEl("adSel"), dt=pfEl("adDate"), er=pfEl("adErr");
+    if(showDate){ const tm=new Date(); tm.setDate(tm.getDate()+1); dt.min=adminYmd(tm); sel.onchange=()=>{ dt.style.display=sel.value==="custom"?"block":"none"; er.style.display="none"; }; }
+    const done=v=>{ d.remove(); res(v); };
+    pfEl("adNo").onclick=()=>done({ok:false});
+    pfEl("adOk").onclick=()=>{
+      let until="";
+      if(showDate){
+        if(sel.value==="custom"){ if(!dt.value||dt.value<dt.min){ er.textContent="Please pick a date in the future."; er.style.display="block"; return; } until=dt.value; }
+        else if(sel.value!=="none"){ const x=new Date(); x.setMonth(x.getMonth()+parseInt(sel.value,10)); until=adminYmd(x); }
+      }
+      done({ok:true,until,batch:bl?pfEl("adBatch").value:""});
+    };
+  });
+}
+// Asks for one line of text or a number. Resolves {ok:true,value} or {ok:false}.
+function adminAskText(o){
+  return new Promise(res=>{
+    const old=pfEl("adDlg"); if(old) old.remove();
+    const d=document.createElement("div"); d.id="adDlg";
+    d.style.cssText="position:fixed;inset:0;z-index:10060;background:rgba(5,10,25,0.85);display:flex;align-items:center;justify-content:center;padding:16px";
+    d.innerHTML='<div style="background:#0f172a;border:1px solid rgba(255,255,255,0.12);border-radius:16px;max-width:400px;width:100%;padding:22px"><div style="font-size:16px;font-weight:700;color:#fff">'+pfEsc(o.title)+'</div>'
+      +(o.sub?'<div style="font-size:12px;color:var(--muted);margin-top:3px;line-height:1.6;white-space:pre-line">'+pfEsc(o.sub)+'</div>':'')
+      +'<label class="pf-lab" for="adTxt">'+pfEsc(o.label||"")+'</label><input class="pf-in" id="adTxt" type="'+(o.type||"text")+'" '+(o.type==="number"?'min="0" max="100" ':'maxlength="40" ')+'value="'+pfEsc(o.value==null?"":o.value)+'" placeholder="'+pfEsc(o.placeholder||"")+'"/>'
+      +'<div style="display:flex;gap:10px;margin-top:16px"><button id="adOk" style="flex:1;padding:11px;border:none;border-radius:12px;background:var(--blue);color:#fff;font-weight:700;font-family:\'Poppins\',sans-serif;cursor:pointer">'+pfEsc(o.okText||"Save")+'</button><button id="adNo" style="padding:11px 18px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-family:\'Poppins\',sans-serif;cursor:pointer">Cancel</button></div></div>';
+    document.body.appendChild(d);
+    const inp=pfEl("adTxt"); inp.focus();
+    const done=v=>{ d.remove(); res(v); };
+    pfEl("adNo").onclick=()=>done({ok:false});
+    pfEl("adOk").onclick=()=>done({ok:true,value:inp.value.trim()});
+    inp.onkeydown=ev=>{ if(ev.key==="Enter") pfEl("adOk").click(); };
+  });
+}
+
+// Asks for a daily limit (a number) and how long it lasts. Resolves {ok:true,value,until} or {ok:false}.
+function adminAskLimit(o){
+  return new Promise(res=>{
+    const old=pfEl("adDlg"); if(old) old.remove();
+    const d=document.createElement("div"); d.id="adDlg";
+    d.style.cssText="position:fixed;inset:0;z-index:10060;background:rgba(5,10,25,0.85);display:flex;align-items:center;justify-content:center;padding:16px";
+    d.innerHTML='<div style="background:#0f172a;border:1px solid rgba(255,255,255,0.12);border-radius:16px;max-width:400px;width:100%;padding:22px"><div style="font-size:16px;font-weight:700;color:#fff">'+pfEsc(o.title)+'</div>'
+      +(o.sub?'<div style="font-size:12px;color:var(--muted);margin-top:3px;line-height:1.6;white-space:pre-line">'+pfEsc(o.sub)+'</div>':'')
+      +'<label class="pf-lab" for="adTxt">New limit (0 to 100)</label><input class="pf-in" id="adTxt" type="number" min="0" max="100" value="'+pfEsc(o.value==null?"":o.value)+'"/>'
+      +'<label class="pf-lab" for="adSel">How long?</label>'
+      +'<select class="pf-in" id="adSel"><option value="none">As long as they are a student</option><option value="7">1 week</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="custom">Until a date I pick…</option></select>'
+      +'<input class="pf-in" type="date" id="adDate" style="display:none;margin-top:8px"/>'
+      +'<div style="font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5">After the end date, the student goes back to the normal limit by themselves. A number equal to the normal limit needs no personal limit, so it is not saved.</div>'
+      +'<div id="adErr" style="display:none;margin-top:10px;font-size:12.5px;color:#fca5a5"></div>'
+      +'<div style="display:flex;gap:10px;margin-top:16px"><button id="adOk" style="flex:1;padding:11px;border:none;border-radius:12px;background:var(--blue);color:#fff;font-weight:700;font-family:\'Poppins\',sans-serif;cursor:pointer">'+pfEsc(o.okText||"Save")+'</button><button id="adNo" style="padding:11px 18px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-family:\'Poppins\',sans-serif;cursor:pointer">Cancel</button></div></div>';
+    document.body.appendChild(d);
+    const inp=pfEl("adTxt"), sel=pfEl("adSel"), dt=pfEl("adDate"), er=pfEl("adErr");
+    inp.focus(); const tm=new Date(); tm.setDate(tm.getDate()+1); dt.min=adminYmd(tm);
+    sel.onchange=()=>{ dt.style.display=sel.value==="custom"?"block":"none"; er.style.display="none"; };
+    const done=v=>{ d.remove(); res(v); };
+    pfEl("adNo").onclick=()=>done({ok:false});
+    pfEl("adOk").onclick=()=>{
+      let until="";
+      if(inp.value.trim()!==""){
+        if(sel.value==="custom"){ if(!dt.value||dt.value<dt.min){ er.textContent="Please pick a date in the future."; er.style.display="block"; return; } until=dt.value; }
+        else if(sel.value!=="none"){ const x=new Date(); x.setDate(x.getDate()+parseInt(sel.value,10)); until=adminYmd(x); }
+      }
+      done({ok:true,value:inp.value.trim(),until});
+    };
+    inp.onkeydown=ev=>{ if(ev.key==="Enter") pfEl("adOk").click(); };
+  });
+}
+function adminUntilTxt(u){ return u?new Date(u).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}):""; }
+
+// ── ADMIN: batches ────────────────────────────────────
+let adminBatches=[], adminBatchNone=0, adminBatchFilter="";
+function adminBatchNames(){ return adminBatches.map(b=>b.name); }
+async function adminBatchesLoad(){
+  if(!(currentUser&&(currentUser.isAdmin||currentUser.isSupervisor))) return;
+  try{
+    const{data}=await sb.functions.invoke("admin-users",{body:{action:"batches_list"}});
+    if(data&&data.ok){ adminBatches=data.batches||[]; adminBatchNone=data.none||0; }
+  }catch(e){}
+  adminBatchRefresh();
+}
+function adminBatchRefresh(){
+  const sel=pfEl("adminBatchSel"); if(sel){
+    sel.innerHTML='<option value="">All batches</option>'+adminBatches.map(b=>'<option value="'+pfEsc(b.name)+'">'+pfEsc(b.name)+' ('+b.students+')</option>').join("")+'<option value="__none">No batch ('+adminBatchNone+')</option>';
+    if(adminBatchFilter && adminBatchFilter!=="__none" && !adminBatches.some(b=>b.name===adminBatchFilter)) adminBatchFilter="";
+    sel.value=adminBatchFilter;
+  }
+  const box=pfEl("adminBatchList"); if(!box) return;
+  const owner=!!(currentUser&&currentUser.isAdmin);
+  const ar=pfEl('adminBatchAddRow'); if(ar) ar.style.display=owner?'flex':'none';
+  box.innerHTML=(adminBatches.length?adminBatches.map((b,i)=>'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="font-size:13px;color:#fff"><b>'+pfEsc(b.name)+'</b> <span style="color:var(--muted)">· '+b.students+' people · '+(b.daily_limit==null?'normal limit':'limit '+b.daily_limit+' a day')+'</span></span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="admin-tab" onclick="adminBatchShow('+i+')">Show</button>'+(owner?'<button class="admin-tab" onclick="adminBatchLimit('+i+')">Set limit</button><button class="admin-tab" onclick="adminBatchRename('+i+')">Rename</button><button class="admin-reject-btn" onclick="adminBatchDelete('+i+')">Delete</button>':'')+'</span></div>').join(""):'<div style="font-size:12.5px;color:var(--muted);padding:6px 0">No batches yet.'+(owner?' Add the first one below.':'')+'</div>');
+}
+function adminBatchToggle(){ const b=pfEl("adminBatchBox"); if(b) b.style.display=b.style.display==="none"?"block":"none"; }
+function adminBatchPick(v){ adminBatchFilter=v||""; adminPage=1; adminLoadStudents(adminCurrentFilter,1); }
+function adminBatchShow(i){ adminBatchFilter=adminBatches[i].name; const s=pfEl("adminBatchSel"); if(s) s.value=adminBatchFilter; adminPage=1; adminLoadStudents(adminCurrentFilter,1); }
+async function adminBatchCall(body,okMsg){
+  try{
+    const{data,error}=await sb.functions.invoke("admin-users",{body});
+    if(error||!data||!data.ok){ showToast((data&&data.error)||"Could not save. Did you run 12_batches.sql?"); return false; }
+    if(okMsg) showToast(okMsg); await adminBatchesLoad(); return true;
+  }catch(e){ showToast("Could not save. Please try again."); return false; }
+}
+async function adminBatchAdd(){ const i=pfEl("adminBatchNew"); const v=(i.value||"").trim(); if(!v) return; if(await adminBatchCall({action:"batch_create",name:v},"Batch added.")) i.value=""; }
+async function adminBatchRename(i){ const b=adminBatches[i]; const t=await adminAskText({title:"Rename "+b.name,label:"New name",value:b.name,okText:"Rename"}); if(!t.ok||!t.value) return; if(await adminBatchCall({action:"batch_rename",name:b.name,new_name:t.value},"Batch renamed.")){ if(adminBatchFilter===b.name) adminBatchFilter=t.value; adminLoadStudents(adminCurrentFilter,adminPage); } }
+async function adminBatchDelete(i){ const b=adminBatches[i]; if(!confirm("Delete "+b.name+"?\n\nThe "+b.students+" people in it are kept. They just have no batch.")) return; if(await adminBatchCall({action:"batch_delete",name:b.name},"Batch deleted.")){ if(adminBatchFilter===b.name) adminBatchFilter=""; adminLoadStudents(adminCurrentFilter,1); } }
+async function adminBatchLimit(i){ const b=adminBatches[i]; const t=await adminAskText({title:"Daily limit for "+b.name,sub:"Current limit: "+(b.daily_limit==null?"none set, so the normal limit applies":b.daily_limit+" tries a day")+".\nA new number applies to everyone in this batch, including people who join later. A personal limit for one student still wins. Leave empty to use the normal limit.",label:"New limit (0 to 100)",type:"number",value:b.daily_limit==null?"":b.daily_limit,okText:"Save"}); if(!t.ok) return; await adminBatchCall({action:"batch_limit",name:b.name,daily_limit:t.value},t.value===""?"Back to the normal limit.":"Limit saved for "+b.name+"."); }
+// The limit that really applies to a student: personal, else batch, else normal.
+function adminEffLimit(r){
+  const li=window.__limitInfo||{normal:2,batch:{}};
+  if(r.limit!=null) return {n:r.limit,src:"personal limit"};
+  if(r.batch && li.batch && li.batch[r.batch]!=null) return {n:li.batch[r.batch],src:r.batch+" limit"};
+  return {n:li.normal,src:"normal limit"};
+}
+async function adminLimitOne(id){
+  const r=adminRow(id); if(!r.email) return;
+  const cur=adminEffLimit(r);
+  const t=await adminAskLimit({title:"Daily limit for "+(r.full_name||"this student"),sub:(r.email||"")+"\nCurrent limit: "+cur.n+" tries a day ("+cur.src+(r.limit!=null&&r.limit_until?", until "+adminUntilTxt(r.limit_until):"")+").\nType a new number to give this student a personal limit."+(r.limit!=null?" Leave it empty to go back to the normal limit.":""),value:cur.n,okText:"Save"});
+  if(!t.ok) return;
+  try{
+    const body=t.value===""?{action:"limit_remove",email:r.email}:{action:"limit_set",email:r.email,daily_limit:t.value,until:t.until};
+    const{data,error}=await sb.functions.invoke("admin-users",{body});
+    if(error||!data||!data.ok){ showToast((data&&data.error)||"Could not save. Please try again."); return; }
+    showToast(t.value===""?"Personal limit removed.":data.removed?"That is the normal limit ("+data.default+"), so no personal limit is kept.":"🔢 Limit saved: "+t.value+" a day"+(t.until?" until "+t.until:"")+".");
+    adminLoadStudents(adminCurrentFilter,adminPage);
+  }catch(e){ showToast("Could not save. Please try again."); }
+}
+async function adminBatchOne(id){
+  const r=adminRow(id);
+  const d=await adminAskDate({title:"Batch for "+(r.full_name||"this person"),sub:r.email||"",showDate:false,batches:adminBatchNames(),defaultBatch:r.batch||"",okText:"Save"}); if(!d.ok) return;
+  try{
+    const{data,error}=await sb.functions.invoke("admin-users",{body:{action:"batch_assign",ids:[id],batch:d.batch}});
+    if(error||!data||!data.ok){ showToast((data&&data.error)||"Could not save. Please try again."); return; }
+    showToast(d.batch?"📚 Now in "+d.batch+".":"📚 Removed from the batch."); adminLoadStudents(adminCurrentFilter,adminPage); adminBatchesLoad();
+  }catch(e){ showToast("Could not save. Please try again."); }
+}
+
+async function adminSetDate(id){
+  const r=adminRow(id);
+  const d=await adminAskDate({title:"Change access end date",sub:(r.full_name||"")+" · "+(r.email||""),okText:"Save"}); if(!d.ok) return;
+  try{
+    const{data,error}=await sb.functions.invoke("admin-users",{body:{action:"access_set",ids:[id],until:d.until}});
+    if(error||!data||!data.ok){ showToast((data&&data.error)||"Could not save. Please try again."); return; }
+    showToast(d.until?"📅 Access now ends on "+d.until+".":"📅 No end date."); adminLoadStudents(adminCurrentFilter);
+  }catch(e){ showToast("Could not save. Please try again."); }
+}
+async function adminBulk(kind){
+  const ids=Array.from(adminSel); if(!ids.length) return;
+  if(ids.length>200){ showToast("Please select 200 people or fewer at a time."); return; }
+  let body={action:"bulk_set_status",ids}; let msg="";
+  if(kind==="make"||kind==="date"){
+    const d=await adminAskDate({title:kind==="make"?"Make "+ids.length+" people students":"Change end date for "+ids.length+" people",sub:kind==="date"?"Only people who are students are changed.":"",okText:kind==="make"?"Make students":"Save",batches:kind==="make"?adminBatchNames():null,defaultBatch:(adminCurrentFilter==="approved"&&adminBatchFilter&&adminBatchFilter!=="__none")?adminBatchFilter:""}); if(!d.ok) return;
+    if(kind==="date") body={action:"access_set",ids,until:d.until}; else { body.status="approved"; body.until=d.until; body.batch=d.batch||""; }
+  } else if(kind==="batch"){
+    const d=await adminAskDate({title:"Put "+ids.length+" people in a batch",sub:"Choose “No batch” to take them out of their batch.",showDate:false,batches:adminBatchNames(),okText:"Save"}); if(!d.ok) return;
+    body={action:"batch_assign",ids,batch:d.batch};
+  } else if(kind==="limit"){
+    const rowsL=window.__adminRows||{}; const effs=ids.map(i=>rowsL[i]).filter(Boolean).map(r=>adminEffLimit(r).n);
+    const lo=effs.length?Math.min.apply(null,effs):null, hi=effs.length?Math.max.apply(null,effs):null;
+    const curTxt=lo===null?"":(lo===hi?"Current limit: "+lo+" tries a day for all of them.":"Current limits: from "+lo+" to "+hi+" tries a day.");
+    const t=await adminAskLimit({title:"Daily limit for "+ids.length+" people",sub:curTxt+"\nThe new number becomes a personal limit for each of them.",value:lo!==null&&lo===hi?lo:"",okText:"Set limit"}); if(!t.ok) return;
+    if(t.value===""){ showToast("Please type a number."); return; }
+    body={action:"limit_bulk",ids,daily_limit:t.value,until:t.until};
+  } else {
+    const t={remove:["pending","Remove student access from "+ids.length+" people? They stay as visitors."],block:["rejected","Block "+ids.length+" people? They will not be able to log in."],unblock:["pending","Unblock "+ids.length+" people? They will be visitors again."]}[kind];
+    if(!t||!confirm(t[1])) return; body.status=t[0];
+  }
+  let res=null,err=null;
+  try{ const r=await sb.functions.invoke("admin-users",{body}); res=r.data; err=r.error; }catch(e){ err=e; }
+  if(err||!res||!res.ok){ showToast((res&&res.error)||"Could not save. Please try again."); return; }
+  showToast("Done: "+res.done+" changed"+(res.skipped?(", "+res.skipped+" skipped (owner, supervisors or not students)"):"")+".");
+  if(kind==="batch") adminBatchesLoad(); if(kind==="make") adminBatchesLoad();
+  const rows=window.__adminRows||{}; const toMail=(kind==="make"?(res.done_ids||[]):[]).map(i=>rows[i]).filter(r=>r&&r.email);
+  adminLoadStudents(adminCurrentFilter);
+  (async()=>{ for(const r of toMail){ await sendEmail("approved",r.email,r.full_name); await new Promise(z=>setTimeout(z,700)); } })();
+}
+
+// ── ADMIN: usage and cost ─────────────────────────────
+function adminMoney(n){ n=Number(n)||0; return "$"+(n>=100?n.toFixed(0):n.toFixed(2)); }
+async function adminUsageLoad(){
+  if(!adminPanelUser()) return;
+  const box=pfEl("adminUsageBody"); if(!box) return;
+  box.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px">Loading...</div>';
+  try{
+    const{data:r,error}=await sb.functions.invoke("admin-users",{body:{action:"usage"}});
+    if(error||!r||!r.ok){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">'+pfEsc((r&&r.error)||"Could not load usage. Is admin-users deployed?")+'</div>'; return; }
+    const card=(t,p)=>'<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:14px"><div style="font-size:11px;color:var(--muted)">'+t+'</div><div style="font-size:24px;font-weight:800;color:#fff;margin:2px 0">'+adminMoney(p.cost)+'</div><div style="font-size:12px;color:rgba(255,255,255,0.75);line-height:1.6">'+p.essays+' essays marked<br>'+p.ideas+' ideas pages'+((p.refused||p.failed)?'<br><span style="color:var(--muted)">'+p.refused+' refused · '+p.failed+' failed</span>':'')+'</div></div>';
+    const P=r.periods;
+    const maxC=Math.max.apply(null,r.days.map(d=>d.cost).concat([0.0001]));
+    const dayRows=r.days.slice().reverse().map(d=>'<div style="display:flex;align-items:center;gap:10px;font-size:12px;margin-bottom:6px"><span style="width:76px;color:var(--muted)">'+new Date(d.d+"T00:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"short",timeZone:"UTC"})+'</span><span style="flex:1;background:rgba(255,255,255,0.05);border-radius:6px;height:10px;overflow:hidden"><span style="display:block;height:100%;width:'+Math.round(d.cost/maxC*100)+'%;background:linear-gradient(90deg,var(--blue),var(--green))"></span></span><span style="width:170px;text-align:right;color:rgba(255,255,255,0.8)">'+adminMoney(d.cost)+' · '+d.essays+' essays · '+d.ideas+' ideas</span></div>').join("");
+    const topRows=(r.top||[]).length?r.top.map(t=>'<div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="color:#fff">'+pfEsc(t.name||"Unknown")+' <span style="color:var(--muted)">'+pfEsc(t.email)+'</span></span><span style="color:rgba(255,255,255,0.8);white-space:nowrap">'+t.uses+' uses · '+adminMoney(t.cost)+'</span></div>').join(""):'<div style="color:var(--muted);font-size:12.5px">No use yet.</div>';
+    box.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px">'+card("Last 24 hours",P.h24)+card("Last 7 days",P.d7)+card("Last 30 days",P.d30)+card("This month",P.month)+'</div>'
+      +'<div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:10px">Last 14 days</div>'+dayRows
+      +'<div style="font-size:14px;font-weight:700;color:#fff;margin:22px 0 6px">Biggest users (last 30 days)</div>'+topRows
+      +'<div style="font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:18px">The cost shown is only a rough guide. For the exact bill, check your Anthropic account.'+(r.truncated?' Very busy period: only the newest records were counted.':'')+'</div>';
+  }catch(e){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">Could not load usage.</div>'; }
+}
+
+// ── ADMIN: AI marking switch, limits, testers ─────────
+async function adminAiLoad(){
+  if(!adminPanelUser()) return;
+  const box=pfEl("adminAiBody"); if(!box) return;
+  box.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px">Loading...</div>';
+  try{
+    const[{data:s,error:e1},{data:l}]=await Promise.all([sb.functions.invoke("admin-users",{body:{action:"settings_get"}}),sb.functions.invoke("admin-users",{body:{action:"limits_list"}})]);
+    if(e1||!s||!s.ok){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">'+pfEsc((s&&s.error)||"Could not load settings. Is admin-users deployed and 11_admin_controls.sql run?")+'</div>'; return; }
+    const st=s.settings; const lim=(l&&l.limits)||[];
+    if(!currentUser.isAdmin){
+      const ro=(t,inner)=>'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px 18px;margin-bottom:12px"><div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px">'+t+'</div><div style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.7">'+inner+'</div></div>';
+      box.innerHTML='<div style="font-size:12px;color:var(--muted);margin-bottom:12px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px">You can see these settings. Only the owner can change them.</div>'
+        +ro("AI marking",'<b style="color:'+(st.enabled?'#4ade80':'#fbbf24')+'">'+(st.enabled?'● OPEN to all students':'● CLOSED (testers only)')+'</b>')
+        +ro("Daily limit for every student",pfEsc(st.daily_limit)+" tries a day")
+        +ro("Testers",(st.tester_emails||[]).length?(st.tester_emails||[]).map(pfEsc).join("<br>"):"No testers.")
+        +ro("Personal limits",lim.length?lim.map(x=>(x.name?pfEsc(x.name)+" · ":"")+pfEsc(x.email)+" · "+x.daily_limit+" a day"+(x.batch?" · "+pfEsc(x.batch):"")+" · "+(x.until?"until "+adminUntilTxt(x.until):"while a student")).join("<br>"):"None.");
+      return;
+    }
+    const inp='class="pf-in"';
+    const sec=(t,sub,inner)=>'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px 18px;margin-bottom:14px"><div style="font-size:14px;font-weight:700;color:#fff">'+t+'</div>'+(sub?'<div style="font-size:12px;color:var(--muted);margin:2px 0 10px;line-height:1.5">'+sub+'</div>':'<div style="height:8px"></div>')+inner+'</div>';
+    const on=st.enabled;
+    const sw=sec("AI marking","When it is <b>open</b>, every student can use it (up to their daily limit). When it is <b>closed</b>, only the testers below can.",
+      '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span style="font-size:13px;font-weight:700;color:'+(on?'#4ade80':'#fbbf24')+'">'+(on?'● OPEN to all students':'● CLOSED (testers only)')+'</span><button class="'+(on?'admin-reject-btn':'admin-approve-btn')+'" onclick="adminAiToggle('+(on?'false':'true')+')">'+(on?'Close AI marking':'Open AI marking')+'</button></div>');
+    const dl=sec("Daily limit for every student","How many tries each student gets in 24 hours. Essays and ideas pages share it.",
+      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input '+inp+' id="aiDaily" type="number" min="0" max="100" value="'+pfEsc(st.daily_limit)+'" style="width:90px;padding:9px 12px"/><span style="font-size:12px;color:var(--muted)">tries a day</span><button class="admin-approve-btn" onclick="adminAiSave()">Save</button></div>');
+    const tl=(st.tester_emails||[]).map(e=>'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:5px 0;color:#fff"><span>'+pfEsc(e)+'</span><button class="admin-reject-btn" onclick="adminTesterRemove(\''+pfEsc(e)+'\')">Remove</button></div>').join("")||'<div style="font-size:12.5px;color:var(--muted)">No testers.</div>';
+    const te=sec("Testers","These emails can always use AI marking, even when it is closed, with no daily limit.",tl+'<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><input '+inp+' id="aiTester" type="email" placeholder="tester@gmail.com" style="flex:1;min-width:180px;padding:9px 12px;width:auto"/><button class="admin-approve-btn" onclick="adminTesterAdd()">Add</button></div>');
+    const ll=lim.map(x=>'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:5px 0;color:#fff"><span>'+(x.name?pfEsc(x.name)+' · ':'')+pfEsc(x.email)+' <span style="color:var(--muted)">· '+x.daily_limit+' a day'+(x.batch?' · '+pfEsc(x.batch):'')+' · '+(x.until?'until '+adminUntilTxt(x.until):'while a student')+'</span></span><span style="display:flex;gap:6px"><button class="admin-tab" onclick="adminLimitEdit(\''+pfEsc(x.email)+'\','+Number(x.daily_limit)+')">Change</button><button class="admin-reject-btn" onclick="adminLimitRemove(\''+pfEsc(x.email)+'\')">Remove</button></span></div>').join("")||'<div style="font-size:12.5px;color:var(--muted)">No personal limits. Everyone uses the daily limit above.</div>';
+    const pl=sec("Personal limits","Give one student more or fewer tries than the normal limit.",ll+'<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><input '+inp+' id="aiLimEmail" type="email" placeholder="student@gmail.com" style="flex:1;min-width:180px;padding:9px 12px;width:auto"/><button class="admin-approve-btn" onclick="adminLimitSet()">Set limit…</button></div>');
+    box.innerHTML=sw+dl+te+pl;
+  }catch(e){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">Could not load settings.</div>'; }
+}
+async function adminAiCall(body,okMsg){
+  try{
+    const{data,error}=await sb.functions.invoke("admin-users",{body});
+    if(error||!data||!data.ok){ showToast((data&&data.error)||"Could not save. Please try again."); return false; }
+    if(okMsg) showToast(okMsg); adminAiLoad(); return true;
+  }catch(e){ showToast("Could not save. Please try again."); return false; }
+}
+async function adminAiToggle(open){
+  if(open && !confirm("Open AI marking to EVERY student now?\n\nEach marked essay costs money. Students can use up to their daily limit.")) return;
+  await adminAiCall({action:"settings_set",enabled:!!open},open?"AI marking is now open to all students.":"AI marking is closed (testers only).");
+}
+async function adminAiSave(){
+  await adminAiCall({action:"settings_set",daily_limit:pfEl("aiDaily").value},"Daily limit saved.");
+}
+async function adminTesterAdd(){ const v=pfEl("aiTester").value.trim(); if(!v) return; await adminAiCall({action:"tester_add",email:v},"Tester added."); }
+async function adminTesterRemove(e){ if(!confirm("Remove "+e+" from the testers?")) return; await adminAiCall({action:"tester_remove",email:e},"Tester removed."); }
+async function adminLimitDo(e,cur){
+  const t=await adminAskLimit({title:"Personal limit",sub:e+(cur!=null?"\nCurrent personal limit: "+cur+" tries a day.":""),value:cur==null?"":cur,okText:"Save"});
+  if(!t.ok) return;
+  if(t.value===""){ showToast("Please type a number."); return; }
+  try{
+    const{data,error}=await sb.functions.invoke("admin-users",{body:{action:"limit_set",email:e,daily_limit:t.value,until:t.until}});
+    if(error||!data||!data.ok){ showToast((data&&data.error)||"Could not save. Please try again."); return; }
+    showToast(data.removed?"That is the normal limit ("+data.default+"), so no personal limit is kept.":"Personal limit saved."); adminAiLoad();
+  }catch(x){ showToast("Could not save. Please try again."); }
+}
+async function adminLimitSet(){ const e=pfEl("aiLimEmail").value.trim(); if(!e){ showToast("Type the student's email first."); return; } await adminLimitDo(e,null); }
+function adminLimitEdit(e,n){ adminLimitDo(e,n); }
+async function adminLimitRemove(e){ if(!confirm("Remove the personal limit for "+e+"?")) return; await adminAiCall({action:"limit_remove",email:e},"Personal limit removed."); }
+
+let adminLogQuery="", adminLogPage=1, adminLogTimer=null;
+const LOG_LABELS={make_student:["🎓","made a student"],remove_student:["↩️","removed student access from"],block:["⛔","blocked"],unblock:["✅","unblocked"],supervisor_add:["🛡","added an admin:"],supervisor_remove:["🛡","removed an admin:"],delete_user:["🗑","deleted"],progress_erase:["🗑","deleted the progress of"],progress_decline:["✋","declined the delete-progress request of"],view_progress:["📈","opened the progress of"],export_profiles:["⬇","exported profiles"],set_access_date:["📅","changed the access end date for"],access_expired:["⌛","access ended for"],ai_on:["🤖","opened AI marking to all students"],ai_off:["🤖","closed AI marking"],set_default_limit:["🔢","changed the daily limit"],set_prices:["💲","changed the cost prices"],tester_add:["🧪","added a tester:"],tester_remove:["🧪","removed a tester:"],limit_set:["🔢","set a personal limit for"],limit_remove:["🔢","removed the personal limit for"],batch_assign:["📚","put in a batch:"],batch_clear:["📚","removed from their batch:"],batch_create:["📚","added a batch"],batch_rename:["📚","renamed a batch"],batch_delete:["📚","deleted a batch"],batch_limit:["🔢","changed a batch limit"]};
+function adminLogSearch(v){ clearTimeout(adminLogTimer); adminLogTimer=setTimeout(()=>{ adminLogQuery=String(v||"").trim(); adminLogLoad(1); },350); }
+async function adminLogLoad(page){
+  if(!adminPanelUser()) return;
+  adminLogPage=page||1; const box=pfEl("adminLogList"); if(!box) return;
+  box.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px">Loading...</div>';
+  try{
+    const{data:res,error}=await sb.functions.invoke("admin-users",{body:{action:"log_list",q:adminLogQuery,page:adminLogPage}});
+    if(error||!res||!res.ok){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">'+pfEsc((res&&res.error)||"Could not load the log. Is admin-users deployed and 10_admin_log.sql run?")+'</div>'; return; }
+    const rows=res.rows||[];
+    if(!rows.length){ box.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px">'+(adminLogQuery?"Nothing matches that search.":"Nothing has been done yet.")+'</div>'; pfEl("adminLogPager").innerHTML=""; return; }
+    const fmt=d=>new Date(d).toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    box.innerHTML=rows.map(r=>{
+      const L=LOG_LABELS[r.action]||["•",r.action];
+      const who=r.actor_role==="owner"?"You":r.actor_role==="system"?"Automatically,":pfEsc(r.actor_email)+' <span style="font-size:10px;color:#c084fc">(supervisor)</span>';
+      const dt=String(r.detail||""); const um=dt.match(/until (\d{4}-\d{2}-\d{2})/); const am=dt.match(/access until (.+?)(?: \(bulk\))?$/);
+      const extra=(r.action==="export_profiles"&&dt)?" ("+pfEsc(dt)+")":(r.action==="make_student"&&um)?" (until "+um[1]+")":(r.action==="set_access_date"&&am)?" (until "+pfEsc(am[1].replace("no end date","no end date"))+")":(r.action==="set_default_limit"||r.action==="limit_set"||r.action==="limit_remove"||r.action==="batch_assign"||r.action.indexOf("batch_")===0)&&dt?" ("+pfEsc(dt.replace(/ \(bulk\)$/,""))+")":"";
+      const bulk=/\(bulk\)/.test(dt)?' <span style="font-size:10px;color:var(--muted)">(bulk)</span>':"";
+      const tgt=r.target_email?(" <b style=\"color:#fff\">"+pfEsc(r.target_name?r.target_name+" · ":"")+pfEsc(r.target_email)+"</b>"):"";
+      return '<div class="admin-student-card"><div style="font-size:18px">'+L[0]+'</div><div style="flex:1;min-width:200px"><div style="font-size:13px;color:rgba(255,255,255,0.85)">'+who+' '+pfEsc(L[1])+tgt+extra+bulk+'</div><div style="font-size:11px;color:var(--muted);margin-top:3px">'+fmt(r.at)+'</div></div></div>';
+    }).join("");
+    const total=res.total||0,size=res.pageSize||50,pg=res.page||1,pages=res.pages||1;
+    pfEl("adminLogPager").innerHTML='<span style="font-size:12px;color:var(--muted)">Showing '+((pg-1)*size+1)+'–'+Math.min(total,pg*size)+' of '+total+'</span>'
+      +'<span style="display:flex;gap:8px;align-items:center"><button class="admin-tab" '+(pg<=1?'disabled style="opacity:.4"':'onclick="adminLogLoad('+(pg-1)+')"')+'>← Previous</button><span style="font-size:12px;color:var(--muted)">Page '+pg+' of '+pages+'</span><button class="admin-tab" '+(pg>=pages?'disabled style="opacity:.4"':'onclick="adminLogLoad('+(pg+1)+')"')+'>Next →</button></span>';
+  }catch(e){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">Could not load the log.</div>'; }
+}
+async function adminProfSeen(id){
+  try{ await sb.functions.invoke("admin-users",{body:{action:"profiles_mark_seen",user_id:id}}); }catch(e){}
+  adminProfLoad(adminProfPage); adminCheckNew(false);
+}
+async function adminProfSeenAll(){
+  if(!confirm("Mark every new profile as seen?")) return;
+  try{ await sb.functions.invoke("admin-users",{body:{action:"profiles_mark_seen"}}); }catch(e){}
+  adminProfLoad(1); adminCheckNew(false);
+}
+async function adminProfExport(){
+  if(!adminPanelUser()) return;
+  try{
+    const cols=[["Name","full_name"],["Email","email"],["Phone","phone"],["Country","country_name"],["Division / State","division"],["District / City","district"],["Area","area"],["Street","street"],["Completed","completed_at"],["Updated","updated_at"]];
+    const cell=v=>{ let s=String(v==null?"":v); if(/^[=+\-@\t\r]/.test(s)) s="'"+s; return '"'+s.replace(/"/g,'""')+'"'; };
+    // Read the people in parts of 2000, so an export can be any size.
+    const parts=["\ufeff"+cols.map(c=>cell(c[0])).join(",")];
+    let page=1, pages=1, got=0, total=0;
+    do{
+      const{data:res,error}=await sb.functions.invoke("admin-users",{body:{action:"profiles_export",q:adminProfQuery,filter:adminProfFilter,page:page}});
+      if(error||!res||!res.ok){ showToast("Could not export. Please try again."); return; }
+      pages=res.pages||1; total=res.total||0;
+      (res.rows||[]).forEach(r=>{ parts.push("\r\n"+cols.map(c=>cell(r[c[1]])).join(",")); });
+      got+=(res.rows||[]).length;
+      if(pages>1) showToast("Exporting "+got+" of "+total+"…");
+      page++;
+    }while(page<=pages&&page<=500);
+    const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob(parts,{type:"text/csv;charset=utf-8"}));
+    a.download="engfinite-profiles-"+new Date().toISOString().slice(0,10)+".csv"; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+    showToast("Exported "+got+" profile"+(got===1?"":"s")+".");
+  }catch(e){ showToast("Could not export. Please try again."); }
+}
+
 async function logOut(){
   await sb.auth.signOut();
-  currentUser=null;
+  currentUser=null; __attList=[];
   updateNavUser();
   document.getElementById("dashPanel").style.display="none";
   showToast("Logged out successfully.");
@@ -6548,6 +7749,8 @@ function updateNavUser(){
     if(userRow) userRow.style.display="flex";
     if(logoutLink) logoutLink.style.display="flex";
     if(activityLink) activityLink.style.display="flex";
+    const pgl=document.getElementById("menuProgressLink"); if(pgl) pgl.style.display="flex";
+    const pl=document.getElementById("menuProfileLink"); if(pl) pl.style.display=currentUser.isAdmin?"none":"flex";
     const initial=currentUser.name.charAt(0).toUpperCase();
     const navAvatar=document.getElementById("navAvatar");
     const navName=document.getElementById("navName");
@@ -6573,6 +7776,9 @@ function updateNavUser(){
     if(userRow) userRow.style.display="none";
     if(logoutLink) logoutLink.style.display="none";
     if(activityLink) activityLink.style.display="none";
+    const pgl2=document.getElementById("menuProgressLink"); if(pgl2) pgl2.style.display="none";
+    const pl2=document.getElementById("menuProfileLink"); if(pl2) pl2.style.display="none";
+    const pbn=document.getElementById("profileBanner"); if(pbn) pbn.style.display="none";
   }
 }
 
@@ -6634,8 +7840,29 @@ async function trackTestComplete(bookKey, testNum){
   currentUser.stats.tests = (currentUser.stats.tests || 0) + 1;
 }
 
+// ── LOGIN ERRORS COMING BACK IN THE LINK ─────────────
+// When a Google sign-in or an email link fails (for example the sign-in took too long),
+// the address ends with ?error=... . We read it, clean the address bar, and tell the person
+// in plain words. Links without an error are not touched.
+function authReadUrlError(){
+  try{
+    const L=window.__efLoc||{s:location.search,h:location.hash}; const p=new URLSearchParams(L.s||""), hp=new URLSearchParams((L.h||"").replace(/^#/,""));
+    const code=p.get("error_code")||hp.get("error_code")||"";
+    const err=p.get("error")||hp.get("error")||"";
+    if(!code && !err) return null;
+    try{ history.replaceState(null,"",location.pathname); }catch(e){}
+    let msg;
+    if(code==="bad_oauth_state"||/state/i.test(p.get("error_description")||hp.get("error_description")||"")) msg="Your Google sign-in took too long to finish. Please press Continue with Google and try again.";
+    else if(code==="otp_expired"||/expired|invalid/i.test(p.get("error_description")||hp.get("error_description")||"")) msg="That email link has expired or was already used. Please log in, or use Forgot password to get a new one.";
+    else if(err==="access_denied") msg="Sign-in was cancelled. Please try again when you are ready.";
+    else msg="Sign-in did not finish. Please try again.";
+    return msg;
+  }catch(e){ return null; }
+}
+
 // Auto-login from existing Supabase session (e.g. page refresh)
 window.addEventListener("load", async function(){
+  const __urlErr=authReadUrlError();
   const { data: { session } } = await sb.auth.getSession();
   if(session && session.user){
     // Check if this is a password recovery session
@@ -6651,6 +7878,9 @@ window.addEventListener("load", async function(){
     } else {
       await loadUserAfterLogin(session.user);
     }
+  }
+  if(__urlErr && !currentUser){
+    try{ showAuth(); showAuthError(__urlErr); }catch(e){}
   }
   try{ authEnforceCurrent(); }catch(e){ console.log("gate",e); }
 });
@@ -7219,7 +8449,7 @@ function _hmStillUsed(bankId, val, excludeQn){
       </div>
       <div id="authError" style="display:none;color:#f87171;font-size:12px;margin-bottom:12px;padding:8px 12px;background:rgba(239,68,68,0.1);border-radius:8px"></div>
       <button onclick="handleAuth()" style="width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:opacity 0.2s" id="authSubmitBtn">Log In</button>
-      <p style="margin-top:14px;font-size:12px;color:var(--muted)">By continuing you agree to EngFinite's terms of use.</p>
+      <p style="margin-top:14px;font-size:12px;color:var(--muted)">By continuing you agree to EngFinite's <a href="/terms.html" target="_blank" style="color:var(--blue)">Terms of Service</a> and <a href="/privacy.html" target="_blank" style="color:var(--blue)">Privacy Policy</a>.</p>
     </div>
 
     <!-- FORGOT PASSWORD: request reset email -->
@@ -7778,45 +9008,25 @@ function _hmStillUsed(bankId, val, excludeQn){
 </div>
 
 <!-- ACTIVITY PAGE -->
-<div class="selpage" id="activityPage">
+<div class="selpage" id="progressPage">
   <button class="bk" onclick="goHome()">← Back to Home</button>
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px">
-    <div class="ptitle" style="margin-bottom:0">📋 My Activity</div>
-    <button onclick="clearAllActivity()" style="padding:7px 16px;border-radius:20px;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.07);color:#f87171;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif">🗑 Clear All Activity</button>
+  <div class="ptitle">📈 My Progress</div>
+  <div class="psub">Your average band for each skill. Tap a skill to see your latest tests.</div>
+  <div class="pg-scope">
+    <button class="pg-pill on" id="pgScopeLife" onclick="progressScope('life')">Lifetime</button>
+    <button class="pg-pill" id="pgScope7" onclick="progressScope('last7')">Last 7</button>
+    <button class="pg-pill" onclick="showActivityPage()" style="margin-left:auto">🕘 Recent activity</button>
   </div>
-  <div class="psub" id="activitySubtitle">Your practice history and progress</div>
+  <div id="pgBody"><div class="pg-empty">Loading…</div></div>
+  <div id="pgDelBox"></div>
+</div>
 
-  <!-- Stats row -->
-  <div class="act-stats-row" id="actStatsRow" style="display:none">
-    <div class="act-stat-card">
-      <div class="act-stat-num" id="actStatTotal">0</div>
-      <div class="act-stat-lbl">Total Actions</div>
-    </div>
-    <div class="act-stat-card">
-      <div class="act-stat-num" id="actStatSaved" style="color:var(--blue)">0</div>
-      <div class="act-stat-lbl">Tests Saved</div>
-    </div>
-    <div class="act-stat-card">
-      <div class="act-stat-num" id="actStatCompleted" style="color:var(--green)">0</div>
-      <div class="act-stat-lbl">Tests Completed</div>
-    </div>
-  </div>
-
-  <!-- Filter buttons -->
-  <div class="act-filter" id="actFilterRow" style="display:none">
-    <button class="act-filter-btn active" onclick="filterActivity('all',this)">All</button>
-    <button class="act-filter-btn" onclick="filterActivity('saved',this)">💾 Saved</button>
-    <button class="act-filter-btn" onclick="filterActivity('completed',this)">✅ Completed</button>
-  </div>
-
-  <!-- Activity list -->
-  <div id="activityList"><div class="act-loading">⏳ Loading activity...</div></div>
-
-  <!-- Incomplete Study Plan Tasks -->
-  <div id="spIncompleteSection" style="display:none;margin-top:32px">
-    <div style="font-size:14px;font-weight:700;color:#f87171;margin-bottom:12px">❌ Incomplete Study Plan Tasks</div>
-    <div id="spIncompleteList"></div>
-  </div>
+<div class="selpage" id="activityPage">
+  <button class="bk" onclick="showPage('progress')">← Back to My Progress</button>
+  <div class="ptitle">🕘 Recent activity</div>
+  <div class="psub">Your latest tests and essays, and work you can continue.</div>
+  <div id="pgRecent"></div>
+  <div id="pgActDel"></div>
 </div>
 
 <script src="/data-cam6.js?v=20260733e"></script>
@@ -7835,7 +9045,6 @@ function _hmStillUsed(bankId, val, excludeQn){
 <script src="/data-cam19.js?v=20260733e"></script>
 <script src="/data-cam20.js?v=20260733e"></script>
 <script src="/data-cam21.js?v=20260733e"></script>
-
 <script src="/data-listening-cam6.js?v=20260733e"></script>
 <script src="/data-listening-cam7.js?v=20260733e"></script>
 <script src="/data-listening-cam8.js?v=20260733e"></script>
@@ -7853,192 +9062,11 @@ function _hmStillUsed(bankId, val, excludeQn){
 <script src="/data-listening-cam20.js?v=20260733e"></script>
 <script src="/data-listening-cam21.js?v=20260733e"></script>
 <script src="/data-writing.js?v=20261028b"></script>
-<script src="/data-writing-task1.js?v=20261029f"></script>
+<script src="/data-writing-task1.js?v=20261101a"></script>
 <script src="/data-recent.js?v=20261028a"></script>
 <script src="/data-recent-task1.js?v=20261028a"></script>
 
-<script>
-// ══════════════════════════════════════════════
-let _allActivityItems = [];
 
-function showActivityPage(){
-  if(!currentUser){
-    showToast("Please log in to view your activity.");
-    showAuth();
-    return;
-  }
-  showPage("activity");
-}
-
-async function loadActivityLog(){
-  if(!currentUser) return;
-  const listEl=document.getElementById("activityList");
-  const statsRow=document.getElementById("actStatsRow");
-  const filterRow=document.getElementById("actFilterRow");
-  if(!listEl) return;
-  listEl.innerHTML='<div class="act-loading">⏳ Loading your activity...</div>';
-  statsRow.style.display="none";
-  filterRow.style.display="none";
-
-  // Load incomplete study plan tasks
-  try{
-    const{data:incomplete}=await sb.from('study_plan_progress').select('*').eq('user_id',currentUser.id).eq('status','incomplete').order('plan_date',{ascending:true});
-    const sec=document.getElementById('spIncompleteSection');
-    const lst=document.getElementById('spIncompleteList');
-    if(sec&&lst){
-      if(incomplete&&incomplete.length>0){
-        sec.style.display='block';
-        lst.innerHTML=incomplete.map(r=>`
-          <div id="actTask_${r.id}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.18);border-radius:10px;margin-bottom:8px">
-            <span style="font-size:18px">❌</span>
-            <div style="flex:1">
-              <div style="font-size:12px;font-weight:700;color:#f87171">${r.skill}</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.6)">${r.task_desc||''}</div>
-              <div style="font-size:10px;color:var(--muted);margin-top:2px">${new Date(r.plan_date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}</div>
-            </div>
-            <button onclick="actMarkComplete('${r.id}','${r.plan_date}','${r.skill}')" style="padding:6px 14px;border-radius:20px;border:none;background:rgba(57,181,74,0.15);color:#4ade80;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;flex-shrink:0;border:1px solid rgba(57,181,74,0.3)">✅ Mark Complete</button>
-          </div>`).join('');
-      } else {
-        sec.style.display='none';
-      }
-    }
-  }catch(e){console.log('incomplete tasks error',e);}
-
-  try{
-    // Fetch activity_log (general events)
-    const { data: logRows } = await sb
-      .from("activity_log")
-      .select("*")
-      .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false })
-      .limit(100);
-
-    // Fetch saved_tests for richer save/resume info
-    const { data: savedRows } = await sb
-      .from("saved_tests")
-      .select("*")
-      .eq("user_id", currentUser.id)
-      .order("updated_at", { ascending: false });
-
-    const items = [];
-
-    // Build items from activity_log
-    (logRows||[]).forEach(row=>{
-      items.push({
-        type: row.action,
-        detail: row.detail,
-        time: row.created_at,
-        source: "log"
-      });
-    });
-
-    // Add saved_tests as supplementary items if not already in log
-    const logDetails = new Set((logRows||[]).map(r=>r.detail));
-    (savedRows||[]).forEach(row=>{
-      const label = row.status==="completed" ? "completed_test" : "saved_reading";
-      const detail = row.status==="completed"
-        ? "Completed reading test: "+row.activity_id
-        : "Saved reading test: "+(row.content?.book||row.activity_id)+" Test "+(row.content?.test!==undefined?(row.content.test+1):"?")+" — Passage "+(row.content?.passIdx!==undefined?(row.content.passIdx+1):"?")+" · Saved "+(row.content?.savedAt||"");
-      if(!logDetails.has(detail)){
-        items.push({
-          type: label,
-          detail: detail,
-          time: row.updated_at||row.created_at,
-          source: "saved_tests",
-          status: row.status
-        });
-      }
-    });
-
-    // Sort by time descending
-    items.sort((a,b)=>new Date(b.time)-new Date(a.time));
-    _allActivityItems = items;
-
-    // Calculate stats
-    const totalSaved = items.filter(i=>i.type==="saved_reading").length;
-    const totalCompleted = items.filter(i=>i.type==="completed_test").length;
-    document.getElementById("actStatTotal").textContent = items.length;
-    document.getElementById("actStatSaved").textContent = totalSaved;
-    document.getElementById("actStatCompleted").textContent = totalCompleted;
-
-    if(items.length > 0){
-      statsRow.style.display="flex";
-      filterRow.style.display="flex";
-    }
-
-    renderActivityItems(items);
-  }catch(e){
-    listEl.innerHTML='<div class="act-empty"><div class="act-empty-ico">⚠️</div><p>Could not load activity. Please try again.</p></div>';
-  }
-}
-
-function activityActionIcon(type){
-  if(type==="saved_reading") return "💾";
-  if(type==="completed_test") return "✅";
-  if(type==="resumed_test") return "▶️";
-  if(type==="submitted_writing") return "✍️";
-  if(type==="completed_listening") return "🎧";
-  return "📌";
-}
-
-function activityActionLabel(type){
-  if(type==="saved_reading") return "Saved Reading Test";
-  if(type==="completed_test") return "Completed Test";
-  if(type==="resumed_test") return "Resumed Test";
-  if(type==="submitted_writing") return "Submitted Writing";
-  if(type==="completed_listening") return "Completed Listening";
-  return type.replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase());
-}
-
-function activityBadge(type){
-  if(type==="saved_reading") return '<span class="act-badge saved">Saved</span>';
-  if(type==="completed_test") return '<span class="act-badge completed">Completed</span>';
-  return "";
-}
-
-function formatActivityTime(iso){
-  if(!iso) return "";
-  try{
-    const d=new Date(iso);
-    return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})+" at "+d.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"});
-  }catch(e){ return iso; }
-}
-
-function renderActivityItems(items){
-  const listEl=document.getElementById("activityList");
-  if(!listEl) return;
-  if(!items||items.length===0){
-    listEl.innerHTML='<div class="act-empty"><div class="act-empty-ico">📭</div><p>No activity yet. Start practising to see your history here!</p></div>';
-    return;
-  }
-  let html='<div class="act-list">';
-  items.forEach(item=>{
-    html+=`<div class="act-item">
-      <div class="act-ico">${activityActionIcon(item.type)}</div>
-      <div class="act-body">
-        <div class="act-action">${activityActionLabel(item.type)}${activityBadge(item.type)}</div>
-        <div class="act-detail">${item.detail||""}</div>
-      </div>
-      <div class="act-time">${formatActivityTime(item.time)}</div>
-    </div>`;
-  });
-  html+='</div>';
-  listEl.innerHTML=html;
-}
-
-function filterActivity(type, btn){
-  document.querySelectorAll(".act-filter-btn").forEach(b=>b.classList.remove("active"));
-  if(btn) btn.classList.add("active");
-
-  if(type==="all"){
-    renderActivityItems(_allActivityItems);
-  } else if(type==="saved"){
-    renderActivityItems(_allActivityItems.filter(i=>i.type==="saved_reading"));
-  } else if(type==="completed"){
-    renderActivityItems(_allActivityItems.filter(i=>i.type==="completed_test"));
-  }
-}
-</script>
 <!-- TYPING PRACTICE PAGE -->
 <div class="selpage" id="typingPracticePage" style="max-width:800px">
   <button class="bk" onclick="goHome()">← Back to Home</button>
@@ -9204,61 +10232,72 @@ function spDismissBanner(){
 
 // ── ADMIN PANEL ──────────────────────────────────────
 let adminCurrentFilter = 'pending';
+let adminPage = 1;
+let adminQuery = '';
+let adminSearchTimer = null;
 
-async function adminLoadStudents(filter){
-  if(!currentUser?.isAdmin) return;
-  adminCurrentFilter = filter || 'pending';
+async function adminLoadStudents(filter,page){
+  if(!(currentUser?.isAdmin||currentUser?.isSupervisor)) return;
+  adminCurrentFilter = filter || adminCurrentFilter || 'pending';
+  if(page) adminPage = page;
   const listEl = document.getElementById('adminStudentList');
   if(!listEl) return;
+  adminSel=new Set(); adminSelUpdate(); { const sa=pfEl('adminSelAllBox'); if(sa) sa.checked=false; }
   listEl.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px">Loading...</div>';
 
   try{
-    // Load counts
-    const{data:all}=await sb.from('profiles').select('status');
-    if(all){
-      const pending=all.filter(r=>r.status==='pending').length;
-      const approved=all.filter(r=>r.status==='approved').length;
-      const rejected=all.filter(r=>r.status==='rejected').length;
-      const pc=document.getElementById('adminPendingCount'); if(pc) pc.textContent=pending;
-      const ac=document.getElementById('adminApprovedCount'); if(ac) ac.textContent=approved;
-      const rc=document.getElementById('adminRejectedCount'); if(rc) rc.textContent=rejected;
-    }
-
-    // Load students by filter
-    let query=sb.from('profiles').select('*').order('created_at',{ascending:false});
-    if(filter!=='all') query=query.eq('status',filter);
-    const{data:students}=await query;
-
-    if(!students||students.length===0){
-      listEl.innerHTML=`<div style="text-align:center;color:var(--muted);padding:40px">Nobody here yet.</div>`;
+    const{data:res,error:lerr}=await sb.functions.invoke('admin-users',{body:{action:'list',filter:adminCurrentFilter,q:adminQuery,page:adminPage,batch:adminCurrentFilter==='approved'?adminBatchFilter:''}});
+    if(lerr||!res||!res.ok){ listEl.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">Could not load the list. Is the admin-users function deployed?</div>'; return; }
+    const students=res.rows||[], meta=res.meta||{}, cnt=res.counts||{};
+    adminPage=res.page||1;
+    const pc=document.getElementById('adminPendingCount'); if(pc) pc.textContent=cnt.pending==null?'-':cnt.pending;
+    const ac=document.getElementById('adminApprovedCount'); if(ac) ac.textContent=cnt.approved==null?'-':cnt.approved;
+    const rc=document.getElementById('adminRejectedCount'); if(rc) rc.textContent=cnt.rejected==null?'-':cnt.rejected;
+    adminRenderPager(res);
+    if(students.length===0 && adminPage>1 && (res.total||0)>0){ adminLoadStudents(null,res.pages||1); return; }
+    if(students.length===0){
+      listEl.innerHTML=`<div style="text-align:center;color:var(--muted);padding:40px">${adminQuery?'No one matches that search.':'Nobody here yet.'}</div>`;
       return;
     }
 
-    window.__adminRows={}; students.forEach(s=>{window.__adminRows[s.id]=s;});
+    window.__adminRows={}; students.forEach(s=>{window.__adminRows[s.id]=s;}); window.__limitInfo=res.limit_info||{normal:2,batch:{}};
     const aEsc=(t)=>String(t==null?"":t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const owner=!!currentUser.isAdmin;
     listEl.innerHTML=students.map(s=>{
       const date=new Date(s.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
       const st=s.status==='approved'?'student':s.status==='rejected'?'blocked':'visitor';
       const statusColor=st==='student'?'#4ade80':st==='blocked'?'#f87171':'#7dd3fc';
       const statusIcon=st==='student'?'🎓':st==='blocked'?'⛔':'👤';
+      const m=meta[s.id]; const mt=m?(' · Signed up with '+m.provider+' · Last login '+(m.last?new Date(m.last).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'never')):'';
+      const role=s.role||'user';
+      const roleTag=role==='owner'?'<span style="font-size:10px;font-weight:700;color:#fbbf24;margin-left:6px">👑 OWNER</span>':role==='supervisor'?'<span style="font-size:10px;font-weight:700;color:#c084fc;margin-left:6px">🛡 SUPERVISOR</span>':'';
+      const canAct=(role==='user')||(owner&&role==='supervisor');
+      const dom=String(s.email||'').split('@')[1]||'';
+      const typo=/^(gamil|gmial|gmai|gmal|gmail\.co$|gmail\.con$|gnail|hotmial|hotmal|yaho|yahho|outlok)/i.test(dom)&&dom.toLowerCase()!=='gmail.com';
+      const warnTags=(s.duplicate?'<div style="font-size:11px;color:#fbbf24;margin-top:3px">⚠ Duplicate email: another account uses this Gmail</div>':'')+(typo?'<div style="font-size:11px;color:#fbbf24;margin-top:3px">⚠ Check the email spelling</div>':'');
+      const tagB=s.batch?`<span style="font-size:10.5px;font-weight:700;color:#7dd3fc;margin-left:6px;background:rgba(125,211,252,0.1);border-radius:8px;padding:1px 7px">📚 ${aEsc(s.batch)}</span>`:'';
+      const eff=(s.status==='approved')?adminEffLimit(s):null;
+      const tagL=eff?`<span style="font-size:10.5px;color:${s.limit!=null?'#7dd3fc':'var(--muted)'};margin-left:6px" title="${aEsc(eff.src)}${(s.limit!=null&&s.limit_until)?' until '+aEsc(adminUntilTxt(s.limit_until)):''}">· ${eff.n} tries/day${(s.limit!=null&&s.limit_until)?' until '+aEsc(adminUntilTxt(s.limit_until)):''}</span>`:'';
+      const until=(st==='student'&&s.access_until)?' · until '+new Date(s.access_until).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+      const chk=canAct?`<input type="checkbox" class="admin-sel" data-id="${aEsc(s.id)}" onchange="adminSelToggle('${aEsc(s.id)}',this.checked)" style="width:18px;height:18px;flex-shrink:0;cursor:pointer"/>`:'<span style="width:18px;flex-shrink:0"></span>';
+      const btns=!canAct?'':(
+        (st!=='student'?`<button class="admin-approve-btn" onclick="adminMakeStudent('${aEsc(s.id)}')">🎓 Make student</button>`:`<button class="admin-tab" onclick="adminProgressOne('${aEsc(s.id)}')">📈 Progress</button><button class="admin-tab" onclick="adminBatchOne('${aEsc(s.id)}')">📚 Batch</button>${owner?`<button class="admin-tab" onclick="adminLimitOne('${aEsc(s.id)}')">🔢 Limit</button>`:''}<button class="admin-tab" onclick="adminSetDate('${aEsc(s.id)}')">📅 End date</button><button class="admin-reject-btn" onclick="adminRemoveStudent('${aEsc(s.id)}')">↩ Remove student</button>`)
+        +(st!=='blocked'?`<button class="admin-reject-btn" onclick="adminBlock('${aEsc(s.id)}')">⛔ Block</button>`:`<button class="admin-approve-btn" onclick="adminUnblock('${aEsc(s.id)}')">Unblock</button>`)
+        +`<button class="admin-reject-btn" onclick="adminDelete('${aEsc(s.id)}')">🗑 Delete</button>`);
       return `<div class="admin-student-card" id="adminCard_${aEsc(s.id)}">
+        ${chk}
         <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--green));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0">${aEsc((s.full_name||'?').charAt(0).toUpperCase())}</div>
         <div style="flex:1;min-width:150px">
-          <div style="font-size:14px;font-weight:700;color:#fff">${aEsc(s.full_name||'Unknown')}</div>
+          <div style="font-size:14px;font-weight:700;color:#fff">${aEsc(s.full_name||'Unknown')}${roleTag}${tagB}${tagL}</div>
           <div style="font-size:12px;color:var(--muted)">${aEsc(s.email||'No email')}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px">Joined ${date}<span id="adminMeta_${aEsc(s.id)}"></span></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Joined ${date}${aEsc(mt)}</div>${warnTags}
         </div>
         <div style="display:flex;align-items:center;gap:6px;margin-right:8px">
-          <span style="font-size:11px;font-weight:700;color:${statusColor}">${statusIcon} ${st.toUpperCase()}</span>
+          <span style="font-size:11px;font-weight:700;color:${statusColor}">${statusIcon} ${st.toUpperCase()}${aEsc(until)}</span>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          ${st!=='student'?`<button class="admin-approve-btn" onclick="adminMakeStudent('${aEsc(s.id)}')">🎓 Make student</button>`:`<button class="admin-reject-btn" onclick="adminRemoveStudent('${aEsc(s.id)}')">↩ Remove student</button>`}
-          ${st!=='blocked'?`<button class="admin-reject-btn" onclick="adminBlock('${aEsc(s.id)}')">⛔ Block</button>`:`<button class="admin-approve-btn" onclick="adminUnblock('${aEsc(s.id)}')">Unblock</button>`}
-          <button class="admin-reject-btn" onclick="adminDelete('${aEsc(s.id)}')">🗑 Delete</button>
-        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">${btns}</div>
       </div>`;
     }).join('');
-    adminLoadMeta();
 
   }catch(e){
     listEl.innerHTML='<div style="text-align:center;color:#f87171;padding:40px">Error loading students. Please try again.</div>';
@@ -9267,48 +10306,35 @@ async function adminLoadStudents(filter){
 }
 
 function adminFilter(filter, btn){
-  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#adminTabPending,#adminTabApproved,#adminTabRejected,#adminTabAll,#adminTabAdmins').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  adminLoadStudents(filter);
+  adminPage=1;
+  if(filter==='admins'){ adminShowAdmins(true,filter); adminAdminsLoad(); return; }
+  adminShowAdmins(false,filter);
+  adminLoadStudents(filter,1);
+}
+function adminSearchInput(v){
+  clearTimeout(adminSearchTimer);
+  adminSearchTimer=setTimeout(()=>{ adminQuery=String(v||'').trim(); adminPage=1; adminLoadStudents(adminCurrentFilter,1); },350);
+}
+function adminRenderPager(res){
+  const el=document.getElementById('adminPager'); if(!el) return;
+  const total=res.total||0, size=res.pageSize||50, page=res.page||1, pages=res.pages||1;
+  if(total===0){ el.innerHTML=''; return; }
+  const from=(page-1)*size+1, to=Math.min(total,page*size);
+  el.innerHTML='<span style="font-size:12px;color:var(--muted)">Showing '+from+'–'+to+' of '+total+'</span>'
+    +'<span style="display:flex;gap:8px;align-items:center">'
+    +'<button class="admin-tab" '+(page<=1?'disabled style="opacity:.4"':'onclick="adminLoadStudents(null,'+(page-1)+')"')+'>← Previous</button>'
+    +'<span style="font-size:12px;color:var(--muted)">Page '+page+' of '+pages+'</span>'
+    +'<button class="admin-tab" '+(page>=pages?'disabled style="opacity:.4"':'onclick="adminLoadStudents(null,'+(page+1)+')"')+'>Next →</button></span>';
 }
 
-async function adminApprove(userId, email, name){
-  if(!confirm(`Approve ${name} (${email})?`)) return;
-  try{
-    await sb.from('profiles').update({status:'approved'}).eq('id',userId);
-    await sendEmail('approved', email, name);
-    showToast('✅ '+name+' approved! Email sent.');
-    adminLoadStudents(adminCurrentFilter);
-  }catch(e){showToast('Error approving student.');}
-}
-
-async function adminReject(userId, email, name){
-  if(!confirm(`Reject ${name} (${email})? They will be notified by email.`)) return;
-  try{
-    await sb.from('profiles').update({status:'rejected'}).eq('id',userId);
-    await sendEmail('rejected', email, name);
-    showToast('❌ '+name+' rejected. Email sent.');
-    adminLoadStudents(adminCurrentFilter);
-  }catch(e){showToast('Error rejecting student.');}
-}
 // ─────────────────────────────────────────────────────
 
-// How each person signed in and when they last came back (from the owner-only function).
-async function adminLoadMeta(){
-  try{
-    const{data,error}=await sb.functions.invoke('admin-users',{body:{action:'meta'}});
-    if(error||!data||!data.meta) return;
-    Object.keys(data.meta).forEach(id=>{
-      const el=document.getElementById('adminMeta_'+id); if(!el) return;
-      const m=data.meta[id];
-      const last=m.last?new Date(m.last).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'never';
-      el.textContent=' · Signed up with '+m.provider+' · Last login '+last;
-    });
-  }catch(e){}
-}
-async function adminSetStatus(id,status,okMsg,email,name,mail){
-  const{error}=await sb.from('profiles').update({status}).eq('id',id);
-  if(error){ showToast('Could not save. Please try again.'); return; }
+async function adminSetStatus(id,status,okMsg,email,name,mail,until,batch){
+  let res=null,err=null;
+  try{ const r=await sb.functions.invoke('admin-users',{body:{action:'set_status',user_id:id,status,until:until||'',batch:batch||''}}); res=r.data; err=r.error; }catch(e){ err=e; }
+  if(err||!res||!res.ok){ showToast((res&&res.error)||'Could not save. Please try again.'); return; }
   if(mail) await sendEmail(mail,email,name);
   showToast(okMsg);
   adminLoadStudents(adminCurrentFilter);
@@ -9316,8 +10342,9 @@ async function adminSetStatus(id,status,okMsg,email,name,mail){
 function adminRow(id){ return (window.__adminRows||{})[id]||{}; }
 async function adminMakeStudent(id){
   const r=adminRow(id);
-  if(!confirm('Make '+(r.full_name||'this person')+' ('+(r.email||'')+') a student?')) return;
-  await adminSetStatus(id,'approved','🎓 Now a student.',r.email,r.full_name,'approved');
+  const d=await adminAskDate({title:'Make '+(r.full_name||'this person')+' a student',sub:r.email||'',okText:'Make student',batches:adminBatchNames(),defaultBatch:(adminCurrentFilter==='approved'&&adminBatchFilter&&adminBatchFilter!=='__none')?adminBatchFilter:''});
+  if(!d.ok) return;
+  await adminSetStatus(id,'approved','🎓 Now a student.',r.email,r.full_name,'approved',d.until,d.batch);
 }
 async function adminRemoveStudent(id){
   const r=adminRow(id);
@@ -9345,23 +10372,51 @@ async function adminDelete(id){
   }catch(e){ showToast('Could not delete. Please try again.'); }
 }
 
-function spPrint_dummy(){}
-
-async function clearAllActivity(){
-  if(!currentUser) return;
-  if(!confirm('Delete ALL activity history? This cannot be undone.')) return;
-  try{
-    await sb.from('activity_log').delete().eq('user_id',currentUser.id);
-    await sb.from('saved_tests').delete().eq('user_id',currentUser.id);
-    document.getElementById('actStatTotal').textContent=0;
-    document.getElementById('actStatSaved').textContent=0;
-    document.getElementById('actStatCompleted').textContent=0;
-    document.getElementById('actStatsRow').style.display='none';
-    document.getElementById('actFilterRow').style.display='none';
-    document.getElementById('activityList').innerHTML='<div class="act-empty"><div class="act-empty-ico">📭</div><p>No activity yet. Start practising to see your history here!</p></div>';
-    showToast('✅ All activity cleared.');
-  }catch(e){showToast('Could not clear activity. Please try again.');}
+// ── SUPERVISORS (owner only) ─────────────────────────
+function adminShowAdmins(on,filter){
+  const show=(id,v)=>{ const el=pfEl(id); if(el) el.style.display=v; };
+  show("adminAdminsBox",on?"block":"none");
+  ["adminSearchRow","adminBulkRow","adminStudentList","adminPager"].forEach(id=>show(id,on?"none":""));
+  // Batches belong to students, so the batch filter and manager only show on the Students tab.
+  const onStudents=!on && filter==="approved";
+  show("adminBatchRow",onStudents?"flex":"none");
+  if(!onStudents) show("adminBatchBox","none");
 }
+async function adminAdminsLoad(){
+  const box=pfEl("adminAdminsList"); if(!box) return;
+  const owner=!!(currentUser&&currentUser.isAdmin);
+  const ar=pfEl("adminAdminAddRow"); if(ar) ar.style.display=owner?"flex":"none";
+  box.innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">Loading...</div>';
+  try{
+    const{data,error}=await sb.functions.invoke("admin-users",{body:{action:"admins_list"}});
+    if(error||!data||!data.ok){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:30px">'+pfEsc((data&&data.error)||"Could not load the admins. Is admin-users deployed?")+'</div>'; return; }
+    const fmt=d=>new Date(d).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+    box.innerHTML=(data.admins||[]).map((a,i)=>{
+      const own=a.role==="owner";
+      const info=a.signed_up?("Signed up with "+pfEsc(a.provider||"Email")+" · Last login "+(a.last?fmt(a.last):"never")):(a.blocked?"⚠ This Gmail has a blocked account":"Not signed up yet. They become an admin as soon as they sign in.");
+      return '<div class="admin-student-card"><div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#c084fc,var(--blue));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0">'+pfEsc((a.name||a.email||"?").charAt(0).toUpperCase())+'</div>'
+        +'<div style="flex:1;min-width:160px"><div style="font-size:14px;font-weight:700;color:#fff">'+pfEsc(a.name||"Admin")+(own?'<span style="font-size:10px;font-weight:700;color:#fbbf24;margin-left:6px">👑 OWNER</span>':'<span style="font-size:10px;font-weight:700;color:#c084fc;margin-left:6px">🛡 SUPERVISOR</span>')+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);word-break:break-all">'+pfEsc(a.email)+'</div><div style="font-size:11px;color:var(--muted);margin-top:2px">'+info+'</div></div>'
+        +((owner&&!own)?'<button class="admin-reject-btn" onclick="adminRemoveSupervisor(\''+pfEsc(a.email)+'\')">Remove admin</button>':'')+'</div>';
+    }).join("");
+  }catch(e){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:30px">Could not load the admins.</div>'; }
+}
+async function adminAddSupervisor(){
+  const inp=document.getElementById('adminSupEmail'); const email=(inp.value||'').trim().toLowerCase();
+  if(!email){ showToast('Type the admin email first.'); return; }
+  if(!confirm('Make '+email+' an admin (supervisor)?\n\nThey get student access and can use this panel: make students, block, delete visitors and students, and see profiles. They cannot change you or other admins, and they cannot open or close AI marking.')) return;
+  const{data,error}=await sb.functions.invoke('admin-users',{body:{action:'supervisor_add',email}});
+  if(error||!data||!data.ok){ showToast((data&&data.error)||'Could not add. Please try again.'); return; }
+  inp.value=''; showToast('🛡 Admin added.'); adminAdminsLoad();
+}
+async function adminRemoveSupervisor(email){
+  if(!confirm('Remove '+email+' as an admin? Their admin access ends at once. They stay as a normal visitor.')) return;
+  const{data,error}=await sb.functions.invoke('admin-users',{body:{action:'supervisor_remove',email}});
+  if(error||!data||!data.ok){ showToast((data&&data.error)||'Could not remove. Please try again.'); return; }
+  showToast('Admin removed.'); adminAdminsLoad();
+}
+
+function spPrint_dummy(){}
 
 async function spDeletePlan(){
   if(!currentUser){showToast('Please log in to delete your plan.');return;}
@@ -9419,9 +10474,18 @@ function spPrint(){
 <!-- ADMIN PANEL -->
 <div class="selpage" id="adminPanelPage" style="max-width:800px">
   <button class="bk" onclick="goHome()">← Back to Home</button>
-  <div class="ptitle">⚙️ Admin Panel</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div class="ptitle">⚙️ Admin Panel</div><button class="admin-tab" id="adminThemeBtn" onclick="adminToggleTheme()" style="margin-bottom:6px">☀️ White theme</button></div>
   <div class="psub">Everyone who signs up is a visitor. Press "Make student" to give someone Writing and Speaking.</div>
 
+  <div id="adminViewTabs" style="display:none;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+    <button class="admin-tab active" id="adminVwPeople" onclick="adminSetView('people')">👥 People</button>
+    <button class="admin-tab" id="adminVwProfiles" onclick="adminSetView('profiles')">📋 Profiles completed <span id="adminProfBadge" style="display:none;margin-left:4px;background:#22c55e;color:#04210f;border-radius:10px;padding:0 7px;font-size:11px;font-weight:700"></span></button>
+    <button class="admin-tab" id="adminVwUsage" onclick="adminSetView('usage')">💰 Usage &amp; cost</button>
+    <button class="admin-tab" id="adminVwAi" onclick="adminSetView('ai')">🤖 AI marking</button>
+    <button class="admin-tab" id="adminVwReq" onclick="adminSetView('requests')">🗑 Requests <span id="adminReqBadge" style="display:none;margin-left:4px;background:#ef4444;color:#fff;border-radius:10px;padding:0 7px;font-size:11px;font-weight:700"></span></button>
+    <button class="admin-tab" id="adminVwLog" onclick="adminSetView('log')">🕘 Activity log</button>
+  </div>
+  <div id="adminPeopleView">
   <!-- Stats row -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
     <div style="background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);border-radius:14px;padding:16px;text-align:center">
@@ -9444,10 +10508,106 @@ function spPrint(){
     <button onclick="adminFilter('approved',this)" class="admin-tab" id="adminTabApproved">🎓 Students</button>
     <button onclick="adminFilter('rejected',this)" class="admin-tab" id="adminTabRejected">⛔ Blocked</button>
     <button onclick="adminFilter('all',this)" class="admin-tab" id="adminTabAll">👥 All</button>
+    <button onclick="adminFilter('admins',this)" class="admin-tab" id="adminTabAdmins">🛡 Admins</button>
+  </div>
+
+
+  <!-- Batches -->
+  <div id="adminBatchRow" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+    <select id="adminBatchSel" onchange="adminBatchPick(this.value)" class="pf-in" style="width:auto;min-width:200px;padding:9px 12px"><option value="">All batches</option></select>
+    <button class="admin-tab" onclick="adminBatchToggle()">📚 Manage batches</button>
+  </div>
+  <div id="adminBatchBox" style="display:none;background:rgba(125,211,252,0.05);border:1px solid rgba(125,211,252,0.2);border-radius:14px;padding:14px 16px;margin-bottom:14px">
+    <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px">📚 Batches</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5">Group students into batches, then pick a batch above to see only those students. Select them to change their limit, end date or batch together.</div>
+    <div id="adminBatchList"></div>
+    <div id="adminBatchAddRow" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><input id="adminBatchNew" maxlength="40" placeholder="New batch name, e.g. Batch 15" class="pf-in" style="flex:1;min-width:200px;padding:9px 12px;width:auto"/><button class="admin-approve-btn" onclick="adminBatchAdd()">Add batch</button></div>
+  </div>
+
+  <!-- Search -->
+  <div id="adminSearchRow" style="margin-bottom:14px">
+    <input id="adminSearch" type="search" placeholder="🔍 Search by name or email" oninput="adminSearchInput(this.value)" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#fff;font-size:14px;outline:none"/>
   </div>
 
   <!-- Student list -->
+  <div id="adminBulkRow" class="adm-bulk" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:12.5px">
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="adminSelAllBox" onchange="adminSelAll(this.checked)"/> Select all on this page</label>
+    <span id="adminSelCount" style="color:#fbbf24;font-weight:700"></span>
+    <span id="adminBulkBtns" style="display:none;gap:6px;flex-wrap:wrap">
+      <button class="admin-approve-btn" onclick="adminBulk('make')">🎓 Make student</button>
+      <button class="admin-tab" onclick="adminBulk('batch')">📚 Batch</button>
+      <button class="admin-tab" onclick="adminBulk('date')">📅 End date</button>
+      <button class="admin-tab" id="adminBulkLimit" onclick="adminBulk('limit')" style="display:none">🔢 Limit</button>
+      <button class="admin-reject-btn" onclick="adminBulk('remove')">↩ Remove student</button>
+      <button class="admin-reject-btn" onclick="adminBulk('block')">⛔ Block</button>
+      <button class="admin-tab" onclick="adminBulk('unblock')">Unblock</button>
+    </span>
+  </div>
+  <div id="adminAdminsBox" style="display:none">
+    <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;padding:10px 14px;background:rgba(192,132,252,0.06);border:1px solid rgba(192,132,252,0.22);border-radius:12px">The owner and the supervisors. Admins are not listed under Visitors or Students. They have student access automatically and can use this panel. Only the owner can add or remove an admin.</div>
+    <div id="adminAdminsList"></div>
+    <div id="adminAdminAddRow" style="display:none;gap:8px;flex-wrap:wrap;margin-top:12px"><input id="adminSupEmail" type="email" placeholder="admin@gmail.com" class="pf-in" style="flex:1;min-width:200px;padding:9px 12px;width:auto"/><button class="admin-approve-btn" onclick="adminAddSupervisor()">Add admin</button></div>
+  </div>
   <div id="adminStudentList"><div style="text-align:center;color:var(--muted);padding:40px">Loading...</div></div>
+  <div id="adminPager" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px"></div>
+  </div>
+
+  <div id="adminUsageView" style="display:none"><div id="adminUsageBody"></div></div>
+  <div id="adminAiView" style="display:none"><div id="adminAiBody"></div></div>
+
+  <div id="adminReqView" style="display:none">
+    <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px">Students can ask to delete their progress. Accepting deletes it for good and cannot be undone. The student's profile and account stay. Only the owner can accept or decline.</div>
+    <div id="adminReqList"></div>
+  </div>
+
+  <div id="adminLogView" style="display:none">
+    <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px">Shows who changed what in this panel: students made, people blocked, admins added, deletions and exports.</div>
+    <input type="search" placeholder="🔍 Search by person, email or action" oninput="adminLogSearch(this.value)" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#fff;font-size:14px;outline:none;margin-bottom:14px"/>
+    <div id="adminLogList"></div>
+    <div id="adminLogPager" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px"></div>
+  </div>
+
+  <div id="adminProfilesView" style="display:none">
+    <div id="adminProfNote" style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px">Only the owner and supervisors can see this page. Phone numbers are in international format. Please keep these details private.</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <button class="admin-tab admin-pf-tab active" onclick="adminProfFilterSet('all',this)">All</button>
+      <button class="admin-tab admin-pf-tab" onclick="adminProfFilterSet('new',this)">New</button>
+      <span style="flex:1"></span>
+      <button class="admin-tab" id="adminProfSeenAllBtn" onclick="adminProfSeenAll()">Mark all as seen</button>
+      <button class="admin-tab" onclick="adminProfExport()">⬇ Export CSV</button>
+    </div>
+    <input type="search" placeholder="🔍 Search by name, email, phone or place" oninput="adminProfSearch(this.value)" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#fff;font-size:14px;outline:none;margin-bottom:14px"/>
+    <div id="adminProfList"></div>
+    <div id="adminProfPager" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px"></div>
+  </div>
+</div>
+
+<!-- PROFILE FORM -->
+<div id="profileOverlay" style="display:none;position:fixed;inset:0;z-index:10050;background:rgba(5,10,25,0.85);align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 14px">
+  <div style="background:#0f172a;border:1px solid rgba(255,255,255,0.12);border-radius:18px;max-width:480px;width:100%;padding:24px 22px;margin:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:19px;font-weight:700;color:#fff">👤 My Profile</div><button onclick="closeProfile()" aria-label="Close" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer">×</button></div>
+    <div style="font-size:12.5px;color:var(--muted);margin-top:4px">Fields marked * are required.</div>
+    <label class="pf-lab" for="pfName">Full name *</label>
+    <input class="pf-in" id="pfName" maxlength="100" autocomplete="name" placeholder="Your full name"/>
+    <label class="pf-lab" for="pfCountry">Country *</label>
+    <select class="pf-in" id="pfCountry" onchange="pfCountryChanged()"></select>
+    <label class="pf-lab" for="pfPhone">Phone number *</label>
+    <div style="display:flex;gap:8px"><select class="pf-in" id="pfPhoneCc" style="width:46%" onchange="__pfPhoneTouched=true"></select><input class="pf-in" id="pfPhone" type="tel" autocomplete="tel-national" placeholder="e.g. 01712345678"/></div>
+    <label class="pf-lab" id="pfDivLab" for="pfDiv">Division *</label>
+    <select class="pf-in" id="pfDiv" onchange="pfDivChanged()"></select>
+    <input class="pf-in" id="pfDivTxt" maxlength="120" style="display:none" placeholder="Type here"/>
+    <label class="pf-lab" id="pfDistLab" for="pfDist">District *</label>
+    <select class="pf-in" id="pfDist"></select>
+    <input class="pf-in" id="pfDistTxt" maxlength="120" style="display:none" placeholder="Type here"/>
+    <div id="pfGeoNote" style="font-size:11px;color:var(--muted)"></div>
+    <label class="pf-lab" id="pfAreaLab" for="pfArea">Area (optional)</label>
+    <input class="pf-in" id="pfArea" maxlength="120" placeholder="Area"/>
+    <label class="pf-lab" for="pfStreet">Street address (optional)</label>
+    <input class="pf-in" id="pfStreet" maxlength="300" autocomplete="street-address" placeholder="House, road, street"/>
+    <div id="pfErr" role="alert" style="display:none;margin-top:12px;font-size:13px;color:#fca5a5;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:9px 12px"></div>
+    <div style="display:flex;gap:10px;margin-top:18px"><button id="pfSave" onclick="saveProfile()" style="flex:1;padding:12px;border:none;border-radius:12px;background:var(--blue);color:#fff;font-weight:700;font-size:14px;font-family:'Poppins',sans-serif;cursor:pointer">Save profile</button><button onclick="closeProfile()" style="padding:12px 18px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-family:'Poppins',sans-serif;cursor:pointer">Cancel</button></div>
+    <div style="font-size:11px;color:var(--muted);margin-top:12px;line-height:1.5">Your details are used only by the EngFinite team. Place lists: © CountryStateCity data (ODbL).</div>
+  </div>
 </div>
 
 </body>
