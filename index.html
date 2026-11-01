@@ -4715,7 +4715,7 @@ function pgHtmlCore(attList,wList,open,openFn,pcList){
   if(open==="reading") h+=pgTestBlock("⏱ With time limit (Exam mode)","60 minutes countdown",rd.filter(a=>a.mode==="exam"),true)+pgTestBlock("📝 Without time limit (Free practice)","",rd.filter(a=>a.mode!=="exam"),true);
   if(open==="listening"){
     h+=pgTestBlock("🎧 Listening","",ls,true);
-    if(pcList) h+=pcPracticeButton(pcList);
+    if(pcList) h+=pcPracticeButton(pcList,openFn!=="progressOpen");
   }
   if(open==="writing") h+='<div class="pg-box"><h3>✍️ Overall Writing band</h3><div class="pg-sum"><span>Overall band<br><b>'+pgBand(wo.band)+'</b></span></div>'+(wo.note?'<div class="pg-empty" style="padding:0">'+wo.note+'.</div>':'<div class="pg-empty" style="padding:0">No marked essays yet.</div>')+'</div>'+pgWriteBlock("Writing Task 1 (about 20 minutes)",w1)+pgWriteBlock("Writing Task 2 (about 40 minutes)",w2);
   if(open==="writing") h+='<div class="pg-empty" style="margin-top:6px">Writing bands are AI estimates. Averages are rounded to the nearest half band.</div>';
@@ -4729,40 +4729,48 @@ function progressRender(){
 }
 let __pgRecentN=10;
 function pgRecentMore(){ __pgRecentN+=10; pgRecentRender(); }
-function pgRecentRender(){
-  const box=document.getElementById("pgRecent"); if(!box) return;
+function pgActItems(att,pc,w){
   const items=[];
-  __attList.forEach(a=>{
+  (att||[]).forEach(a=>{
     const n=parseInt(String(a.book).replace("cam",""),10);
     const rd=a.skill==="reading";
     items.push({t:new Date(a.created_at).getTime(),ico:rd?"📖":"🎧",title:(rd?"Reading":"Listening")+" · Cambridge "+n+" · Test "+a.test+(rd?(a.mode==="exam"?" · Exam mode":" · Free practice"):""),
       sub:"Score "+a.correct+"/"+a.total+" · Band "+(a.band!=null?attBandStr(a.band):(a.total>=40?"below 4.0":"—"))+" · "+pgDur(a.seconds),at:a.created_at});
   });
-  (typeof __pcAtt!=="undefined"?__pcAtt:[]).forEach(x=>{
+  (pc||[]).forEach(x=>{
     const m=String(x.practice_id).match(/^map-cam(\d+)-t(\d+)-s\d+-q(\d+)-(\d+)$/);
     const pct=x.total?Math.round(x.correct/x.total*100):0;
     items.push({t:new Date(x.created_at).getTime(),ico:"🗺️",title:"Listening Practice · Map"+(m?" · Cambridge "+m[1]+" · Test "+m[2]+" · Q"+m[3]+"–"+m[4]:""),
       sub:"Score "+x.correct+"/"+x.total+" · Accuracy "+pct+"%",at:x.created_at});
   });
-  __pgW.forEach(x=>{
+  (w||[]).forEach(x=>{
     items.push({t:new Date(x.created_at).getTime(),ico:"✍️",title:"Writing Task "+(Number(x.task)===1?"1":"2"),sub:"Band "+(x.overall==null?"—":attBandStr(x.overall))+" · "+pgDur(x.seconds),at:x.created_at});
   });
-  { const ca=pgActClearedAt(); if(ca){ for(let k=items.length-1;k>=0;k--) if(items[k].t<=ca) items.splice(k,1); } }
   items.sort((a,b)=>b.t-a.t);
-  const dbox=document.getElementById("pgActDel"); if(dbox) dbox.innerHTML=(items.length||__pgInProg.length)?'<button class="pg-delbtn" onclick="pgActClear()">🗑 Delete my activity</button>':"";
+  return items;
+}
+// Same list for the student's own page and for the admin's view of a student (adm=true: read only).
+function pgRecentHtml(items,inprog,adm,shownN){
   let prog="";
-  if(__pgInProg.length){
-    prog='<div class="pg-box" style="margin-top:6px"><h3>⏳ Unfinished</h3><div class="pg-empty" style="padding:0 0 4px">Saved work you can continue.</div>';
-    __pgInProg.forEach((it,i)=>{ prog+='<div class="pg-act"><div class="pg-act-ico">'+it.ico+'</div><div class="pg-act-body"><div class="pg-act-t">'+pfEsc(it.title)+'</div><div class="pg-act-s">'+pfEsc(it.sub)+' · '+pgDate(it.at)+'</div></div><button class="pg-pill" onclick="pgDiscard('+i+')" style="margin-right:6px">Discard</button><button class="pg-pill on" onclick="pgContinue('+i+')">Continue</button></div>'; });
+  if(inprog.length){
+    prog='<div class="pg-box" style="margin-top:6px"><h3>⏳ Unfinished</h3><div class="pg-empty" style="padding:0 0 4px">'+(adm?'Saved work this student has not finished.':'Saved work you can continue.')+'</div>';
+    inprog.forEach((it,i)=>{ prog+='<div class="pg-act"><div class="pg-act-ico">'+it.ico+'</div><div class="pg-act-body"><div class="pg-act-t">'+pfEsc(it.title)+'</div><div class="pg-act-s">'+pfEsc(it.sub)+' · '+pgDate(it.at)+'</div></div>'+(adm?'':'<button class="pg-pill" onclick="pgDiscard('+i+')" style="margin-right:6px">Discard</button><button class="pg-pill on" onclick="pgContinue('+i+')">Continue</button>')+'</div>'; });
     prog+='</div>';
   }
-  if(!items.length&&prog){ box.innerHTML=prog; return; }
-  if(!items.length){ box.innerHTML='<div class="pg-box" style="margin-top:6px"><h3>🕘 Recent activity</h3><div class="pg-empty">No activity yet. Your latest tests and essays will appear here.</div></div>'; return; }
-  const shown=items.slice(0,__pgRecentN);
+  if(!items.length&&prog) return prog;
+  if(!items.length) return '<div class="pg-box" style="margin-top:6px"><h3>🕘 Recent activity</h3><div class="pg-empty">'+(adm?'No activity yet.':'No activity yet. Your latest tests and essays will appear here.')+'</div></div>';
+  const shown=items.slice(0,shownN);
   let h='<div class="pg-box" style="margin-top:6px"><h3>🕘 Recent activity</h3>';
   shown.forEach(it=>{ h+='<div class="pg-act"><div class="pg-act-ico">'+it.ico+'</div><div class="pg-act-body"><div class="pg-act-t">'+it.title+'</div><div class="pg-act-s">'+it.sub+'</div></div><div class="pg-act-d">'+pgDate(it.at)+'</div></div>'; });
-  if(items.length>shown.length) h+='<button class="pg-pill" style="margin-top:10px" onclick="pgRecentMore()">Show more</button>';
-  box.innerHTML=prog+h+'</div>';
+  if(items.length>shown.length) h+='<button class="pg-pill" style="margin-top:10px" onclick="'+(adm?'admRecentMore()':'pgRecentMore()')+'">Show more</button>';
+  return prog+h+'</div>';
+}
+function pgRecentRender(){
+  const box=document.getElementById("pgRecent"); if(!box) return;
+  const items=pgActItems(__attList,(typeof __pcAtt!=="undefined"?__pcAtt:[]),__pgW);
+  { const ca=pgActClearedAt(); if(ca){ for(let k=items.length-1;k>=0;k--) if(items[k].t<=ca) items.splice(k,1); } }
+  const dbox=document.getElementById("pgActDel"); if(dbox) dbox.innerHTML=(items.length||__pgInProg.length)?'<button class="pg-delbtn" onclick="pgActClear()">🗑 Delete my activity</button>':"";
+  box.innerHTML=pgRecentHtml(items,__pgInProg,false,__pgRecentN);
 }
 
 // ── DELETE MY PROGRESS (a request to the admin) ──
@@ -4894,32 +4902,41 @@ async function lsResumeSaved(aid){
 
 // ── MY PROGRESS: unfinished work (saved Reading and Listening tests, Writing drafts) ──
 let __pgInProg=[];
+// Builds the "Unfinished" list from saved tests and writing drafts (used for the student and for the admin view).
+function pgBuildInProg(saved,drafts){
+  const out=[];
+  (saved||[]).forEach(x=>{
+    const d=x.content||{}; const n=parseInt(String(d.book||"").replace("cam",""),10); if(!n) return;
+    const rd=x.activity_type==="reading";
+    out.push({kind:x.activity_type,aid:x.activity_id,t:new Date(x.updated_at).getTime(),at:x.updated_at,ico:rd?"📖":"🎧",
+      title:(rd?"Reading":"Listening")+" · Cambridge "+n+" · Test "+d.test+(rd?(d.mode==="exam"?" · Exam mode":" · Free practice"):""),
+      sub:(rd?"Saved at Passage "+((d.passIdx||0)+1):"Saved at Section "+(d.section||1))});
+  });
+  (drafts||[]).forEach(x=>{
+    const m=x.meta||{}; if(!m.task) return;
+    if(Number(m.task)===1&&m.kind!=="custom"&&!t1FindByKey(m.key)) return;
+    const words=x.words!=null?Number(x.words):(String(x.content||"").trim()?String(x.content).trim().split(/\s+/).length:0);
+    if(!words) return;
+    out.push({kind:"writing",dk:x.draft_key,meta:m,t:new Date(x.updated_at).getTime(),at:x.updated_at,ico:"✍️",
+      title:"Writing Task "+(Number(m.task)===1?"1":"2")+(m.label?" · "+m.label:""),sub:"Draft saved · "+words+" word"+(words===1?"":"s")});
+  });
+  out.sort((a,b)=>b.t-a.t);
+  return out;
+}
 async function pgLoadInProgress(){
   __pgInProg=[];
   if(!currentUser||!sb) return;
   try{ sb.from("saved_tests").delete().eq("user_id",currentUser.id).eq("status","in_progress").lt("updated_at",new Date(Date.now()-30*864e5).toISOString()).then(()=>{},()=>{}); }catch(e){}
+  let saved=[],drafts=[];
   try{
     const r=await sb.from("saved_tests").select("activity_type,activity_id,content,updated_at").eq("user_id",currentUser.id).eq("status","in_progress").in("activity_type",["reading","listening"]).order("updated_at",{ascending:false}).limit(50);
-    ((r&&r.data)||[]).forEach(x=>{
-      const d=x.content||{}; const n=parseInt(String(d.book||"").replace("cam",""),10); if(!n) return;
-      const rd=x.activity_type==="reading";
-      __pgInProg.push({kind:x.activity_type,aid:x.activity_id,t:new Date(x.updated_at).getTime(),at:x.updated_at,ico:rd?"📖":"🎧",
-        title:(rd?"Reading":"Listening")+" · Cambridge "+n+" · Test "+d.test+(rd?(d.mode==="exam"?" · Exam mode":" · Free practice"):""),
-        sub:(rd?"Saved at Passage "+((d.passIdx||0)+1):"Saved at Section "+(d.section||1))});
-    });
+    saved=(r&&r.data)||[];
   }catch(e){}
   try{
     const r=await sb.from("writing_drafts").select("draft_key,content,meta,updated_at").eq("user_id",currentUser.id).order("updated_at",{ascending:false}).limit(50);
-    ((r&&r.data)||[]).forEach(x=>{
-      const m=x.meta||{}; if(!m.task) return;
-      if(Number(m.task)===1&&m.kind!=="custom"&&!t1FindByKey(m.key)) return;
-      const words=String(x.content||"").trim()?String(x.content).trim().split(/\s+/).length:0;
-      if(!words) return;
-      __pgInProg.push({kind:"writing",dk:x.draft_key,meta:m,t:new Date(x.updated_at).getTime(),at:x.updated_at,ico:"✍️",
-        title:"Writing Task "+(Number(m.task)===1?"1":"2")+(m.label?" · "+m.label:""),sub:"Draft saved · "+words+" word"+(words===1?"":"s")});
-    });
+    drafts=(r&&r.data)||[];
   }catch(e){}
-  __pgInProg.sort((a,b)=>b.t-a.t);
+  __pgInProg=pgBuildInProg(saved,drafts);
 }
 function t1FindByKey(key){
   key=String(key||""); let found=null;
@@ -5107,15 +5124,20 @@ function pcMark(id){
 // Accuracy per question type (shown in My Progress, separate from band scores)
 let __pcMoreN=5, __pcOpen=false;
 function pcToggle(){ __pcOpen=!__pcOpen; progressRender(); }
-function pcPracticeButton(att){
-  let h='<button class="pg-card'+(__pcOpen?' on':'')+'" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;margin:4px 0 10px;font:inherit;color:inherit" onclick="pcToggle()"><span><span class="pg-t" style="display:block">🎯 Listening practice by question type</span><span class="pg-n">'+att.length+' practice'+(att.length===1?'':'s')+' · accuracy '+pcOverallPct(att)+'</span></span><span style="font-size:18px">'+(__pcOpen?'▲':'▼')+'</span></button>';
-  if(__pcOpen) h+=pcProgressBox(att);
+function admPcToggle(){ if(!__admP) return; __admP.pcOpen=!__admP.pcOpen; admProgDraw(false); }
+function admPcMore(){ if(!__admP) return; __admP.pcMoreN=(__admP.pcMoreN||5)+5; admProgDraw(false); }
+function admRecentMore(){ if(!__admP) return; __admP.recN=(__admP.recN||10)+10; admProgDraw(false); }
+function pcPracticeButton(att,adm){
+  const isOpen=adm?!!(__admP&&__admP.pcOpen):__pcOpen;
+  let h='<button class="pg-card'+(isOpen?' on':'')+'" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;margin:4px 0 10px;font:inherit;color:inherit" onclick="'+(adm?'admPcToggle()':'pcToggle()')+'"><span><span class="pg-t" style="display:block">🎯 Listening practice by question type</span><span class="pg-n">'+att.length+' practice'+(att.length===1?'':'s')+' · accuracy '+pcOverallPct(att)+'</span></span><span style="font-size:18px">'+(isOpen?'▲':'▼')+'</span></button>';
+  if(isOpen) h+=pcProgressBox(att,adm);
   return h;
 }
 function pcMore(){ __pcMoreN+=5; progressRender(); }
 function pcOverallPct(att){ let c=0,t=0; att.forEach(x=>{ c+=x.correct; t+=x.total; }); return t?Math.round(c/t*100)+"%":"—"; }
-function pcProgressBox(att){
+function pcProgressBox(att,adm){
   att=att||[];
+  const moreN=adm?((__admP&&__admP.pcMoreN)||5):__pcMoreN;
   const types=[["map","🗺️ Map"],["fib13","✏️ Fill in the blanks (Sections 1–3)"],["fib4","📝 Fill in the blanks (Section 4)"],["mcq","🔘 Multiple choice"],["match","🔗 Matching"]];
   let h='<div class="pg-box"><h3>Accuracy by question type</h3>';
   types.forEach(([k,name])=>{
@@ -5131,14 +5153,14 @@ function pcProgressBox(att){
   const nm={map:"Map",fib13:"Fill in the blanks",fib4:"Fill in the blanks",mcq:"Multiple choice",match:"Matching"};
   if(!att.length) return h+'<div class="pg-box"><h3>🕘 Last practices</h3><div class="pg-empty">No practice yet. Finish a map and it will appear here.</div></div>';
   const list=att.slice().reverse();
-  const shown=list.slice(0,__pcMoreN);
+  const shown=list.slice(0,moreN);
   h+='<div class="pg-box"><h3>🕘 Last practices</h3><table class="pg-tbl"><tr><th>Date</th><th>Practice</th><th>Score</th><th>Accuracy</th></tr>';
   shown.forEach(x=>{
     const m=String(x.practice_id).match(/^[a-z0-9]+-cam(\d+)-t(\d+)-s\d+-q(\d+)-(\d+)$/);
     const pct=x.total?Math.round(x.correct/x.total*100):0;
     h+='<tr><td>'+pgDate(x.created_at)+'</td><td>'+(nm[x.qtype||"map"]||x.qtype)+(m?' · Cambridge '+m[1]+' · Test '+m[2]+' · Q'+m[3]+'–'+m[4]:'')+'</td><td>'+x.correct+'/'+x.total+'</td><td>'+pct+'%</td></tr>';
   });
-  h+='</table>'+(list.length>shown.length?'<button class="pg-pill" style="margin-top:10px" onclick="pcMore()">Show more</button>':'')+'</div>';
+  h+='</table>'+(list.length>shown.length?'<button class="pg-pill" style="margin-top:10px" onclick="'+(adm?'admPcMore()':'pcMore()')+'">Show more</button>':'')+'</div>';
   h+='<div class="pg-empty" style="margin-top:6px">Accuracy is not a band score. It is the share of correct answers in practice.</div>';
   return h;
 }
@@ -7429,11 +7451,23 @@ function updateProfileBanner(){
   b.style.display=(need && !later)?"flex":"none";
 }
 function profileLater(){ try{ sessionStorage.setItem("ef_profile_later","1"); }catch(e){} updateProfileBanner(); }
+// The website follows the name saved in the profile: menu, admin lists, everywhere.
+async function pfApplyName(name){
+  name=String(name||"").trim().replace(/\s+/g," ");
+  if(!currentUser||name.length<2) return;
+  currentUser.name=name;
+  try{ updateNavUser(); }catch(e){}
+  try{ await sb.from("profiles").update({full_name:name}).eq("id",currentUser.id); }catch(e){}
+  try{ await sb.functions.invoke("admin-users",{body:{action:"sync_my_name",name}}); }catch(e){}
+  try{ await sb.auth.updateUser({data:{full_name:name,name:name}}); }catch(e){}
+}
 async function profileAfterLogin(){
   if(!currentUser) return;
   try{
     const{data}=await sb.from("student_profiles").select("*").eq("user_id",currentUser.id).maybeSingle();
     currentUser.profile=data||null;
+    // Older profiles: if the saved profile name differs from the account name, make them the same.
+    if(data&&data.full_name&&String(data.full_name).trim()!==String(currentUser.name||"").trim()) pfApplyName(data.full_name);
   }catch(e){ currentUser.profile=null; }
   currentUser.profileLoaded=true;
   updateProfileBanner();
@@ -7540,6 +7574,7 @@ async function saveProfile(){
   __pfSaving=false; btn.disabled=false; btn.textContent=old;
   if(err){ pfError("We could not save your profile just now. Please try again."); return; }
   currentUser.profile=row; currentUser.profileLoaded=true;
+  pfApplyName(row.full_name);
   closeProfile(); updateProfileBanner(); showToast("✅ Profile saved. Thank you!");
 }
 
@@ -7608,7 +7643,7 @@ async function adminProgressOne(id){
   if(!adminPanelUser()) return;
   const{data,error}=await sb.functions.invoke("admin-users",{body:{action:"student_progress",user_id:id}});
   if(error||!data||!data.ok){ showToast((data&&data.error)||"Could not open the progress. Please try again."); return; }
-  __admP={att:data.attempts||[],w:data.essays||[],open:null,scope:"life",name:data.name,email:data.email,batch:data.batch};
+  __admP={att:data.attempts||[],w:data.essays||[],pc:data.practice||[],inprog:pgBuildInProg(data.saved_tests||[],data.drafts||[]),open:null,scope:"life",name:data.name,email:data.email,batch:data.batch};
   admProgDraw(true);
 }
 function admProgDraw(first){
@@ -7617,7 +7652,10 @@ function admProgDraw(first){
   const old=document.getElementById("admProgDlg"); if(old) old.remove();
   const saveScope=__pgScope; __pgScope=__admP.scope;
   let body="";
-  try{ body=pgHtmlCore(__admP.att,__admP.w,__admP.open,"admProgOpen"); }finally{ __pgScope=saveScope; }
+  try{
+    body=pgHtmlCore(__admP.att,__admP.w,__admP.open,"admProgOpen",__admP.pc||[]);
+    body+=pgRecentHtml(pgActItems(__admP.att,__admP.pc,__admP.w),__admP.inprog||[],true,__admP.recN||10);
+  }finally{ __pgScope=saveScope; }
   const d=document.createElement("div"); d.id="admProgDlg"; d.className="pg-dlg";
   d.innerHTML='<div style="max-width:760px"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div style="font-size:17px;font-weight:700">📈 '+pfEsc(__admP.name||"Student")+'</div><div style="font-size:12px;color:var(--muted)">'+pfEsc(__admP.email)+(__admP.batch?' · '+pfEsc(__admP.batch):'')+'</div></div><button class="pg-pill" onclick="admProgClose()">Close</button></div>'
     +'<div class="pg-scope"><button class="pg-pill'+(__admP.scope==="life"?' on':'')+'" onclick="admProgScope(\'life\')">Lifetime</button><button class="pg-pill'+(__admP.scope==="last7"?' on':'')+'" onclick="admProgScope(\'last7\')">Last 7</button></div>'
