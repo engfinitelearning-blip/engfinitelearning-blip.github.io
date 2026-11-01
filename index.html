@@ -344,6 +344,7 @@ input[type="date"].sp-select::-webkit-calendar-picker-indicator{filter:brightnes
 .att-mark{font-size:11.5px;font-weight:700;color:var(--green);margin-top:8px}
 .att-sub{font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.4}
 .att-book{font-size:10.5px;font-weight:700;color:var(--green);margin-top:5px}
+.as-note{font-size:11.5px;color:var(--muted,#888);margin-right:4px;white-space:nowrap}
 #progressPage{display:none;position:relative;z-index:1;padding:40px 24px 60px;max-width:860px;margin:0 auto;min-height:60vh}
 .pg-scope{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 16px}
 .pg-pill{padding:8px 18px;border-radius:20px;border:1px solid var(--bor);background:var(--sur);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
@@ -2103,12 +2104,12 @@ body.adm-light #adDlg [style*="background:transparent"][style*="color:#fff"]{col
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Need Help?
       </a>
-      <button id="progressHomeBtn" onclick="showProgressPage()" style="display:inline-flex;align-items:center;gap:8px;background:rgba(57,181,74,0.1);border:1px solid rgba(57,181,74,0.35);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;font-family:'Poppins',sans-serif;transition:background 0.2s,border-color 0.2s" onmouseover="this.style.background='rgba(57,181,74,0.18)';this.style.borderColor='rgba(57,181,74,0.6)'" onmouseout="this.style.background='rgba(57,181,74,0.1)';this.style.borderColor='rgba(57,181,74,0.35)'">
+      <button id="progressHomeBtn" onclick="showProgressPage()" style="display:none;align-items:center;gap:8px;background:rgba(57,181,74,0.1);border:1px solid rgba(57,181,74,0.35);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;font-family:'Poppins',sans-serif;transition:background 0.2s,border-color 0.2s" onmouseover="this.style.background='rgba(57,181,74,0.18)';this.style.borderColor='rgba(57,181,74,0.6)'" onmouseout="this.style.background='rgba(57,181,74,0.1)';this.style.borderColor='rgba(57,181,74,0.35)'">
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         My Progress
       </button>
-      <button id="activityHomeBtn" onclick="showActivityPage()" style="display:inline-flex;align-items:center;gap:8px;background:rgba(57,181,74,0.1);border:1px solid rgba(57,181,74,0.35);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;font-family:'Poppins',sans-serif;transition:background 0.2s,border-color 0.2s" onmouseover="this.style.background='rgba(57,181,74,0.18)';this.style.borderColor='rgba(57,181,74,0.6)'" onmouseout="this.style.background='rgba(57,181,74,0.1)';this.style.borderColor='rgba(57,181,74,0.35)'">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <button id="activityHomeBtn" onclick="showActivityPage()" style="display:none;align-items:center;gap:8px;background:rgba(57,181,74,0.1);border:1px solid rgba(57,181,74,0.35);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;font-family:'Poppins',sans-serif;transition:background 0.2s,border-color 0.2s" onmouseover="this.style.background='rgba(57,181,74,0.18)';this.style.borderColor='rgba(57,181,74,0.6)'" onmouseout="this.style.background='rgba(57,181,74,0.1)';this.style.borderColor='rgba(57,181,74,0.35)'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Recent Activity
       </button>
     </div>
@@ -2425,10 +2426,10 @@ body.adm-light #adDlg [style*="background:transparent"][style*="color:#fff"]{col
       <button class="tbtn" id="settingsBtn1" onclick="toggleSettingsPanel(this)">⚙️ Settings</button>
       <button class="tbtn" id="ntbtn" onclick="toggleNotes()">📝 Notes</button>
       <button class="tbtn" id="pauseBtn" onclick="togglePause()" style="display:none">⏸ Pause</button>
-      <button class="tbtn" id="saveBtn" onclick="saveTest()">💾 Save</button>
-      <button class="tbtn" id="unsaveBtn" onclick="unsaveTest()" style="color:#ef4444;border-color:rgba(239,68,68,0.3)">🗑 Unsave</button>
+      <span class="as-note"></span>
+      <button class="tbtn" id="saveBtn" onclick="saveAndExit()">💾 Save &amp; exit</button>
       <button class="ebtn" onclick="endTest(false)">Submit Test</button>
-      <button class="tbtn" onclick="examExit()">✕ Exit</button>
+      <button class="tbtn" id="examExitBtn" onclick="examExit()" style="display:none">✕ Exit</button>
     </div>
   </div>
   <div class="pbar"><div class="pfill" id="pfill" style="width:0%"></div></div>
@@ -2460,9 +2461,9 @@ body.adm-light #adDlg [style*="background:transparent"][style*="color:#fff"]{col
     <div class="lst-tools">
       <button class="tbtn" id="settingsBtn2" onclick="toggleSettingsPanel(this)">⚙️ Settings</button>
       <button class="tbtn" id="lstScriptBtn" onclick="lsToggleScript()">📄 Audio Script</button>
-      <button class="tbtn" id="lstSaveBtn" onclick="lsSaveTest()">💾 Save</button>
+      <span class="as-note"></span>
+      <button class="tbtn" id="lstSaveBtn" onclick="lsSaveAndExit()">💾 Save &amp; exit</button>
       <button class="ebtn" onclick="lsSubmit()">Submit Test</button>
-      <button class="tbtn" onclick="lsExit()">✕ Exit</button>
     </div>
   </div>
   <div class="lst-player">
@@ -3597,13 +3598,14 @@ function wrpPrint(){
   window.print();
 }
 function wrCloseModal(){ document.getElementById("wrOverlay").style.display="none"; }
-function wrSave(){
+function wrSave(quiet){
+  quiet=(quiet===true);
   const ta=document.getElementById("wrText"); const v=ta?ta.value:"";
-  if(!v.trim()){ showToast("Nothing to save yet."); return false; }
+  if(!v.trim()){ if(!quiet) showToast("Nothing to save yet."); return false; }
   let okLocal=false;
   try{ localStorage.setItem(wrDraftKey(),v); localStorage.setItem(wrDraftKey()+"_at",String(Date.now())); okLocal=true; }catch(e){}
   if(okLocal) __wrSavedText=v;
-  wrCloudSave(v,okLocal);
+  wrCloudSave(v,okLocal,quiet);
   return okLocal||!!currentUser;
 }
 function wrDraftMeta(){
@@ -3616,16 +3618,16 @@ function wrDraftMeta(){
     return {task:2,kind:"bank",topic:curWritingTopic,q:curWritingQ,label:String(curWritingTopic||"")+" · Question "+curWritingQ};
   }catch(e){ return null; }
 }
-async function wrCloudSave(v,okLocal){
-  if(!currentUser||!sb){ showToast(okLocal?"Saved on this device ✓":"Could not save on this device."); return; }
+async function wrCloudSave(v,okLocal,quiet){
+  if(!currentUser||!sb){ if(!quiet) showToast(okLocal?"Saved on this device ✓":"Could not save on this device."); return; }
   let err=null;
   try{
     const r=await sb.from("writing_drafts").upsert({user_id:currentUser.id,draft_key:wrDraftKey().slice(0,200),content:v.slice(0,20000),meta:wrDraftMeta(),updated_at:new Date().toISOString()},{onConflict:"user_id,draft_key"});
     err=r.error;
   }catch(e){ err=e; }
-  if(err){ showToast(okLocal?"Saved on this device ✓ (could not save to your account)":"Could not save. Please try again."); return; }
+  if(err){ if(quiet) autoNote("Not saved yet"); else showToast(okLocal?"Saved on this device ✓ (could not save to your account)":"Could not save. Please try again."); return; }
   __wrSavedText=v;
-  showToast("Saved to your account ✓");
+  if(quiet) autoNote("Saved ✓"); else showToast("Saved to your account ✓");
   try{ sb.from("writing_drafts").delete().eq("user_id",currentUser.id).lt("updated_at",new Date(Date.now()-30*86400000).toISOString()).then(()=>{},()=>{}); }catch(e){}
 }
 async function wrCloudLoad(startText,startAt){
@@ -3666,6 +3668,11 @@ function wrLeaveNow(){
   navGoBack();
 }
 function wrLeaveSave(){ if(wrSave()) wrLeaveNow(); }
+function wrSaveExit(){
+  const ta=document.getElementById("wrText");
+  if(!ta||!ta.value.trim()){ wrLeaveNow(); return; }
+  if(wrSave()) wrLeaveNow();
+}
 function wrExit(){
   if(wrHasUnsaved()){ wrAskLeave(); return; }
   wrLeaveNow();
@@ -4697,7 +4704,7 @@ function pgRecentRender(){
   let prog="";
   if(__pgInProg.length){
     prog='<div class="pg-box" style="margin-top:6px"><h3>⏳ Unfinished</h3><div class="pg-empty" style="padding:0 0 4px">Saved work you can continue.</div>';
-    __pgInProg.forEach((it,i)=>{ prog+='<div class="pg-act"><div class="pg-act-ico">'+it.ico+'</div><div class="pg-act-body"><div class="pg-act-t">'+pfEsc(it.title)+'</div><div class="pg-act-s">'+pfEsc(it.sub)+' · '+pgDate(it.at)+'</div></div><button class="pg-pill on" onclick="pgContinue('+i+')">Continue</button></div>'; });
+    __pgInProg.forEach((it,i)=>{ prog+='<div class="pg-act"><div class="pg-act-ico">'+it.ico+'</div><div class="pg-act-body"><div class="pg-act-t">'+pfEsc(it.title)+'</div><div class="pg-act-s">'+pfEsc(it.sub)+' · '+pgDate(it.at)+'</div></div><button class="pg-pill" onclick="pgDiscard('+i+')" style="margin-right:6px">Discard</button><button class="pg-pill on" onclick="pgContinue('+i+')">Continue</button></div>'; });
     prog+='</div>';
   }
   if(!items.length&&prog){ box.innerHTML=prog; return; }
@@ -4781,22 +4788,34 @@ async function pgDelSend(scope){
 }
 
 // ── LISTENING: save and continue later ──
-async function lsSaveTest(){
-  if(!currentUser){ showToast("⚠️ Please log in to save your progress."); return; }
-  if(lsSubmitted){ showToast("This test is already submitted."); return; }
+async function lsSaveTest(silent){
+  if(!currentUser){ if(!silent) showToast("⚠️ Please log in to save your progress."); return false; }
+  if(lsSubmitted){ if(!silent) showToast("This test is already submitted."); return false; }
   const audio=document.getElementById("lstAudio");
   const content={book:lsCurBook,test:lsCurTest,section:lsCurSection,audioTime:Math.floor(audio?audio.currentTime||0:0),answers:lsAnswers,savedAt:new Date().toLocaleString()};
   const aid=lsCurBook+"_t"+lsCurTest;
   let err=null;
   try{
     const ex=await sb.from("saved_tests").select("id").eq("user_id",currentUser.id).eq("activity_type","listening").eq("activity_id",aid).maybeSingle();
+    if(lsSubmitted) return false; // submitted while we were saving
     const row={mode:"practice",status:"in_progress",content:content,updated_at:new Date().toISOString()};
     if(ex&&ex.data) { const r=await sb.from("saved_tests").update(row).eq("id",ex.data.id); err=r.error; }
     else { const r=await sb.from("saved_tests").insert(Object.assign({user_id:currentUser.id,activity_type:"listening",activity_id:aid,created_at:new Date().toISOString()},row)); err=r.error; }
   }catch(e){ err=e; }
-  if(err){ showToast("⚠️ Could not save — please try again."); return; }
-  showToast("✅ Progress saved! You can close and continue anytime.");
-  const b=document.getElementById("lstSaveBtn"); if(b){ b.textContent="💾 Saved"; setTimeout(()=>{ b.textContent="💾 Save"; },2000); }
+  if(err){ if(silent) autoNote("Not saved yet"); else showToast("⚠️ Could not save — please try again."); return false; }
+  autoNote("Saved ✓");
+  return true;
+}
+async function lsSaveAndExit(){
+  if(!currentUser){
+    if(confirm("You are not logged in, so your answers cannot be saved. Leave the test anyway?")) lsExit();
+    return;
+  }
+  const b=document.getElementById("lstSaveBtn"); if(b){ b.disabled=true; b.textContent="Saving…"; }
+  const ok=await lsSaveTest(true);
+  if(b){ b.disabled=false; b.textContent="💾 Save & exit"; }
+  if(ok){ showToast("✅ Saved. You can continue from My Progress."); lsExit(); }
+  else showToast("⚠️ Could not save. Please check your internet and try again.");
 }
 async function lsClearSaved(book,test){
   if(!currentUser||!sb) return;
@@ -4829,6 +4848,7 @@ let __pgInProg=[];
 async function pgLoadInProgress(){
   __pgInProg=[];
   if(!currentUser||!sb) return;
+  try{ sb.from("saved_tests").delete().eq("user_id",currentUser.id).eq("status","in_progress").lt("updated_at",new Date(Date.now()-30*864e5).toISOString()).then(()=>{},()=>{}); }catch(e){}
   try{
     const r=await sb.from("saved_tests").select("activity_type,activity_id,content,updated_at").eq("user_id",currentUser.id).eq("status","in_progress").in("activity_type",["reading","listening"]).order("updated_at",{ascending:false}).limit(50);
     ((r&&r.data)||[]).forEach(x=>{
@@ -4846,7 +4866,7 @@ async function pgLoadInProgress(){
       if(Number(m.task)===1&&m.kind!=="custom"&&!t1FindByKey(m.key)) return;
       const words=String(x.content||"").trim()?String(x.content).trim().split(/\s+/).length:0;
       if(!words) return;
-      __pgInProg.push({kind:"writing",meta:m,t:new Date(x.updated_at).getTime(),at:x.updated_at,ico:"✍️",
+      __pgInProg.push({kind:"writing",dk:x.draft_key,meta:m,t:new Date(x.updated_at).getTime(),at:x.updated_at,ico:"✍️",
         title:"Writing Task "+(Number(m.task)===1?"1":"2")+(m.label?" · "+m.label:""),sub:"Draft saved · "+words+" word"+(words===1?"":"s")});
     });
   }catch(e){}
@@ -4881,6 +4901,55 @@ async function pgContinue(i){
   const found=t1FindByKey(m.key);
   if(!found){ showToast("Could not open this question."); return; }
   t1Go(found);
+}
+
+// ── AUTO-SAVE (Reading, Listening, Writing) ──
+function autoNote(t){
+  const txt=t?(t+(t==="Saved ✓"?" "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):"")):"";
+  document.querySelectorAll(".as-note").forEach(e=>{ e.textContent=txt; e.style.color=(t==="Not saved yet")?"#ef4444":""; });
+}
+let __asBusy=false, __asLast={r:"",l:""};
+function __asVisible(id,disp){ const e=document.getElementById(id); if(!e) return false; const d=getComputedStyle(e).display; return disp?d===disp:d!=="none"; }
+async function autoSaveTick(){
+  if(__asBusy||!currentUser||!sb) return;
+  __asBusy=true;
+  try{
+    if(__asVisible("writingEditorPage","flex")){
+      if(!__wrBusy && wrHasUnsaved()) wrSave(true);
+    } else if(__asVisible("listeningExamPage")&&lsCurBook&&!lsSubmitted){
+      const sig=JSON.stringify([lsCurBook,lsCurTest,lsCurSection,lsAnswers]);
+      if(sig!==__asLast.l && Object.keys(lsAnswers||{}).some(k=>Object.keys(lsAnswers[k]||{}).length)){
+        if(await lsSaveTest(true)) __asLast.l=sig;
+      }
+    } else if(__asVisible("examPage")&&curBook&&!__attSaved&&!examMode){
+      savePassageState(curPassIdx);
+      const nta=document.getElementById("nta");
+      const sig=JSON.stringify([curBook,curTest,curPassIdx,userAns,nta?nta.value:""]);
+      if(sig!==__asLast.r && (Object.keys(userAns||{}).length||(nta&&nta.value))){
+        if(await saveTest(true)) __asLast.r=sig;
+      }
+    }
+  }catch(e){}
+  __asBusy=false;
+}
+setInterval(autoSaveTick,30000);
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden") autoSaveTick(); });
+window.addEventListener("pagehide",()=>{ autoSaveTick(); });
+
+async function pgDiscard(i){
+  const it=__pgInProg[i]; if(!it||!currentUser) return;
+  if(!confirm("Delete this unfinished work? This cannot be undone.")) return;
+  let err=null;
+  try{
+    if(it.kind==="writing"){
+      const r=await sb.from("writing_drafts").delete().eq("user_id",currentUser.id).eq("draft_key",it.dk); err=r&&r.error;
+      try{ localStorage.removeItem(it.dk); localStorage.removeItem(it.dk+"_at"); }catch(e){}
+    } else {
+      const r=await sb.from("saved_tests").delete().eq("user_id",currentUser.id).eq("activity_type",it.kind).eq("activity_id",it.aid); err=r&&r.error;
+    }
+  }catch(e){ err=e; }
+  if(err){ showToast("⚠️ Could not delete. Please try again."); return; }
+  await pgLoadInProgress(); pgRecentRender(); showToast("Deleted.");
 }
 
 // ── LISTENING NAVIGATION ─────────────────────────────
@@ -5506,6 +5575,7 @@ function startExam(mode){
   if(pb) pb.style.display=examMode?"none":"inline-flex";
   if(sb) sb.style.display=examMode?"none":"inline-flex";
   if(ub) ub.style.display=examMode?"none":"inline-flex";
+  const eb=document.getElementById("examExitBtn"); if(eb) eb.style.display=examMode?"inline-flex":"none";
   const t=DATA[curBook].tests[curTest];
   document.getElementById("etitle").textContent=t.title;
   document.getElementById("emode").textContent=examMode?"⏱ Exam Simulation — 60 min countdown":"📝 Free Practice — No time limit";
@@ -5553,12 +5623,12 @@ function togglePause(){
 }
 
 // ── SAVE TEST ──────────────────────────────────
-async function saveTest(){
+async function saveTest(silent){
   savePassageState(curPassIdx);
 
   if(!currentUser){
-    showToast("⚠️ Please log in to save your progress.");
-    return;
+    if(!silent) showToast("⚠️ Please log in to save your progress.");
+    return false;
   }
 
   const saveData={
@@ -5588,6 +5658,7 @@ async function saveTest(){
       .eq("activity_type", "reading")
       .eq("activity_id", curBook+"_t"+curTest)
       .maybeSingle();
+    if(__attSaved) return false; // the test was submitted while we were saving
 
     let saveError;
     if(existing){
@@ -5619,9 +5690,11 @@ async function saveTest(){
 
     if(saveError){ 
       console.error("Save error:", JSON.stringify(saveError));
-      showToast("⚠️ Could not save — please try again."); 
-      return; 
+      if(silent) autoNote("Not saved yet"); else showToast("⚠️ Could not save — please try again."); 
+      return false; 
     }
+
+    if(silent){ autoNote("Saved ✓"); return true; }
 
     // Log to activity_log
     await sb.from("activity_log").insert({
@@ -5629,17 +5702,23 @@ async function saveTest(){
       action: "saved_reading",
       detail: "Saved reading test: "+curBook+" Test "+(curTest+1)+" — Passage "+(curPassIdx+1)
     });
-
-    showToast("✅ Progress saved! You can close and resume anytime.");
-    const saveBtn=document.getElementById("saveBtn");
-    if(saveBtn){ saveBtn.textContent="💾 Saved"; saveBtn.classList.add("on"); }
-    setTimeout(()=>{
-      const sb2=document.getElementById("saveBtn");
-      if(sb2){sb2.textContent="💾 Save";sb2.classList.remove("on");}
-    },2000);
+    autoNote("Saved ✓");
+    return true;
   } catch(e){
-    showToast("⚠️ Could not save — please try again.");
+    if(silent) autoNote("Not saved yet"); else showToast("⚠️ Could not save — please try again.");
+    return false;
   }
+}
+async function saveAndExit(){
+  if(!currentUser){
+    if(confirm("You are not logged in, so your answers cannot be saved. Leave the test anyway?")) examExit();
+    return;
+  }
+  const b=document.getElementById("saveBtn"); if(b){ b.disabled=true; b.textContent="Saving…"; }
+  const ok=await saveTest(true);
+  if(b){ b.disabled=false; b.textContent="💾 Save & exit"; }
+  if(ok){ showToast("✅ Saved. You can continue from My Progress."); examExit(); }
+  else showToast("⚠️ Could not save. Please check your internet and try again.");
 }
 
 // Delete saved test directly from the Practice Zone banner
@@ -5711,6 +5790,8 @@ async function loadSavedTest(aid){
     const d = data.content;
     curBook=d.book; curTest=d.test; curMode=d.mode; __attSaved=false;
     examMode=(curMode==="exam");
+    ["saveBtn","pauseBtn"].forEach(id=>{ const e=document.getElementById(id); if(e) e.style.display=examMode?"none":"inline-flex"; });
+    const eb2=document.getElementById("examExitBtn"); if(eb2) eb2.style.display=examMode?"inline-flex":"none";
     userAns=d.userAns||{};
     passageStates=d.passageStates||{};
     timerSec=d.timerSec||0;
@@ -7752,6 +7833,7 @@ function updateNavUser(){
     if(logoutLink) logoutLink.style.display="flex";
     if(activityLink) activityLink.style.display="flex";
     const pgl=document.getElementById("menuProgressLink"); if(pgl) pgl.style.display="flex";
+    ["progressHomeBtn","activityHomeBtn"].forEach(id=>{ const e=document.getElementById(id); if(e) e.style.display="inline-flex"; });
     const pl=document.getElementById("menuProfileLink"); if(pl) pl.style.display=currentUser.isAdmin?"none":"flex";
     const initial=currentUser.name.charAt(0).toUpperCase();
     const navAvatar=document.getElementById("navAvatar");
@@ -7779,6 +7861,7 @@ function updateNavUser(){
     if(logoutLink) logoutLink.style.display="none";
     if(activityLink) activityLink.style.display="none";
     const pgl2=document.getElementById("menuProgressLink"); if(pgl2) pgl2.style.display="none";
+    ["progressHomeBtn","activityHomeBtn"].forEach(id=>{ const e=document.getElementById(id); if(e) e.style.display="none"; });
     const pl2=document.getElementById("menuProfileLink"); if(pl2) pl2.style.display="none";
     const pbn=document.getElementById("profileBanner"); if(pbn) pbn.style.display="none";
   }
@@ -10769,9 +10852,9 @@ function spPrint(){
       <div class="wr-timer" id="wrTimerBox">⏱ <span id="wrTimer">00:00</span></div>
       <div class="wr-words" id="wrWordsBox">Words: <span id="wrWords">0</span></div>
       <button class="wr-btn" id="wrToggleQ" onclick="wrToggleQuestion()">Hide question</button>
-      <button class="wr-btn" onclick="wrSave()">💾 Save</button>
+      <span class="as-note"></span>
+      <button class="wr-btn" onclick="wrSaveExit()">💾 Save &amp; exit</button>
       <button class="wr-submit" onclick="wrSubmit()">Submit</button>
-      <button class="wr-btn" onclick="wrExit()">✕ Exit</button>
     </div>
   </div>
   <div class="wr-body">
