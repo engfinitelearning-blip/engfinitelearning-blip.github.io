@@ -4709,14 +4709,15 @@ function pgHtmlCore(attList,wList,open,openFn,pcList){
   let h='<div class="pg-cards">'
     +card("reading","📖 Reading",rd,l=>l.map(pgEff))
     +card("listening","🎧 Listening",ls,l=>l.map(pgEff))
-    +(pcList?'<div class="pg-card'+(open==="practice"?' on':'')+'" onclick="'+openFn+'(\'practice\')"><div class="pg-t">🎯 Listening practice</div><div class="pg-b">'+pcOverallPct(pcList)+'</div><div class="pg-n">'+pcList.length+' practice'+(pcList.length===1?'':'s')+'</div></div>':'')
     +'<div class="pg-card'+(open==="writing"?' on':'')+'" onclick="'+openFn+'(\'writing\')"><div class="pg-t">✍️ Writing</div><div class="pg-b">'+pgBand(wo.band)+'</div><div class="pg-n">'+wn+' essay'+(wn===1?'':'s')+'</div></div>'
     +'</div>';
   if(!open) h+='<div class="pg-empty">Tap a skill above to see the latest tests.</div>';
   if(open==="reading") h+=pgTestBlock("⏱ With time limit (Exam mode)","60 minutes countdown",rd.filter(a=>a.mode==="exam"),true)+pgTestBlock("📝 Without time limit (Free practice)","",rd.filter(a=>a.mode!=="exam"),true);
-  if(open==="listening") h+=pgTestBlock("🎧 Listening","",ls,true);
+  if(open==="listening"){
+    h+=pgTestBlock("🎧 Listening","",ls,true);
+    if(pcList) h+=pcPracticeButton(pcList);
+  }
   if(open==="writing") h+='<div class="pg-box"><h3>✍️ Overall Writing band</h3><div class="pg-sum"><span>Overall band<br><b>'+pgBand(wo.band)+'</b></span></div>'+(wo.note?'<div class="pg-empty" style="padding:0">'+wo.note+'.</div>':'<div class="pg-empty" style="padding:0">No marked essays yet.</div>')+'</div>'+pgWriteBlock("Writing Task 1 (about 20 minutes)",w1)+pgWriteBlock("Writing Task 2 (about 40 minutes)",w2);
-  if(open==="practice") h+=pcProgressBox(pcList);
   if(open==="writing") h+='<div class="pg-empty" style="margin-top:6px">Writing bands are AI estimates. Averages are rounded to the nearest half band.</div>';
   else if(open==="reading"||open==="listening") h+='<div class="pg-empty" style="margin-top:6px">Averages are rounded to the nearest half band. Tests with fewer than 40 questions are not counted in the average.</div>';
   return h;
@@ -5104,13 +5105,19 @@ function pcMark(id){
   return '<div class="att-mark">✓ Completed · Best '+best+'%</div><div class="att-sub">Done '+a.length+(a.length===1?' time':' times')+' · Score'+(a.length===1?'':'s')+': '+(a.length>5?'… ':'')+last.join(', ')+'</div>';
 }
 // Accuracy per question type (shown in My Progress, separate from band scores)
-let __pcMoreN=5;
+let __pcMoreN=5, __pcOpen=false;
+function pcToggle(){ __pcOpen=!__pcOpen; progressRender(); }
+function pcPracticeButton(att){
+  let h='<button class="pg-card'+(__pcOpen?' on':'')+'" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;margin:4px 0 10px;font:inherit;color:inherit" onclick="pcToggle()"><span><span class="pg-t" style="display:block">🎯 Listening practice by question type</span><span class="pg-n">'+att.length+' practice'+(att.length===1?'':'s')+' · accuracy '+pcOverallPct(att)+'</span></span><span style="font-size:18px">'+(__pcOpen?'▲':'▼')+'</span></button>';
+  if(__pcOpen) h+=pcProgressBox(att);
+  return h;
+}
 function pcMore(){ __pcMoreN+=5; progressRender(); }
 function pcOverallPct(att){ let c=0,t=0; att.forEach(x=>{ c+=x.correct; t+=x.total; }); return t?Math.round(c/t*100)+"%":"—"; }
 function pcProgressBox(att){
   att=att||[];
   const types=[["map","🗺️ Map"],["fib13","✏️ Fill in the blanks (Sections 1–3)"],["fib4","📝 Fill in the blanks (Section 4)"],["mcq","🔘 Multiple choice"],["match","🔗 Matching"]];
-  let h='<div class="pg-box"><h3>🎯 Listening practice by question type</h3>';
+  let h='<div class="pg-box"><h3>Accuracy by question type</h3>';
   types.forEach(([k,name])=>{
     const l=att.filter(x=>(x.qtype||"map")===k);
     if(!l.length){ h+='<div class="pg-act"><div class="pg-act-body"><div class="pg-act-t">'+name+'</div><div class="pg-act-s">Not tried yet</div></div><div class="pg-act-d">—</div></div>'; return; }
@@ -7133,7 +7140,7 @@ async function handleGoogle(){
   try{ if(window.__nextPage) sessionStorage.setItem("ef_next",window.__nextPage); }catch(e){}
   const btn=document.getElementById("authGoogleBtn"); if(btn) btn.disabled=true;
   try{
-    const{error}=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin+window.location.pathname}});
+    const{error}=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin+window.location.pathname,queryParams:(function(){ try{ return localStorage.getItem("ef_pick_google")?{prompt:"select_account"}:{}; }catch(e){ return {}; } })()}});
     if(error){ showAuthError("Google sign-in is not available right now. Please use your email instead."); if(btn) btn.disabled=false; }
   }catch(e){ showAuthError("Google sign-in is not available right now. Please use your email instead."); if(btn) btn.disabled=false; }
 }
@@ -7190,7 +7197,9 @@ async function loadUserAfterLogin(authUser){
   let{data:profile}=await sb.from("profiles").select("*").eq("id",authUser.id).maybeSingle();
   const isOwnerAcct=authUser.email===ADMIN_EMAIL;
   if(!profile){
-    // First sign-in (for example with Google) and no profile row yet: create one as a visitor.
+    // An old login of a deleted person must never bring their profile back.
+    if(await __sessionDead()){ try{ await sb.auth.signOut({scope:"local"}); }catch(e){} return; }
+    // First sign-in (for example with Google) and no profile row yet: create one as a user.
     const nm=authUser.user_metadata?.full_name||authUser.user_metadata?.name||(authUser.email||"").split("@")[0];
     try{ await sb.from("profiles").insert({id:authUser.id,email:authUser.email,full_name:nm,status:"pending"}); }catch(e){}
     profile={status:"pending",full_name:nm};
@@ -7363,6 +7372,7 @@ function showAuthError(msg){
 
 function loginUser(user){
   currentUser=user;
+  try{ localStorage.removeItem("ef_pick_google"); }catch(e){}
   hideAuth();
   updateNavUser();
   showToast("Welcome back, "+user.name.split(" ")[0]+"! 👋");
@@ -8039,6 +8049,7 @@ async function __sessionStillValid(){
   __svBusy=false;
 }
 async function __forceLogout(){
+  try{ localStorage.setItem("ef_pick_google","1"); }catch(e){}
   try{ await sb.auth.signOut({scope:"local"}); }catch(e){}
   currentUser=null; __attList=[]; __pcAtt=[];
   try{ updateNavUser(); }catch(e){}
@@ -8047,6 +8058,9 @@ async function __forceLogout(){
   try{ showAuth(); }catch(e){}
 }
 setInterval(__sessionStillValid,60000);
+// Any click re-checks the account (at most every 4 seconds), so a deleted person is logged out at once.
+let __svLast=0;
+document.addEventListener("click",()=>{ if(!currentUser) return; const n=Date.now(); if(n-__svLast<4000) return; __svLast=n; __sessionStillValid(); },true);
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") __sessionStillValid(); });
 window.addEventListener("focus",()=>{ __sessionStillValid(); });
 
@@ -10576,10 +10590,10 @@ async function adminLoadStudents(filter,page){
 }
 
 function adminFilter(filter, btn){
-  document.querySelectorAll('#adminTabPending,#adminTabApproved,#adminTabRejected,#adminTabAll,#adminTabAdmins').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#adminTabPending,#adminTabApproved,#adminTabRejected,#adminTabAll,#adminTabAdmins,#adminTabDeleted').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   adminPage=1;
-  if(filter==='admins'){ adminShowAdmins(true,filter); adminAdminsLoad(); return; }
+  if(filter==='admins'||filter==='deleted'){ adminShowAdmins(true,filter); if(filter==='admins') adminAdminsLoad(); else adminDeletedLoad(); return; }
   adminShowAdmins(false,filter);
   adminLoadStudents(filter,1);
 }
@@ -10645,12 +10659,30 @@ async function adminDelete(id){
 // ── SUPERVISORS (owner only) ─────────────────────────
 function adminShowAdmins(on,filter){
   const show=(id,v)=>{ const el=pfEl(id); if(el) el.style.display=v; };
-  show("adminAdminsBox",on?"block":"none");
+  show("adminAdminsBox",(on&&filter!=="deleted")?"block":"none");
+  show("adminDeletedBox",(on&&filter==="deleted")?"block":"none");
   ["adminSearchRow","adminBulkRow","adminStudentList","adminPager"].forEach(id=>show(id,on?"none":""));
   // Batches belong to students, so the batch filter and manager only show on the Students tab.
   const onStudents=!on && filter==="approved";
   show("adminBatchRow",onStudents?"flex":"none");
   if(!onStudents) show("adminBatchBox","none");
+}
+// Deleted users: read from the activity log (every delete is written there).
+async function adminDeletedLoad(){
+  const box=pfEl("adminDeletedList"), sum=pfEl("adminDeletedSum"); if(!box) return;
+  box.innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">Loading...</div>';
+  try{
+    const{data,error}=await sb.functions.invoke("admin-users",{body:{action:"log_list",q:"delete_user",page:1}});
+    if(error||!data||!data.ok){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:30px">'+pfEsc((data&&data.error)||"Could not load.")+'</div>'; return; }
+    const rows=(data.rows||[]).filter(r=>r.action==="delete_user");
+    const total=data.total||rows.length;
+    const fmt=d=>new Date(d).toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    if(sum) sum.innerHTML='🗑 <b>'+total+'</b> user'+(total===1?'':'s')+' deleted'+(total>rows.length?' (showing the latest '+rows.length+')':'');
+    box.innerHTML=rows.length?rows.map(r=>{
+      const who=r.actor_role==="owner"?(currentUser&&currentUser.isOwner?"You":"The owner"):pfEsc(r.actor_email||"Someone");
+      return '<div class="admin-student-card"><div style="font-size:18px">🗑</div><div style="flex:1;min-width:200px"><div style="font-size:13px;color:#fff"><b>'+pfEsc(r.target_name||"Deleted user")+'</b></div><div style="font-size:12px;color:var(--muted);word-break:break-all">'+pfEsc(r.target_email||"")+'</div><div style="font-size:11px;color:var(--muted);margin-top:3px">Deleted by '+who+' · '+fmt(r.at)+'</div></div></div>';
+    }).join(""):'<div style="text-align:center;color:var(--muted);padding:40px">Nobody has been deleted yet.</div>';
+  }catch(e){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:30px">Could not load.</div>'; }
 }
 async function adminAdminsLoad(){
   const box=pfEl("adminAdminsList"); if(!box) return;
@@ -10806,6 +10838,7 @@ function spPrint(){
     <button onclick="adminFilter('rejected',this)" class="admin-tab" id="adminTabRejected">⛔ Blocked</button>
     <button onclick="adminFilter('all',this)" class="admin-tab" id="adminTabAll">👥 All</button>
     <button onclick="adminFilter('admins',this)" class="admin-tab" id="adminTabAdmins">🛡 Team</button>
+    <button onclick="adminFilter('deleted',this)" class="admin-tab" id="adminTabDeleted">🗑 Deleted</button>
   </div>
 
 
@@ -10839,6 +10872,10 @@ function spPrint(){
       <button class="admin-reject-btn" onclick="adminBulk('block')">⛔ Block</button>
       <button class="admin-tab" onclick="adminBulk('unblock')">Unblock</button>
     </span>
+  </div>
+  <div id="adminDeletedBox" style="display:none">
+    <div id="adminDeletedSum" style="font-size:13px;color:#fff;margin-bottom:12px"></div>
+    <div id="adminDeletedList"></div>
   </div>
   <div id="adminAdminsBox" style="display:none">
     <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;padding:10px 14px;background:rgba(192,132,252,0.06);border:1px solid rgba(192,132,252,0.22);border-radius:12px">Your team. <b>Admins</b> can do everything the owner can, except change or remove the owner or another admin. <b>Supervisors</b> can make and block students, see their progress and set personal limits. They cannot change AI marking or the team. Team members are not listed under Users or Students, and they have student access automatically. Only the owner can make or remove an admin. Admins can add and remove supervisors.</div>
