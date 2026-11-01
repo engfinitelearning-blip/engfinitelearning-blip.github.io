@@ -2491,6 +2491,7 @@ body.adm-light #adDlg [style*="background:transparent"][style*="color:#fff"]{col
       <span class="as-note"></span>
       <button class="tbtn" id="lstSaveBtn" onclick="lsSaveAndExit()">💾 Save &amp; exit</button>
       <button class="ebtn" onclick="lsSubmit()">Submit Test</button>
+      <button class="tbtn" id="lstExitBtn" onclick="lsExit()" style="display:none">✕ Exit</button>
     </div>
   </div>
   <div class="lst-player">
@@ -4565,6 +4566,7 @@ async function attLoad(uid){
   try{ const pg=document.getElementById("cambridgebooksPage"); if(pg&&pg.style.display==="block") buildBooks(); }catch(e){}
   try{ const pg=document.getElementById("listeningBooksPage"); if(pg&&pg.style.display==="block") buildListeningBooks(); }catch(e){}
   try{ pgReqLoad(); }catch(e){}
+  try{ pcLoad(uid); }catch(e){}
 }
 async function attSave(skill,book,test,mode,correct,total,seconds,retry){
   if(!currentUser||!sb) return;
@@ -5052,13 +5054,43 @@ function pcMapList(){
           if(show.indexOf(id)<0) return;
           const answers={};
           bl.items.forEach(it=>{ if(sec.answers&&sec.answers[it.n]!==undefined) answers[it.n]=sec.answers[it.n]; });
-          out.push({id,book:bk,bookName:"Cambridge "+bk.replace(/^cam/,""),test:tn,section:sn,q1,q2,block:bl,answers,title:(bl.mapTitle||"Map")});
+          let script=[];
+          const re=new RegExp("questions?\\s+"+q1+"\\s*(?:to|\u2013|-)\\s*"+q2,"i");
+          const sc=sec.script||[];
+          const si=sc.findIndex(l=>l.sp==="ANNOUNCER"&&re.test(l.t));
+          if(si>=0){ for(let k=si+1;k<sc.length&&sc[k].sp!=="ANNOUNCER";k++) script.push(sc[k]); }
+          out.push({id,script,book:bk,bookName:"Cambridge "+bk.replace(/^cam/,""),test:tn,section:sn,q1,q2,block:bl,answers,title:(bl.mapTitle||"Map")});
         });
       });
     });
   });
   out.sort((a,b)=>show.indexOf(a.id)-show.indexOf(b.id));
   return out;
+}
+// ── Practice attempts are saved to the student's account (table practice_attempts) ──
+let __pcAtt=[], PC_CUR_ID="";
+async function pcLoad(uid){
+  __pcAtt=[];
+  try{
+    const r=await sb.from("practice_attempts").select("practice_id,qtype,correct,total,seconds,created_at").eq("user_id",uid).order("created_at",{ascending:true}).limit(5000);
+    if(!r.error&&r.data) __pcAtt=r.data;
+  }catch(e){}
+  try{ const pg=document.getElementById("listeningPracticeMapPage"); if(pg&&pg.style.display==="block") pcBuildMapList(); }catch(e){}
+}
+async function pcSave(id,qtype,correct,total,seconds,retry){
+  if(!currentUser||!sb) return;
+  const row={user_id:currentUser.id,practice_id:id,qtype:qtype,correct:correct,total:total,seconds:Math.max(0,Math.round(seconds||0))};
+  let err=null;
+  try{ const r=await sb.from("practice_attempts").insert(row); err=r.error; }catch(e){ err=e; }
+  if(err){ if(!retry) setTimeout(()=>pcSave(id,qtype,correct,total,seconds,true),3000); return; }
+  __pcAtt.push(Object.assign({created_at:new Date().toISOString()},row));
+}
+function pcMark(id){
+  const a=__pcAtt.filter(x=>x.practice_id===id);
+  if(!a.length) return "";
+  let best=0; a.forEach(x=>{ const v=x.total?Math.round(x.correct/x.total*100):0; if(v>best) best=v; });
+  const last=a.slice(-5).map(x=>x.correct+"/"+x.total);
+  return '<div class="att-mark">✓ Completed · Best '+best+'%</div><div class="att-sub">Done '+a.length+(a.length===1?' time':' times')+' · Score'+(a.length===1?'':'s')+': '+(a.length>5?'… ':'')+last.join(', ')+'</div>';
 }
 function pcUpdateCounts(){
   const el=document.getElementById("pcMapCount"); if(!el) return;
@@ -5073,18 +5105,19 @@ function pcBuildMapList(){
   list.forEach((m,i)=>{
     const d=document.createElement("div");
     d.className="tcard";
-    d.innerHTML=`<div class="tnum">${i+1}</div><div class="tlabel">${m.title}</div><div class="tinfo">${m.bookName} · Test ${m.test} · Questions ${m.q1}–${m.q2}</div>`;
+    d.innerHTML=`<div class="tnum">${i+1}</div><div class="tlabel">${m.title}</div><div class="tinfo">${m.bookName} · Test ${m.test} · Questions ${m.q1}–${m.q2}</div>${pcMark(m.id)}`;
     d.onclick=()=>pcStart(m.id);
     g.appendChild(d);
   });
 }
 function pcStart(id){
   const m=pcMapList().find(x=>x.id===id); if(!m) return;
+  PC_CUR_ID=id;
   const clip=(typeof PRACTICE_CLIPS!=="undefined"&&PRACTICE_CLIPS[id])||"";
   LISTENING_DATA.practice={name:"Practice",tests:{1:{
     title:"Map · "+m.bookName+" · Test "+m.test+" · Questions "+m.q1+"–"+m.q2,
     audio:clip,
-    sections:{1:{label:"Map",qlabel:"Questions "+m.q1+"–"+m.q2,blocks:[m.block],answers:m.answers,script:[]}}
+    sections:{1:{label:"Map",qlabel:"Questions "+m.q1+"–"+m.q2,blocks:[m.block],answers:m.answers,script:m.script}}
   }}};
   startListeningTest("practice",1);
 }
@@ -5170,6 +5203,7 @@ function startListeningTest(book,test){
   }
   const isPc=(book==="practice");
   const svb=document.getElementById("lstSaveBtn"); if(svb) svb.style.display=isPc?"none":"";
+  const leb=document.getElementById("lstExitBtn"); if(leb) leb.style.display="none";
   tabs.style.display=isPc?"none":"";
   const apn=document.getElementById("lstAudioNote");
   if(apn) apn.style.display=(isPc&&!t.audio)?"inline":"none";
@@ -5606,6 +5640,7 @@ function lsGradeSection(n){
 function lsSubmit(){
   if(lsSubmitted) return;
   lsSubmitted=true;
+  const leb=document.getElementById("lstExitBtn"); if(leb) leb.style.display="inline-flex";
   lsResultsActive=true;
   const audio=document.getElementById("lstAudio");
   const timeUsed=audio.currentTime||0;
@@ -5637,6 +5672,7 @@ function lsSubmit(){
     document.getElementById("rtitle").textContent="✅ Practice Submitted";
     document.getElementById("rsub").textContent=`You answered ${correct} out of ${total} correctly`+(wrong>0?` (${wrong} wrong)`:``);
     document.getElementById("resOv").classList.add("open");
+    pcSave(PC_CUR_ID,"map",correct,total,timeUsed);
     return;
   }
   attSave("listening",lsCurBook,lsCurTest,null,correct,total,timeUsed);
@@ -6775,6 +6811,7 @@ function reviewMode(){
   if(lsResultsActive){ lsReviewAnswers(); return; }
   document.getElementById("resOv").classList.remove("open");
   reviewing=true;
+  const eb3=document.getElementById("examExitBtn"); if(eb3) eb3.style.display="inline-flex";
 
   // ── Process and store review results for ALL passages ──
   DATA[curBook].tests[curTest].passages.forEach((pass,pidx)=>{
