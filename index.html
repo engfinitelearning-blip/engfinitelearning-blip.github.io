@@ -2354,13 +2354,40 @@ body.adm-light #adDlg [style*="background:transparent"][style*="color:#fff"]{col
       <div class="folder-sub">Cambridge IELTS 1–21 · Listening</div>
       <div class="folder-count">Cam 11 · Test 1 · Section 1 available</div>
     </div>
-    <div class="folder-card locked">
-      <div class="folder-ico">📋</div>
-      <div class="folder-name">More Collections</div>
-      <div class="folder-sub">Additional practice sets coming soon</div>
-      <div class="folder-count" style="color:var(--muted)">Coming Soon</div>
+    <div class="folder-card" onclick="showPage('listeningpractice')">
+      <div class="folder-ico">🎯</div>
+      <div class="folder-name">Practice by Question Type</div>
+      <div class="folder-sub">Map · Fill in the blanks · MCQ · Matching</div>
+      <div class="folder-count">Map practice available</div>
     </div>
   </div>
+</div>
+
+<!-- LISTENING: PRACTICE BY QUESTION TYPE -->
+<div class="selpage" id="listeningPracticePage">
+  <button class="bk" onclick="showPage('listening')">← Back to Listening Practice</button>
+  <div class="ptitle">🎯 Practice by Question Type</div>
+  <div class="psub">Choose a question type and practise only those questions</div>
+  <div class="folder-grid">
+    <div class="folder-card" onclick="showPage('listeningpracticemap')">
+      <div class="folder-ico">🗺️</div>
+      <div class="folder-name">Map</div>
+      <div class="folder-sub">Label the map</div>
+      <div class="folder-count" id="pcMapCount"></div>
+    </div>
+    <div class="folder-card locked"><div class="folder-ico">✏️</div><div class="folder-name">Fill in the blanks</div><div class="folder-sub">Sections 1–3</div><div class="folder-count" style="color:var(--muted)">Coming Soon</div></div>
+    <div class="folder-card locked"><div class="folder-ico">📝</div><div class="folder-name">Fill in the blanks</div><div class="folder-sub">Section 4</div><div class="folder-count" style="color:var(--muted)">Coming Soon</div></div>
+    <div class="folder-card locked"><div class="folder-ico">🔘</div><div class="folder-name">Multiple Choice</div><div class="folder-sub">MCQ</div><div class="folder-count" style="color:var(--muted)">Coming Soon</div></div>
+    <div class="folder-card locked"><div class="folder-ico">🔗</div><div class="folder-name">Matching</div><div class="folder-sub">Match the options</div><div class="folder-count" style="color:var(--muted)">Coming Soon</div></div>
+  </div>
+</div>
+
+<!-- LISTENING: PRACTICE MAP LIST -->
+<div class="selpage" id="listeningPracticeMapPage">
+  <button class="bk" onclick="showPage('listeningpractice')">← Back to Question Types</button>
+  <div class="ptitle">🗺️ Map Practice</div>
+  <div class="psub">Pick a map and label it</div>
+  <div class="tgrid" id="pcMapGrid"></div>
 </div>
 
 <!-- LISTENING: CAMBRIDGE BOOKS -->
@@ -2480,6 +2507,7 @@ body.adm-light #adDlg [style*="background:transparent"][style*="color:#fff"]{col
     <span class="lst-time" id="lstVolPct">100%</span>
     <button class="lst-pbtn small" onclick="lsVol(0.1)" title="Volume up">🔊</button>
     <audio id="lstAudio" preload="auto"></audio>
+    <span id="lstAudioNote" style="display:none;font-size:12.5px;color:var(--muted);margin-left:8px">🎧 Audio for this map is coming soon</span>
   </div>
   <div class="lst-body">
     <div class="lst-questions" id="lstQuestions"></div>
@@ -2673,6 +2701,10 @@ makeChain("/listening/cambridge-official-tests","listeningbooks",[
     enter:(n)=>{ selectListeningTest(n); } }
 ]);
 
+// ---- Listening: Practice by Question Type ----
+registerFlat("/listening/practice","listeningpractice");
+registerFlat("/listening/practice/map","listeningpracticemap");
+
 // ---- Writing Task 2: /writing-practice/task-2/<topic> ----
 makeChain("/writing-practice/task-2","writingTask2",[
   { pageId:"writingTopic",
@@ -2860,9 +2892,10 @@ function authGateOK(p){
   return true;
 }
 function authContinue(){
-  let p=window.__nextPage; window.__nextPage=null;
-  try{ const s=sessionStorage.getItem("ef_next"); if(s){ sessionStorage.removeItem("ef_next"); p=p||s; } }catch(e){}
-  if(p && p!=="home" && authGateOK(p)) showPage(p);
+  // After logging in, always stay on the home page (do not jump to the page
+  // the visitor clicked before the login box appeared).
+  window.__nextPage=null;
+  try{ sessionStorage.removeItem("ef_next"); }catch(e){}
 }
 // After the saved login (if any) is known: send visitors away from pages they may not open.
 function authEnforceCurrent(){
@@ -2963,7 +2996,7 @@ window.addEventListener("popstate",(event)=>{
 function _renderPage(p){
   if(typeof adminApplyTheme==="function") adminApplyTheme(p);
   if(p!=="typingPractice" && typeof tpCleanup==="function") tpCleanup();
-  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","progressPage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingBankPage","writingRecentPage","writingTask1Page","writingT1BankPage","writingT1TopicPage","writingT1RecentPage","writingT1OwnPage","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
+  ["homePage","practicezonePage","readingPage","cambridgebooksPage","listeningPage","listeningBooksPage","listeningTestsPage","listeningPracticePage","listeningPracticeMapPage","testPage","modePage","materialsIELTSPage","materialsGrammarPage","grammarPassivePage","matReadingPage","vocabPage","matWritingPage","matSpeakingPage","matListeningPage","grammarPassivePage","activityPage","progressPage","activityPage","typingPracticePage","bandCalculatorPage","studyPlanPage","writingPracticePage","writingTask2Page","writingBankPage","writingRecentPage","writingTask1Page","writingT1BankPage","writingT1TopicPage","writingT1RecentPage","writingT1OwnPage","writingOwnPage","writingOwnIdeasPage","writingTopicPage","writingIdeasPage","speakingPracticePage","adminPanelPage"].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.cssText="display:none";
   });
@@ -2991,6 +3024,10 @@ function _renderPage(p){
   } else if(p==="listening"){
     const lp=document.getElementById("listeningPage");
     lp.style.cssText="display:block;position:relative;z-index:1;padding:40px 24px 60px;max-width:920px;margin:0 auto;min-height:60vh";
+  } else if(p==="listeningpractice"||p==="listeningpracticemap"){
+    const lp=document.getElementById(p==="listeningpractice"?"listeningPracticePage":"listeningPracticeMapPage");
+    lp.style.cssText="display:block;position:relative;z-index:1;padding:40px 24px 60px;max-width:920px;margin:0 auto;min-height:60vh";
+    if(p==="listeningpractice") pcUpdateCounts(); else pcBuildMapList();
   } else if(p==="listeningbooks"){
     const lp=document.getElementById("listeningBooksPage");
     lp.style.cssText="display:block;position:relative;z-index:1;padding:40px 24px 60px;max-width:920px;margin:0 auto;min-height:60vh";
@@ -4916,7 +4953,7 @@ async function autoSaveTick(){
   try{
     if(__asVisible("writingEditorPage","flex")){
       if(!__wrBusy && wrHasUnsaved()) wrSave(true);
-    } else if(__asVisible("listeningExamPage")&&lsCurBook&&!lsSubmitted){
+    } else if(__asVisible("listeningExamPage")&&lsCurBook&&lsCurBook!=="practice"&&!lsSubmitted){
       const sig=JSON.stringify([lsCurBook,lsCurTest,lsCurSection,lsAnswers]);
       if(sig!==__asLast.l && Object.keys(lsAnswers||{}).some(k=>Object.keys(lsAnswers[k]||{}).length)){
         if(await lsSaveTest(true)) __asLast.l=sig;
@@ -4991,6 +5028,67 @@ function selectListeningBook(key,num){
   });
   showPage("listeningtests");
 }
+// ══════════════════════════════════════════════
+// LISTENING: PRACTICE BY QUESTION TYPE (Map)
+// ══════════════════════════════════════════════
+// Finds every labelled-map group in the Cambridge data, keeps only the ones
+// listed in PRACTICE_SHOW (data-practice.js), and runs each one as its own
+// mini test with just those questions.
+function pcMapList(){
+  const out=[];
+  if(typeof LISTENING_DATA==="undefined") return out;
+  const show=(typeof PRACTICE_SHOW!=="undefined")?PRACTICE_SHOW:[];
+  Object.keys(LISTENING_DATA).forEach(bk=>{
+    if(bk==="practice") return;
+    const tests=LISTENING_DATA[bk].tests||{};
+    Object.keys(tests).forEach(tn=>{
+      const secs=tests[tn].sections||{};
+      Object.keys(secs).forEach(sn=>{
+        const sec=secs[sn];
+        (sec.blocks||[]).forEach(bl=>{
+          if(bl.type!=="map_label"||!bl.mapImage||!bl.items||!bl.items.length) return;
+          const q1=bl.items[0].n, q2=bl.items[bl.items.length-1].n;
+          const id="map-"+bk+"-t"+tn+"-s"+sn+"-q"+q1+"-"+q2;
+          if(show.indexOf(id)<0) return;
+          const answers={};
+          bl.items.forEach(it=>{ if(sec.answers&&sec.answers[it.n]!==undefined) answers[it.n]=sec.answers[it.n]; });
+          out.push({id,book:bk,bookName:"Cambridge "+bk.replace(/^cam/,""),test:tn,section:sn,q1,q2,block:bl,answers,title:(bl.mapTitle||"Map")});
+        });
+      });
+    });
+  });
+  out.sort((a,b)=>show.indexOf(a.id)-show.indexOf(b.id));
+  return out;
+}
+function pcUpdateCounts(){
+  const el=document.getElementById("pcMapCount"); if(!el) return;
+  const n=pcMapList().length;
+  el.textContent=n?(n+" map"+(n>1?"s":"")+" available"):"Coming Soon";
+}
+function pcBuildMapList(){
+  const g=document.getElementById("pcMapGrid"); if(!g) return;
+  g.innerHTML="";
+  const list=pcMapList();
+  if(!list.length){ g.innerHTML='<div style="color:var(--muted);padding:20px">Maps are coming soon.</div>'; return; }
+  list.forEach((m,i)=>{
+    const d=document.createElement("div");
+    d.className="tcard";
+    d.innerHTML=`<div class="tnum">${i+1}</div><div class="tlabel">${m.title}</div><div class="tinfo">${m.bookName} · Test ${m.test} · Questions ${m.q1}–${m.q2}</div>`;
+    d.onclick=()=>pcStart(m.id);
+    g.appendChild(d);
+  });
+}
+function pcStart(id){
+  const m=pcMapList().find(x=>x.id===id); if(!m) return;
+  const clip=(typeof PRACTICE_CLIPS!=="undefined"&&PRACTICE_CLIPS[id])||"";
+  LISTENING_DATA.practice={name:"Practice",tests:{1:{
+    title:"Map · "+m.bookName+" · Test "+m.test+" · Questions "+m.q1+"–"+m.q2,
+    audio:clip,
+    sections:{1:{label:"Map",qlabel:"Questions "+m.q1+"–"+m.q2,blocks:[m.block],answers:m.answers,script:[]}}
+  }}};
+  startListeningTest("practice",1);
+}
+
 function selectListeningTest(n){
   lsCurTest=n;
   startListeningTest(lsCurBook,n);
@@ -5060,11 +5158,21 @@ function startListeningTest(book,test){
     console.error("Listening audio failed to load:",t.audio);
   };
 
-  audio.src=t.audio;
-  audio.currentTime=0;
-  audio.volume=1;
-  document.getElementById("lstVolPct").textContent="100%";
-  audio.load();
+  if(t.audio){
+    audio.src=t.audio;
+    audio.currentTime=0;
+    audio.volume=1;
+    document.getElementById("lstVolPct").textContent="100%";
+    audio.load();
+  } else {
+    audio.removeAttribute("src");
+    document.getElementById("lstDurTime").textContent="--:--";
+  }
+  const isPc=(book==="practice");
+  const svb=document.getElementById("lstSaveBtn"); if(svb) svb.style.display=isPc?"none":"";
+  tabs.style.display=isPc?"none":"";
+  const apn=document.getElementById("lstAudioNote");
+  if(apn) apn.style.display=(isPc&&!t.audio)?"inline":"none";
 
   // Load the first available section's content (audio keeps playing/loading independently)
   if(firstAvailableTab){
@@ -5134,6 +5242,7 @@ function lsVol(delta){
 function lsExit(){
   const audio=document.getElementById("lstAudio");
   audio.pause();
+  if(lsCurBook==="practice"){ exitToPage("listeningpracticemap"); return; }
   exitToPage("listeningtests");
 }
 
@@ -5369,6 +5478,7 @@ function lsSetAns(n,v){
 function lsRenderScript(sec){
   const sb=document.getElementById("lstScriptBody");
   let html="";
+  if(!sec.script||!sec.script.length){ sb.innerHTML='<p style="color:#888">Audio script will be added soon.</p>'; return; }
   sec.script.forEach(line=>{
     html+=`<p><b class="lst-sp">${line.sp}:</b>${line.t}</p>`;
   });
@@ -5515,6 +5625,20 @@ function lsSubmit(){
     }
   });
   const wrong=total-correct;
+  if(lsCurBook==="practice"){
+    const pct=total?Math.round(correct/total*100):0;
+    document.getElementById("rCorr").textContent=correct;
+    document.getElementById("rWrong").textContent=wrong;
+    document.getElementById("rTime").textContent="—";
+    document.getElementById("rBand").textContent=pct+"%";
+    document.getElementById("rBandDesc").textContent="Accuracy on this question group";
+    document.getElementById("blbl").textContent="Accuracy";
+    document.getElementById("rico").textContent=pct>=80?"🏆":pct>=60?"🎯":"💪";
+    document.getElementById("rtitle").textContent="✅ Practice Submitted";
+    document.getElementById("rsub").textContent=`You answered ${correct} out of ${total} correctly`+(wrong>0?` (${wrong} wrong)`:``);
+    document.getElementById("resOv").classList.add("open");
+    return;
+  }
   attSave("listening",lsCurBook,lsCurTest,null,correct,total,timeUsed);
   lsClearSaved(lsCurBook,lsCurTest);
   const m=Math.floor(timeUsed/60), s=Math.floor(timeUsed%60);
@@ -9150,6 +9274,7 @@ function _hmStillUsed(bankId, val, excludeQn){
 <script src="/data-listening-cam21.js?v=20260733e"></script>
 <script src="/data-writing.js?v=20261028b"></script>
 <script src="/data-writing-task1.js?v=20261101a"></script>
+<script src="/data-practice.js?v=20261101a"></script>
 <script src="/data-recent.js?v=20261028a"></script>
 <script src="/data-recent-task1.js?v=20261028a"></script>
 
