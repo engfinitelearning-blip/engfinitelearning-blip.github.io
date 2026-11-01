@@ -2855,7 +2855,7 @@ function authGateOK(p){
     showAuth();
     return false;
   }
-  if(p==="adminPanel" && !(currentUser.isAdmin||currentUser.isSupervisor)){ showToast("This page is for the owner and supervisors."); return false; }
+  if(p==="adminPanel" && !(currentUser.isAdmin||currentUser.isSupervisor)){ showToast("This page is for the team."); return false; }
   if(__STUDENT_PAGES.has(p) && !currentUser.isStudent){ studentOnlyDialog(); return false; }
   return true;
 }
@@ -6984,7 +6984,7 @@ async function handleAuth(){
 
 async function loadUserAfterLogin(authUser){
   let{data:profile}=await sb.from("profiles").select("*").eq("id",authUser.id).maybeSingle();
-  const isAdmin=authUser.email===ADMIN_EMAIL;
+  const isOwnerAcct=authUser.email===ADMIN_EMAIL;
   if(!profile){
     // First sign-in (for example with Google) and no profile row yet: create one as a visitor.
     const nm=authUser.user_metadata?.full_name||authUser.user_metadata?.name||(authUser.email||"").split("@")[0];
@@ -6995,16 +6995,17 @@ async function loadUserAfterLogin(authUser){
 
   // Blocked accounts cannot sign in. Everyone else gets in:
   //   "approved" = student (can use Writing and Speaking), anything else = visitor.
-  if(!isAdmin && status==="rejected"){
+  if(!isOwnerAcct && status==="rejected"){
     await sb.auth.signOut();
     showRejectedScreen();
     return;
   }
 
-  let isSupervisor=false;
-  if(!isAdmin){
-    try{ const{data:w}=await sb.functions.invoke("admin-users",{body:{action:"whoami"}}); isSupervisor=!!(w&&w.role==="supervisor"); }catch(e){}
+  let isSupervisor=false, isAdminRole=false;
+  if(!isOwnerAcct){
+    try{ const{data:w}=await sb.functions.invoke("admin-users",{body:{action:"whoami"}}); isSupervisor=!!(w&&w.role==="supervisor"); isAdminRole=!!(w&&w.role==="admin"); }catch(e){}
   }
+  const isAdmin=isOwnerAcct||isAdminRole; // "isAdmin" = full control of the panel (the owner or an admin)
   const stats=await loadUserStats(authUser.id);
   attLoad(authUser.id);
   loginUser({
@@ -7013,6 +7014,7 @@ async function loadUserAfterLogin(authUser){
     name:profile?.full_name||authUser.user_metadata?.full_name||authUser.user_metadata?.name||"Student",
     stats,
     isAdmin,
+    isOwner:isOwnerAcct,
     isSupervisor,
     isStudent:isAdmin||isSupervisor||(status==="approved"&&!(profile.access_until&&new Date(profile.access_until).getTime()<Date.now()))
   });
@@ -7473,7 +7475,7 @@ function adminSelUpdate(){
   const n=adminSel.size; const c=pfEl("adminSelCount"), b=pfEl("adminBulkBtns");
   if(c) c.textContent=n?(n+" selected"):"";
   if(b) b.style.display=n?"flex":"none";
-  const bl=pfEl("adminBulkLimit"); if(bl) bl.style.display=(currentUser&&currentUser.isAdmin)?"inline-block":"none";
+  const bl=pfEl("adminBulkLimit"); if(bl) bl.style.display=(currentUser&&(currentUser.isAdmin||currentUser.isSupervisor))?"inline-block":"none";
   const all=pfEl("adminSelAllBox"); if(all){ const boxes=document.querySelectorAll(".admin-sel"); all.checked=boxes.length>0&&Array.from(boxes).every(x=>x.checked); }
 }
 function adminSelToggle(id,on){ if(on) adminSel.add(id); else adminSel.delete(id); adminSelUpdate(); }
@@ -7755,7 +7757,7 @@ function adminLimitEdit(e,n){ adminLimitDo(e,n); }
 async function adminLimitRemove(e){ if(!confirm("Remove the personal limit for "+e+"?")) return; await adminAiCall({action:"limit_remove",email:e},"Personal limit removed."); }
 
 let adminLogQuery="", adminLogPage=1, adminLogTimer=null;
-const LOG_LABELS={make_student:["🎓","made a student"],remove_student:["↩️","removed student access from"],block:["⛔","blocked"],unblock:["✅","unblocked"],supervisor_add:["🛡","added an admin:"],supervisor_remove:["🛡","removed an admin:"],delete_user:["🗑","deleted"],progress_erase:["🗑","deleted the progress of"],progress_decline:["✋","declined the delete-progress request of"],view_progress:["📈","opened the progress of"],export_profiles:["⬇","exported profiles"],set_access_date:["📅","changed the access end date for"],access_expired:["⌛","access ended for"],ai_on:["🤖","opened AI marking to all students"],ai_off:["🤖","closed AI marking"],set_default_limit:["🔢","changed the daily limit"],set_prices:["💲","changed the cost prices"],tester_add:["🧪","added a tester:"],tester_remove:["🧪","removed a tester:"],limit_set:["🔢","set a personal limit for"],limit_remove:["🔢","removed the personal limit for"],batch_assign:["📚","put in a batch:"],batch_clear:["📚","removed from their batch:"],batch_create:["📚","added a batch"],batch_rename:["📚","renamed a batch"],batch_delete:["📚","deleted a batch"],batch_limit:["🔢","changed a batch limit"]};
+const LOG_LABELS={make_student:["🎓","made a student"],remove_student:["↩️","removed student access from"],block:["⛔","blocked"],unblock:["✅","unblocked"],supervisor_add:["🛡","added a supervisor:"],supervisor_remove:["🛡","removed a supervisor:"],admin_add:["⭐","made an admin:"],admin_remove:["⭐","removed an admin:"],delete_user:["🗑","deleted"],progress_erase:["🗑","deleted the progress of"],progress_decline:["✋","declined the delete-progress request of"],view_progress:["📈","opened the progress of"],export_profiles:["⬇","exported profiles"],set_access_date:["📅","changed the access end date for"],access_expired:["⌛","access ended for"],ai_on:["🤖","opened AI marking to all students"],ai_off:["🤖","closed AI marking"],set_default_limit:["🔢","changed the daily limit"],set_prices:["💲","changed the cost prices"],tester_add:["🧪","added a tester:"],tester_remove:["🧪","removed a tester:"],limit_set:["🔢","set a personal limit for"],limit_remove:["🔢","removed the personal limit for"],batch_assign:["📚","put in a batch:"],batch_clear:["📚","removed from their batch:"],batch_create:["📚","added a batch"],batch_rename:["📚","renamed a batch"],batch_delete:["📚","deleted a batch"],batch_limit:["🔢","changed a batch limit"]};
 function adminLogSearch(v){ clearTimeout(adminLogTimer); adminLogTimer=setTimeout(()=>{ adminLogQuery=String(v||"").trim(); adminLogLoad(1); },350); }
 async function adminLogLoad(page){
   if(!adminPanelUser()) return;
@@ -7769,7 +7771,7 @@ async function adminLogLoad(page){
     const fmt=d=>new Date(d).toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
     box.innerHTML=rows.map(r=>{
       const L=LOG_LABELS[r.action]||["•",r.action];
-      const who=r.actor_role==="owner"?"You":r.actor_role==="system"?"Automatically,":pfEsc(r.actor_email)+' <span style="font-size:10px;color:#c084fc">(supervisor)</span>';
+      const who=r.actor_role==="owner"?(currentUser&&currentUser.isOwner?"You":"The owner"):r.actor_role==="system"?"Automatically,":pfEsc(r.actor_email)+(r.actor_role==="admin"?' <span style="font-size:10px;color:#38bdf8">(admin)</span>':' <span style="font-size:10px;color:#c084fc">(supervisor)</span>');
       const dt=String(r.detail||""); const um=dt.match(/until (\d{4}-\d{2}-\d{2})/); const am=dt.match(/access until (.+?)(?: \(bulk\))?$/);
       const extra=(r.action==="export_profiles"&&dt)?" ("+pfEsc(dt)+")":(r.action==="make_student"&&um)?" (until "+um[1]+")":(r.action==="set_access_date"&&am)?" (until "+pfEsc(am[1].replace("no end date","no end date"))+")":(r.action==="set_default_limit"||r.action==="limit_set"||r.action==="limit_remove"||r.action==="batch_assign"||r.action.indexOf("batch_")===0)&&dt?" ("+pfEsc(dt.replace(/ \(bulk\)$/,""))+")":"";
       const bulk=/\(bulk\)/.test(dt)?' <span style="font-size:10px;color:var(--muted)">(bulk)</span>':"";
@@ -10367,8 +10369,8 @@ async function adminLoadStudents(filter,page){
       const statusIcon=st==='student'?'🎓':st==='blocked'?'⛔':'👤';
       const m=meta[s.id]; const mt=m?(' · Signed up with '+m.provider+' · Last login '+(m.last?new Date(m.last).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'never')):'';
       const role=s.role||'user';
-      const roleTag=role==='owner'?'<span style="font-size:10px;font-weight:700;color:#fbbf24;margin-left:6px">👑 OWNER</span>':role==='supervisor'?'<span style="font-size:10px;font-weight:700;color:#c084fc;margin-left:6px">🛡 SUPERVISOR</span>':'';
-      const canAct=(role==='user')||(owner&&role==='supervisor');
+      const roleTag=role==='owner'?'<span style="font-size:10px;font-weight:700;color:#fbbf24;margin-left:6px">👑 OWNER</span>':role==='admin'?'<span style="font-size:10px;font-weight:700;color:#38bdf8;margin-left:6px">⭐ ADMIN</span>':role==='supervisor'?'<span style="font-size:10px;font-weight:700;color:#c084fc;margin-left:6px">🛡 SUPERVISOR</span>':'';
+      const canAct=(role==='user')||(!!currentUser.isOwner&&(role==='supervisor'||role==='admin'))||(owner&&role==='supervisor');
       const dom=String(s.email||'').split('@')[1]||'';
       const typo=/^(gamil|gmial|gmai|gmal|gmail\.co$|gmail\.con$|gnail|hotmial|hotmal|yaho|yahho|outlok)/i.test(dom)&&dom.toLowerCase()!=='gmail.com';
       const warnTags=(s.duplicate?'<div style="font-size:11px;color:#fbbf24;margin-top:3px">⚠ Duplicate email: another account uses this Gmail</div>':'')+(typo?'<div style="font-size:11px;color:#fbbf24;margin-top:3px">⚠ Check the email spelling</div>':'');
@@ -10378,7 +10380,7 @@ async function adminLoadStudents(filter,page){
       const until=(st==='student'&&s.access_until)?' · until '+new Date(s.access_until).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
       const chk=canAct?`<input type="checkbox" class="admin-sel" data-id="${aEsc(s.id)}" onchange="adminSelToggle('${aEsc(s.id)}',this.checked)" style="width:18px;height:18px;flex-shrink:0;cursor:pointer"/>`:'<span style="width:18px;flex-shrink:0"></span>';
       const btns=!canAct?'':(
-        (st!=='student'?`<button class="admin-approve-btn" onclick="adminMakeStudent('${aEsc(s.id)}')">🎓 Make student</button>`:`<button class="admin-tab" onclick="adminProgressOne('${aEsc(s.id)}')">📈 Progress</button><button class="admin-tab" onclick="adminBatchOne('${aEsc(s.id)}')">📚 Batch</button>${owner?`<button class="admin-tab" onclick="adminLimitOne('${aEsc(s.id)}')">🔢 Limit</button>`:''}<button class="admin-tab" onclick="adminSetDate('${aEsc(s.id)}')">📅 End date</button><button class="admin-reject-btn" onclick="adminRemoveStudent('${aEsc(s.id)}')">↩ Remove student</button>`)
+        (st!=='student'?`<button class="admin-approve-btn" onclick="adminMakeStudent('${aEsc(s.id)}')">🎓 Make student</button>`:`<button class="admin-tab" onclick="adminProgressOne('${aEsc(s.id)}')">📈 Progress</button><button class="admin-tab" onclick="adminBatchOne('${aEsc(s.id)}')">📚 Batch</button>${(owner||currentUser.isSupervisor)?`<button class="admin-tab" onclick="adminLimitOne('${aEsc(s.id)}')">🔢 Limit</button>`:''}<button class="admin-tab" onclick="adminSetDate('${aEsc(s.id)}')">📅 End date</button><button class="admin-reject-btn" onclick="adminRemoveStudent('${aEsc(s.id)}')">↩ Remove student</button>`)
         +(st!=='blocked'?`<button class="admin-reject-btn" onclick="adminBlock('${aEsc(s.id)}')">⛔ Block</button>`:`<button class="admin-approve-btn" onclick="adminUnblock('${aEsc(s.id)}')">Unblock</button>`)
         +`<button class="admin-reject-btn" onclick="adminDelete('${aEsc(s.id)}')">🗑 Delete</button>`);
       return `<div class="admin-student-card" id="adminCard_${aEsc(s.id)}">
@@ -10481,8 +10483,9 @@ function adminShowAdmins(on,filter){
 }
 async function adminAdminsLoad(){
   const box=pfEl("adminAdminsList"); if(!box) return;
-  const owner=!!(currentUser&&currentUser.isAdmin);
+  const owner=!!(currentUser&&currentUser.isAdmin), isOwn=!!(currentUser&&currentUser.isOwner);
   const ar=pfEl("adminAdminAddRow"); if(ar) ar.style.display=owner?"flex":"none";
+  const ao=pfEl("adminSupRoleAdminOpt"); if(ao) ao.style.display=isOwn?"":"none";
   box.innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">Loading...</div>';
   try{
     const{data,error}=await sb.functions.invoke("admin-users",{body:{action:"admins_list"}});
@@ -10490,27 +10493,41 @@ async function adminAdminsLoad(){
     const fmt=d=>new Date(d).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
     box.innerHTML=(data.admins||[]).map((a,i)=>{
       const own=a.role==="owner";
-      const info=a.signed_up?("Signed up with "+pfEsc(a.provider||"Email")+" · Last login "+(a.last?fmt(a.last):"never")):(a.blocked?"⚠ This Gmail has a blocked account":"Not signed up yet. They become an admin as soon as they sign in.");
+      const info=a.signed_up?("Signed up with "+pfEsc(a.provider||"Email")+" · Last login "+(a.last?fmt(a.last):"never")):(a.blocked?"⚠ This Gmail has a blocked account":"Not signed up yet. They join the team as soon as they sign in.");
       return '<div class="admin-student-card"><div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#c084fc,var(--blue));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0">'+pfEsc((a.name||a.email||"?").charAt(0).toUpperCase())+'</div>'
-        +'<div style="flex:1;min-width:160px"><div style="font-size:14px;font-weight:700;color:#fff">'+pfEsc(a.name||"Admin")+(own?'<span style="font-size:10px;font-weight:700;color:#fbbf24;margin-left:6px">👑 OWNER</span>':'<span style="font-size:10px;font-weight:700;color:#c084fc;margin-left:6px">🛡 SUPERVISOR</span>')+'</div>'
+        +'<div style="flex:1;min-width:160px"><div style="font-size:14px;font-weight:700;color:#fff">'+pfEsc(a.name||"Team member")+(own?'<span style="font-size:10px;font-weight:700;color:#fbbf24;margin-left:6px">👑 OWNER</span>':a.role==="admin"?'<span style="font-size:10px;font-weight:700;color:#38bdf8;margin-left:6px">⭐ ADMIN</span>':'<span style="font-size:10px;font-weight:700;color:#c084fc;margin-left:6px">🛡 SUPERVISOR</span>')+'</div>'
         +'<div style="font-size:12px;color:var(--muted);word-break:break-all">'+pfEsc(a.email)+'</div><div style="font-size:11px;color:var(--muted);margin-top:2px">'+info+'</div></div>'
-        +((owner&&!own)?'<button class="admin-reject-btn" onclick="adminRemoveSupervisor(\''+pfEsc(a.email)+'\')">Remove admin</button>':'')+'</div>';
+        +((isOwn&&!own)?(a.role==="admin"?'<button class="admin-tab" onclick="adminSetRole(\''+pfEsc(a.email)+'\',\'supervisor\')">🛡 Make supervisor</button>':'<button class="admin-approve-btn" onclick="adminSetRole(\''+pfEsc(a.email)+'\',\'admin\')">⭐ Make admin</button>'):'')
+        +((owner&&!own&&(isOwn||a.role!=="admin"))?'<button class="admin-reject-btn" onclick="adminRemoveSupervisor(\''+pfEsc(a.email)+'\')">Remove from team</button>':'')+'</div>';
     }).join("");
   }catch(e){ box.innerHTML='<div style="text-align:center;color:#f87171;padding:30px">Could not load the admins.</div>'; }
 }
 async function adminAddSupervisor(){
   const inp=document.getElementById('adminSupEmail'); const email=(inp.value||'').trim().toLowerCase();
-  if(!email){ showToast('Type the admin email first.'); return; }
-  if(!confirm('Make '+email+' an admin (supervisor)?\n\nThey get student access and can use this panel: make students, block, delete visitors and students, and see profiles. They cannot change you or other admins, and they cannot open or close AI marking.')) return;
-  const{data,error}=await sb.functions.invoke('admin-users',{body:{action:'supervisor_add',email}});
+  if(!email){ showToast('Type the email first.'); return; }
+  const rs=document.getElementById('adminSupRole'); const role=(rs&&rs.value==='admin')?'admin':'supervisor';
+  const msg=role==='admin'
+    ?'Make '+email+' an ADMIN?\n\nAn admin can do everything you can, except change or remove you or another admin. They can add and remove supervisors, open or close AI marking, set limits and see costs.'
+    :'Make '+email+' a SUPERVISOR?\n\nThey get student access and can make and block students, see progress and set personal limits. They cannot change AI marking or the team.';
+  if(!confirm(msg)) return;
+  const{data,error}=await sb.functions.invoke('admin-users',{body:{action:'supervisor_add',email,role}});
   if(error||!data||!data.ok){ showToast((data&&data.error)||'Could not add. Please try again.'); return; }
-  inp.value=''; showToast('🛡 Admin added.'); adminAdminsLoad();
+  inp.value=''; showToast(role==='admin'?'⭐ Admin added.':'🛡 Supervisor added.'); adminAdminsLoad();
+}
+async function adminSetRole(email,role){
+  const msg=role==="admin"
+    ?"Make "+email+" an ADMIN?\n\nAn admin can do everything you can, except change or remove you or another admin."
+    :"Make "+email+" a SUPERVISOR instead of an admin?\n\nThey will lose the admin powers at once.";
+  if(!confirm(msg)) return;
+  const{data,error}=await sb.functions.invoke('admin-users',{body:{action:'supervisor_add',email,role}});
+  if(error||!data||!data.ok){ showToast((data&&data.error)||'Could not change. Please try again.'); return; }
+  showToast(role==="admin"?"⭐ Now an admin.":"🛡 Now a supervisor."); adminAdminsLoad();
 }
 async function adminRemoveSupervisor(email){
-  if(!confirm('Remove '+email+' as an admin? Their admin access ends at once. They stay as a normal visitor.')) return;
+  if(!confirm('Remove '+email+' from the team? Their access ends at once. They stay as a normal visitor.')) return;
   const{data,error}=await sb.functions.invoke('admin-users',{body:{action:'supervisor_remove',email}});
   if(error||!data||!data.ok){ showToast((data&&data.error)||'Could not remove. Please try again.'); return; }
-  showToast('Admin removed.'); adminAdminsLoad();
+  showToast('Removed from the team.'); adminAdminsLoad();
 }
 
 function spPrint_dummy(){}
@@ -10605,7 +10622,7 @@ function spPrint(){
     <button onclick="adminFilter('approved',this)" class="admin-tab" id="adminTabApproved">🎓 Students</button>
     <button onclick="adminFilter('rejected',this)" class="admin-tab" id="adminTabRejected">⛔ Blocked</button>
     <button onclick="adminFilter('all',this)" class="admin-tab" id="adminTabAll">👥 All</button>
-    <button onclick="adminFilter('admins',this)" class="admin-tab" id="adminTabAdmins">🛡 Admins</button>
+    <button onclick="adminFilter('admins',this)" class="admin-tab" id="adminTabAdmins">🛡 Team</button>
   </div>
 
 
@@ -10641,9 +10658,9 @@ function spPrint(){
     </span>
   </div>
   <div id="adminAdminsBox" style="display:none">
-    <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;padding:10px 14px;background:rgba(192,132,252,0.06);border:1px solid rgba(192,132,252,0.22);border-radius:12px">The owner and the supervisors. Admins are not listed under Visitors or Students. They have student access automatically and can use this panel. Only the owner can add or remove an admin.</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;padding:10px 14px;background:rgba(192,132,252,0.06);border:1px solid rgba(192,132,252,0.22);border-radius:12px">Your team. <b>Admins</b> can do everything the owner can, except change or remove the owner or another admin. <b>Supervisors</b> can make and block students, see their progress and set personal limits. They cannot change AI marking or the team. Team members are not listed under Visitors or Students, and they have student access automatically. Only the owner can make or remove an admin. Admins can add and remove supervisors.</div>
     <div id="adminAdminsList"></div>
-    <div id="adminAdminAddRow" style="display:none;gap:8px;flex-wrap:wrap;margin-top:12px"><input id="adminSupEmail" type="email" placeholder="admin@gmail.com" class="pf-in" style="flex:1;min-width:200px;padding:9px 12px;width:auto"/><button class="admin-approve-btn" onclick="adminAddSupervisor()">Add admin</button></div>
+    <div id="adminAdminAddRow" style="display:none;gap:8px;flex-wrap:wrap;margin-top:12px"><input id="adminSupEmail" type="email" placeholder="name@gmail.com" class="pf-in" style="flex:1;min-width:200px;padding:9px 12px;width:auto"/><select id="adminSupRole" class="pf-in" style="padding:9px 12px;width:auto"><option value="supervisor">Supervisor</option><option value="admin" id="adminSupRoleAdminOpt">Admin</option></select><button class="admin-approve-btn" onclick="adminAddSupervisor()">Add to team</button></div>
   </div>
   <div id="adminStudentList"><div style="text-align:center;color:var(--muted);padding:40px">Loading...</div></div>
   <div id="adminPager" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px"></div>
