@@ -8043,8 +8043,8 @@ async function __sessionStillValid(){
   if(__svBusy||!currentUser||!sb) return;
   __svBusy=true;
   try{
-    const r=await sb.auth.getUser();
-    if((r&&r.error&&__authDead(r.error))||(r&&!r.error&&r.data&&!r.data.user)) await __forceLogout();
+    const r=await Promise.race([sb.auth.getUser(),new Promise(res=>setTimeout(()=>res(null),8000))]);
+    if(r&&((r.error&&__authDead(r.error))||(!r.error&&r.data&&!r.data.user))) await __forceLogout();
   }catch(e){}
   __svBusy=false;
 }
