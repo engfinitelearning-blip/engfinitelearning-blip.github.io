@@ -4720,7 +4720,7 @@ function pgHtmlCore(attList,wList,open,openFn){
 }
 function progressRender(){
   const body=document.getElementById("pgBody"); if(!body) return;
-  body.innerHTML=pgHtmlCore(__attList,__pgW,__pgOpen,"progressOpen");
+  body.innerHTML=pgHtmlCore(__attList,__pgW,__pgOpen,"progressOpen")+pcProgressBox();
   pgRecentRender();
 }
 let __pgRecentN=10;
@@ -5082,7 +5082,7 @@ async function pcLoad(uid){
     if(!r.error&&r.data) __pcAtt=r.data;
   }catch(e){}
   try{ const pg=document.getElementById("listeningPracticeMapPage"); if(pg&&pg.style.display==="block") pcBuildMapList(); }catch(e){}
-  try{ pgRecentRender(); }catch(e){}
+  try{ const pb=document.getElementById("pgBody"); if(pb&&pb.offsetParent) progressRender(); else pgRecentRender(); }catch(e){}
 }
 async function pcSave(id,qtype,correct,total,seconds,retry){
   if(!currentUser||!sb) return;
@@ -5091,7 +5091,7 @@ async function pcSave(id,qtype,correct,total,seconds,retry){
   try{ const r=await sb.from("practice_attempts").insert(row); err=r.error; }catch(e){ err=e; }
   if(err){ if(!retry) setTimeout(()=>pcSave(id,qtype,correct,total,seconds,true),3000); return; }
   __pcAtt.push(Object.assign({created_at:new Date().toISOString()},row));
-  try{ pgRecentRender(); }catch(e){}
+  try{ const pb=document.getElementById("pgBody"); if(pb&&pb.offsetParent) progressRender(); else pgRecentRender(); }catch(e){}
 }
 function pcMark(id){
   const a=__pcAtt.filter(x=>x.practice_id===id);
@@ -5099,6 +5099,23 @@ function pcMark(id){
   let best=0; a.forEach(x=>{ const v=x.total?Math.round(x.correct/x.total*100):0; if(v>best) best=v; });
   const last=a.slice(-5).map(x=>x.correct+"/"+x.total);
   return '<div class="att-mark">✓ Completed · Best '+best+'%</div><div class="att-sub">Done '+a.length+(a.length===1?' time':' times')+' · Score'+(a.length===1?'':'s')+': '+(a.length>5?'… ':'')+last.join(', ')+'</div>';
+}
+// Accuracy per question type (shown in My Progress, separate from band scores)
+function pcProgressBox(){
+  const att=(typeof __pcAtt!=="undefined")?__pcAtt:[];
+  if(!att.length) return "";
+  const names={map:"🗺️ Map"};
+  const by={};
+  att.forEach(x=>{ const k=x.qtype||"map"; (by[k]=by[k]||[]).push(x); });
+  let h='<div class="pg-box" style="margin-top:6px"><h3>🎯 Listening practice by question type</h3>';
+  Object.keys(by).forEach(k=>{
+    const l=by[k]; let c=0,t=0; l.forEach(x=>{ c+=x.correct; t+=x.total; });
+    const pct=t?Math.round(c/t*100):0;
+    h+='<div class="pg-act"><div class="pg-act-body"><div class="pg-act-t">'+(names[k]||k)+'</div><div class="pg-act-s">'+c+' of '+t+' correct · '+l.length+' practice'+(l.length===1?'':'s')+'</div>'
+      +'<div style="height:8px;border-radius:6px;background:rgba(128,128,128,.2);margin-top:6px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:#22c55e"></div></div></div>'
+      +'<div class="pg-act-d" style="font-size:18px;font-weight:700">'+pct+'%</div></div>';
+  });
+  return h+'<div class="pg-empty" style="padding:6px 0 0">Accuracy is not a band score. It is the share of correct answers in practice.</div></div>';
 }
 function pcUpdateCounts(){
   const el=document.getElementById("pcMapCount"); if(!el) return;
