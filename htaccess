@@ -51,3 +51,29 @@ RewriteRule ^ index.html [L]
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 </IfModule>
+
+# ============================================================
+# Security (added 5 Nov 2026)
+# ============================================================
+# Do not list the folders on the server
+Options -Indexes
+
+# Never let anyone download setup, source or backup files by address
+<IfModule mod_authz_core.c>
+  <FilesMatch "(^\.|\.(sql|ts|md|bak|log|ini|env|zip|sh)$)">
+    Require all denied
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Only load code and data from the places this site really uses
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' blob: data: https://fhioawgwdmqybjvadrpf.supabase.co wss://fhioawgwdmqybjvadrpf.supabase.co https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; frame-src 'self' blob: https:; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+  # Stop browsers guessing file types
+  Header always set X-Content-Type-Options "nosniff"
+  # Do not allow other websites to put this site inside a frame
+  Header always set X-Frame-Options "SAMEORIGIN"
+  # Share only the site name (not the full address) when a link is opened
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # This site never needs the camera, microphone, location or payments
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+</IfModule>
