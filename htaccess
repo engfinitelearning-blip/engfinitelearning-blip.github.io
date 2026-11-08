@@ -21,6 +21,13 @@
 RewriteEngine On
 RewriteBase /
 
+# NEW (7 Nov 2026): typing a script/data file address (data-*.js, typing-practice.js ...)
+# into the browser's address bar sends the visitor to the home page.
+# The site's own pages still load these files normally.
+RewriteCond %{HTTP:Sec-Fetch-Dest} ^document$ [NC]
+RewriteCond %{REQUEST_URI} \.js$ [NC]
+RewriteRule ^ / [R=302,L]
+
 # If the request matches a real file or folder on the server, serve it
 # directly and stop here (this protects data-cam*.js, images, etc.)
 RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -47,8 +54,10 @@ RewriteRule ^ index.html [L]
   # include a ?v= version number (see index.html) that changes on every
   # content update, so browsers/proxies always fetch fresh content when
   # the version changes, and can cache aggressively otherwise.
+  # "private": browsers still keep the files, but Cloudflare no longer stores copies,
+  # so the address-bar rule above always runs.
   <FilesMatch "\.js$">
-    Header set Cache-Control "public, max-age=31536000, immutable"
+    Header set Cache-Control "private, max-age=31536000, immutable"
   </FilesMatch>
 </IfModule>
 
@@ -67,7 +76,7 @@ Options -Indexes
 
 <IfModule mod_headers.c>
   # Only load code and data from the places this site really uses
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' blob: data: https://fhioawgwdmqybjvadrpf.supabase.co wss://fhioawgwdmqybjvadrpf.supabase.co https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; frame-src 'self' blob: https:; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' blob: data: https://challenges.cloudflare.com https://fhioawgwdmqybjvadrpf.supabase.co wss://fhioawgwdmqybjvadrpf.supabase.co https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; frame-src 'self' blob: https:; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
   # Stop browsers guessing file types
   Header always set X-Content-Type-Options "nosniff"
   # Do not allow other websites to put this site inside a frame
