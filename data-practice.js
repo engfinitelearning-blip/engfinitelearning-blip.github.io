@@ -33,5 +33,7 @@ const PRACTICE_SCRIPT_OK=[
   "map-cam19-t1-s2-q16-20",
   "map-cam20-t3-s2-q17-20"
 ];
+// TEMPORARY test link (expires about 1 week after 8 Nov 2026)
 const PRACTICE_CLIPS={
+  "fib4-cam9-t3-s4-q33-40":"https://fhioawgwdmqybjvadrpf.supabase.co/storage/v1/object/sign/Listening%20Audio%20bucket/practice/fib4-cam9-t3-s4-q33-40.mp3.mp3?token=eyJraWQiOiI5Yzg1Y2M2MS1kMjhmLTQyMzQtODg2Yy02NWJkOTZmYTNiOWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMaXN0ZW5pbmcgQXVkaW8gYnVja2V0L3ByYWN0aWNlL2ZpYjQtY2FtOS10My1zNC1xMzMtNDAubXAzLm1wMyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3OTQyMDQzMTMsImV4cCI6MTc5NDgwOTExM30.SwIsWnfiPiX8tYbG3IHVepnwS2RM7oLhOw3414vzz7o"
 };
