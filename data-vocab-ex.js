@@ -1,0 +1,1 @@
+window.VOCAB_EX={};
