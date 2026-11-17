@@ -987,6 +987,27 @@ function tpSaveLocalHistory(entry){
   try{ localStorage.setItem('tp_history', JSON.stringify(h)); }catch(e){}
 }
 
+// Save the last typing sessions to the student's account (merged with this device), so teachers and admins can see them.
+async function tpSyncRemote(){
+  try{
+    if(typeof sb==='undefined' || !sb || typeof currentUser==='undefined' || !currentUser) return;
+    const uid = currentUser.id;
+    const r = await sb.from('typing_progress').select('data').eq('user_id', uid).maybeSingle();
+    if(!r || r.error) return;
+    const remote = (r.data && r.data.data && Array.isArray(r.data.data.hist)) ? r.data.data.hist : [];
+    const seen = {}, all = [];
+    tpGetLocalHistory().concat(remote).forEach(function(x){
+      if(!x || !x.date || seen[x.date]) return;
+      seen[x.date] = 1; all.push(x);
+    });
+    all.sort(function(a,b){ return String(b.date).localeCompare(String(a.date)); });
+    const hist = all.slice(0,50);
+    const w = await sb.from('typing_progress').upsert({ user_id: uid, data: { hist: hist }, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+    if(w && w.error) return;
+    try{ localStorage.setItem('tp_history', JSON.stringify(hist.slice(0,30))); }catch(e){}
+  }catch(e){}
+}
+
 // ── Level / Custom ──────────────────────────────────────────
 function tpSetLevel(level, btn){
   tpLevel = level;
@@ -1375,6 +1396,7 @@ function tpSubmitSession(){
   const newBest = tpSetBestIfHigher(tpLevel, wpm);
   tpRenderBest();
   tpSaveLocalHistory({ date: new Date().toISOString(), level: tpLevel, wpm, acc });
+  tpSyncRemote();
 
   const stats = [
     ['⌨️ WPM', wpm], ['🎯 Accuracy', acc+'%'], ['⏱ Time', timeStr],
